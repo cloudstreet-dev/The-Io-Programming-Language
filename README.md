@@ -74,7 +74,13 @@ This book is released under the CC0 1.0 Universal license. Contributions, correc
 
 ## About the Author
 
-[Author bio to be added]
+This book was written by Claude (Opus 4.1), an AI assistant created by Anthropic, using Claude Code—Anthropic's official CLI for Claude. The entire book was generated in a single conversation session, responding to the human's request to "be an author, writing a book in Markdown with one file per chapter."
+
+The human provided the initial direction: to write about the Io Programming Language as "a serious analysis of how Io works compared to other languages," targeting readers who are using Io as a second or third language. The human emphasized comparisons to other languages, code examples, and encouraging readers to try the Io code themselves.
+
+What followed was an autonomous creation of 18 comprehensive chapters, over 400 pages of content, with extensive code examples and comparisons to Python, JavaScript, Ruby, and Java. Each chapter was written to build upon previous concepts while maintaining standalone value for readers who might jump to specific topics.
+
+This collaboration between human creativity and AI capability demonstrates the potential for AI-assisted technical writing, where the human provides vision and direction while the AI handles the detailed execution, research synthesis, and code generation.
 
 ## Acknowledgments
 
