@@ -1,0 +1,31 @@
+{{ define "main" }}
+<article class="markdown book-article">
+  {{ $title := .Title }}
+  {{ $content := .Content }}
+  
+  {{/* Extract chapter number from content if it exists */}}
+  {{ $chapterMatch := findRE "# Chapter ([0-9]+):" .RawContent }}
+  {{ $chapterNum := "" }}
+  {{ if $chapterMatch }}
+    {{ $chapterNum = replaceRE ".*Chapter ([0-9]+):.*" "Chapter $1" (index $chapterMatch 0) }}
+  {{ else if (findRE "# Preface:" .RawContent) }}
+    {{ $chapterNum = "Preface" }}
+  {{ end }}
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">{{ $title }}</h1>
+    {{ if $chapterNum }}
+    <div class="chapter-number">{{ $chapterNum }}</div>
+    {{ end }}
+  </div>
+  
+  {{/* Remove the original title from content - handle multiline */}}
+  {{ $content = replaceRE "(?s)<h1[^>]*>.*?</h1>" "" $content 1 }}
+  
+  {{ $content | safeHTML }}
+  
+  <footer class="book-footer">
+    {{ partial "docs/inject/footer" . }}
+  </footer>
+</article>
+{{ end }}

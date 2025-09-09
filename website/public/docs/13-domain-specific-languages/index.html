@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 13: Domain-Specific Languages
+  
+  #
+  
+
+Io&rsquo;s minimal syntax, message-passing model, and metaprogramming capabilities make it ideal for creating Domain-Specific Languages (DSLs). This chapter explores how to build expressive DSLs that feel native to their problem domains.
+
+  Why Io Excels at DSLs
+  
+  #
+  
+
+Several features make Io particularly suitable for DSLs:
+
+Minimal syntax - Less language machinery to work around
+Optional parentheses - Clean, readable DSL code
+Message chains - Natural expression of domain concepts
+Runtime flexibility - Modify behavior on the fly
+Homoiconicity - Code as manipulable data
+
+Compare a hypothetical DSL in Io vs Ruby:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/13-domain-specific-languages/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Domain-Specific Languages">
+  <meta property="og:description" content="Chapter 13: Domain-Specific Languages # Io’s minimal syntax, message-passing model, and metaprogramming capabilities make it ideal for creating Domain-Specific Languages (DSLs). This chapter explores how to build expressive DSLs that feel native to their problem domains.
+Why Io Excels at DSLs # Several features make Io particularly suitable for DSLs:
+Minimal syntax - Less language machinery to work around Optional parentheses - Clean, readable DSL code Message chains - Natural expression of domain concepts Runtime flexibility - Modify behavior on the fly Homoiconicity - Code as manipulable data Compare a hypothetical DSL in Io vs Ruby:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Domain-Specific Languages | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/13-domain-specific-languages/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="active">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Domain-Specific Languages</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Domain-Specific Languages</h1>
+    
+    <div class="chapter-number">Chapter 13</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Io&rsquo;s minimal syntax, message-passing model, and metaprogramming capabilities make it ideal for creating Domain-Specific Languages (DSLs). This chapter explores how to build expressive DSLs that feel native to their problem domains.</p>
+<h2 id="why-io-excels-at-dsls">
+  Why Io Excels at DSLs
+  
+  <a class="anchor" href="#why-io-excels-at-dsls">#</a>
+  
+</h2>
+<p>Several features make Io particularly suitable for DSLs:</p>
+<ol>
+<li><strong>Minimal syntax</strong> - Less language machinery to work around</li>
+<li><strong>Optional parentheses</strong> - Clean, readable DSL code</li>
+<li><strong>Message chains</strong> - Natural expression of domain concepts</li>
+<li><strong>Runtime flexibility</strong> - Modify behavior on the fly</li>
+<li><strong>Homoiconicity</strong> - Code as manipulable data</li>
+</ol>
+<p>Compare a hypothetical DSL in Io vs Ruby:</p>
+<pre><code class="language-io">// Io DSL - clean, minimal
+recipe &quot;Chocolate Cake&quot; makes(8) servings {
+    ingredient &quot;flour&quot; amount(2) cups
+    ingredient &quot;sugar&quot; amount(1.5) cups
+    
+    step &quot;Mix dry ingredients&quot;
+    step &quot;Add wet ingredients&quot;
+    bake at(350) degrees for(30) minutes
+}
+</code></pre>
+<pre><code class="language-ruby"># Ruby DSL - more syntax artifacts
+recipe &quot;Chocolate Cake&quot; do
+    makes 8.servings
+    
+    ingredient &quot;flour&quot;, amount: 2.cups
+    ingredient &quot;sugar&quot;, amount: 1.5.cups
+    
+    step &quot;Mix dry ingredients&quot;
+    step &quot;Add wet ingredients&quot;
+    bake at: 350.degrees, for: 30.minutes
+end
+</code></pre>
+<h2 id="building-your-first-dsl">
+  Building Your First DSL
+  
+  <a class="anchor" href="#building-your-first-dsl">#</a>
+  
+</h2>
+<p>Let&rsquo;s create a simple configuration DSL:</p>
+<pre><code class="language-io">// Define the DSL
+Config := Object clone
+Config settings := Map clone
+
+Config set := method(key, value,
+    settings atPut(key asString, value)
+    self  // For chaining
+)
+
+Config get := method(key,
+    settings at(key asString)
+)
+
+Config section := method(name,
+    sec := Config clone
+    settings atPut(name asString, sec)
+    sec
+)
+
+// Use the DSL
+config := Config clone
+config set(&quot;host&quot;, &quot;localhost&quot;) \
+      set(&quot;port&quot;, 8080) \
+      section(&quot;database&quot;) \
+          set(&quot;driver&quot;, &quot;postgresql&quot;) \
+          set(&quot;name&quot;, &quot;myapp&quot;)
+
+config get(&quot;host&quot;) println           // localhost
+config get(&quot;database&quot;) get(&quot;driver&quot;) println  // postgresql
+</code></pre>
+<h2 id="html-builder-dsl">
+  HTML Builder DSL
+  
+  <a class="anchor" href="#html-builder-dsl">#</a>
+  
+</h2>
+<p>A more complex example - generating HTML:</p>
+<pre><code class="language-io">HTML := Object clone
+
+// Handle any tag name via forward
+HTML forward := method(
+    tagName := call message name
+    attributes := Map clone
+    children := list()
+    
+    // Process arguments
+    call message arguments foreach(arg,
+        argValue := call sender doMessage(arg)
+        
+        if(argValue type == &quot;Map&quot;,
+            // It's attributes
+            attributes = argValue
+        ,
+            // It's content or children
+            if(argValue type == &quot;Sequence&quot;,
+                children append(argValue),
+                if(argValue type == &quot;List&quot;,
+                    children appendSeq(argValue),
+                    children append(argValue asString)
+                )
+            )
+        )
+    )
+    
+    // Build HTML
+    result := &quot;&lt;&quot; .. tagName
+    attributes foreach(key, value,
+        result = result .. &quot; &quot; .. key .. &quot;=\&quot;&quot; .. value .. &quot;\&quot;&quot;
+    )
+    
+    if(children size == 0,
+        result = result .. &quot; /&gt;&quot;,
+        result = result .. &quot;&gt;&quot;
+        children foreach(child, result = result .. child)
+        result = result .. &quot;&lt;/&quot; .. tagName .. &quot;&gt;&quot;
+    )
+    
+    result
+)
+
+// Helper for attributes
+Object attrs := method(
+    args := call message arguments
+    map := Map clone
+    
+    args foreach(arg,
+        pair := arg name split(&quot;:&quot;)
+        if(pair size == 2,
+            map atPut(pair at(0), call sender doMessage(arg arguments at(0)))
+        )
+    )
+    map
+)
+
+// Usage
+html := HTML clone
+
+page := html div(attrs(class: &quot;container&quot;, id: &quot;main&quot;),
+    html h1(&quot;Welcome to My Site&quot;),
+    html p(attrs(class: &quot;intro&quot;), 
+        &quot;This is a paragraph with &quot;,
+        html strong(&quot;bold text&quot;),
+        &quot; in it.&quot;
+    ),
+    html ul(
+        html li(&quot;First item&quot;),
+        html li(&quot;Second item&quot;),
+        html li(&quot;Third item&quot;)
+    )
+)
+
+page println
+// &lt;div class=&quot;container&quot; id=&quot;main&quot;&gt;&lt;h1&gt;Welcome to My Site&lt;/h1&gt;...
+</code></pre>
+<h2 id="sql-query-builder">
+  SQL Query Builder
+  
+  <a class="anchor" href="#sql-query-builder">#</a>
+  
+</h2>
+<pre><code class="language-io">Query := Object clone
+Query init := method(
+    self selections := list(&quot;*&quot;)
+    self tables := list()
+    self conditions := list()
+    self joins := list()
+    self
+)
+
+Query select := method(
+    self selections = call message arguments map(arg,
+        call sender doMessage(arg) asString
+    )
+    self
+)
+
+Query from := method(table,
+    tables append(table)
+    self
+)
+
+Query where := method(
+    condition := call argAt(0)
+    conditions append(condition code asString)
+    self
+)
+
+Query join := method(table, on,
+    joins append(&quot;JOIN &quot; .. table .. &quot; ON &quot; .. on code asString)
+    self
+)
+
+Query toSQL := method(
+    sql := &quot;SELECT &quot; .. selections join(&quot;, &quot;)
+    sql = sql .. &quot; FROM &quot; .. tables join(&quot;, &quot;)
+    
+    if(joins size &gt; 0,
+        sql = sql .. &quot; &quot; .. joins join(&quot; &quot;)
+    )
+    
+    if(conditions size &gt; 0,
+        sql = sql .. &quot; WHERE &quot; .. conditions join(&quot; AND &quot;)
+    )
+    
+    sql
+)
+
+// Usage
+query := Query clone init
+
+sql := query select(&quot;name&quot;, &quot;age&quot;, &quot;email&quot;) \
+            from(&quot;users&quot;) \
+            join(&quot;profiles&quot;, users.id == profiles.user_id) \
+            where(age &gt; 18) \
+            where(status == &quot;active&quot;) \
+            toSQL
+
+sql println
+// SELECT name, age, email FROM users JOIN profiles ON users.id == profiles.user_id WHERE age &gt; 18 AND status == &quot;active&quot;
+</code></pre>
+<h2 id="unit-testing-dsl">
+  Unit Testing DSL
+  
+  <a class="anchor" href="#unit-testing-dsl">#</a>
+  
+</h2>
+<pre><code class="language-io">TestSuite := Object clone
+TestSuite tests := list()
+TestSuite currentTest := nil
+
+TestSuite describe := method(description,
+    suite := TestSuite clone
+    suite description := description
+    suite tests = list()
+    
+    # Execute the test definition block
+    call evalArgAt(1)
+    
+    suite
+)
+
+TestSuite it := method(testName,
+    test := Object clone
+    test name := testName
+    test block := call argAt(1)
+    tests append(test)
+)
+
+TestSuite before := method(
+    self beforeBlock := call argAt(0)
+)
+
+TestSuite after := method(
+    self afterBlock := call argAt(0)
+)
+
+TestSuite run := method(
+    (&quot;\n&quot; .. description) println
+    (&quot;=&quot; repeated(description size)) println
+    
+    passed := 0
+    failed := 0
+    
+    tests foreach(test,
+        if(hasSlot(&quot;beforeBlock&quot;), beforeBlock doInContext(self))
+        
+        e := try(
+            test block doInContext(self)
+            (&quot;✓ &quot; .. test name) println
+            passed = passed + 1
+        ) catch(Exception, e,
+            (&quot;✗ &quot; .. test name) println
+            (&quot;  &quot; .. e message) println
+            failed = failed + 1
+        )
+        
+        if(hasSlot(&quot;afterBlock&quot;), afterBlock doInContext(self))
+    )
+    
+    (&quot;\nPassed: &quot; .. passed .. &quot;, Failed: &quot; .. failed) println
+)
+
+// Assertion helpers
+Object expect := method(actual,
+    Expectation clone setActual(actual)
+)
+
+Expectation := Object clone
+Expectation setActual := method(value,
+    self actual := value
+    self
+)
+
+Expectation toBe := method(expected,
+    if(actual != expected,
+        Exception raise(&quot;Expected &quot; .. expected .. &quot; but got &quot; .. actual)
+    )
+)
+
+Expectation toEqual := method(expected,
+    if(actual != expected,
+        Exception raise(&quot;Expected &quot; .. expected .. &quot; but got &quot; .. actual)
+    )
+)
+
+Expectation toContain := method(item,
+    if(actual contains(item) not,
+        Exception raise(&quot;Expected &quot; .. actual .. &quot; to contain &quot; .. item)
+    )
+)
+
+// Usage
+MathTests := describe(&quot;Math operations&quot;,
+    before(
+        self calculator := Object clone
+        calculator add := method(a, b, a + b)
+        calculator multiply := method(a, b, a * b)
+    )
+    
+    it(&quot;should add numbers correctly&quot;,
+        expect(calculator add(2, 3)) toBe(5)
+        expect(calculator add(-1, 1)) toBe(0)
+    )
+    
+    it(&quot;should multiply numbers correctly&quot;,
+        expect(calculator multiply(3, 4)) toBe(12)
+        expect(calculator multiply(0, 5)) toBe(0)
+    )
+    
+    it(&quot;should handle edge cases&quot;,
+        expect(calculator add(0, 0)) toBe(0)
+    )
+)
+
+MathTests run
+</code></pre>
+<h2 id="state-machine-dsl">
+  State Machine DSL
+  
+  <a class="anchor" href="#state-machine-dsl">#</a>
+  
+</h2>
+<pre><code class="language-io">StateMachine := Object clone
+StateMachine states := Map clone
+StateMachine currentState := nil
+StateMachine initialState := nil
+
+StateMachine state := method(name,
+    s := State clone
+    s name := name
+    s machine := self
+    states atPut(name, s)
+    
+    if(initialState isNil, initialState = s)
+    
+    s
+)
+
+State := Object clone
+State transitions := Map clone
+
+State on := method(event, targetState,
+    transitions atPut(event, targetState)
+    self
+)
+
+State enter := method(
+    self enterBlock := call argAt(0)
+    self
+)
+
+State exit := method(
+    self exitBlock := call argAt(0)
+    self
+)
+
+StateMachine start := method(
+    currentState = initialState
+    if(currentState hasSlot(&quot;enterBlock&quot;),
+        currentState enterBlock call
+    )
+)
+
+StateMachine trigger := method(event,
+    if(currentState transitions hasKey(event),
+        nextStateName := currentState transitions at(event)
+        nextState := states at(nextStateName)
+        
+        if(currentState hasSlot(&quot;exitBlock&quot;),
+            currentState exitBlock call
+        )
+        
+        (&quot;Transitioning from &quot; .. currentState name .. &quot; to &quot; .. nextStateName) println
+        currentState = nextState
+        
+        if(currentState hasSlot(&quot;enterBlock&quot;),
+            currentState enterBlock call
+        )
+    ,
+        (&quot;No transition for event '&quot; .. event .. &quot;' from state '&quot; .. currentState name .. &quot;'&quot;) println
+    )
+)
+
+// Usage
+door := StateMachine clone
+
+door state(&quot;closed&quot;) \
+    on(&quot;open&quot;, &quot;opened&quot;) \
+    on(&quot;lock&quot;, &quot;locked&quot;) \
+    enter(block(&quot;Door is now closed&quot; println))
+
+door state(&quot;opened&quot;) \
+    on(&quot;close&quot;, &quot;closed&quot;) \
+    enter(block(&quot;Door is now open&quot; println))
+
+door state(&quot;locked&quot;) \
+    on(&quot;unlock&quot;, &quot;closed&quot;) \
+    enter(block(&quot;Door is now locked&quot; println))
+
+door start
+door trigger(&quot;open&quot;)   // Transitioning from closed to opened
+door trigger(&quot;close&quot;)  // Transitioning from opened to closed
+door trigger(&quot;lock&quot;)   // Transitioning from closed to locked
+door trigger(&quot;open&quot;)   // No transition for event 'open' from state 'locked'
+</code></pre>
+<h2 id="routing-dsl-web-framework-style">
+  Routing DSL (Web Framework Style)
+  
+  <a class="anchor" href="#routing-dsl-web-framework-style">#</a>
+  
+</h2>
+<pre><code class="language-io">Router := Object clone
+Router routes := list()
+
+Router get := method(path,
+    addRoute(&quot;GET&quot;, path, call argAt(1))
+)
+
+Router post := method(path,
+    addRoute(&quot;POST&quot;, path, call argAt(1))
+)
+
+Router put := method(path,
+    addRoute(&quot;PUT&quot;, path, call argAt(1))
+)
+
+Router delete := method(path,
+    addRoute(&quot;DELETE&quot;, path, call argAt(1))
+)
+
+Router addRoute := method(method, path, handler,
+    routes append(Map with(
+        &quot;method&quot;, method,
+        &quot;path&quot;, path,
+        &quot;pattern&quot;, pathToRegex(path),
+        &quot;handler&quot;, handler
+    ))
+    self
+)
+
+Router pathToRegex := method(path,
+    // Convert :param to regex groups
+    pattern := path
+    pattern = pattern replaceAllRegex(&quot;:([^/]+)&quot;, &quot;([^/]+)&quot;)
+    &quot;^&quot; .. pattern .. &quot;$&quot;
+)
+
+Router handle := method(method, path,
+    routes foreach(route,
+        if(route at(&quot;method&quot;) == method,
+            match := path matchesRegex(route at(&quot;pattern&quot;))
+            if(match,
+                params := extractParams(route at(&quot;path&quot;), path, match)
+                return route at(&quot;handler&quot;) call(params)
+            )
+        )
+    )
+    
+    Map with(&quot;status&quot;, 404, &quot;body&quot;, &quot;Not Found&quot;)
+)
+
+Router extractParams := method(pattern, path, match,
+    params := Map clone
+    
+    // Extract named parameters
+    names := pattern allMatchesOfRegex(&quot;:([^/]+)&quot;) map(m, m at(1))
+    names foreach(i, name,
+        params atPut(name, match at(i + 1))
+    )
+    
+    params
+)
+
+// Usage
+app := Router clone
+
+app get(&quot;/&quot;, block(params,
+    Map with(&quot;status&quot;, 200, &quot;body&quot;, &quot;Welcome to the home page&quot;)
+))
+
+app get(&quot;/users/:id&quot;, block(params,
+    Map with(&quot;status&quot;, 200, &quot;body&quot;, &quot;User &quot; .. params at(&quot;id&quot;))
+))
+
+app post(&quot;/users&quot;, block(params,
+    Map with(&quot;status&quot;, 201, &quot;body&quot;, &quot;User created&quot;)
+))
+
+// Simulate requests
+app handle(&quot;GET&quot;, &quot;/&quot;) at(&quot;body&quot;) println        // Welcome to the home page
+app handle(&quot;GET&quot;, &quot;/users/123&quot;) at(&quot;body&quot;) println  // User 123
+app handle(&quot;POST&quot;, &quot;/users&quot;) at(&quot;body&quot;) println  // User created
+app handle(&quot;GET&quot;, &quot;/unknown&quot;) at(&quot;body&quot;) println // Not Found
+</code></pre>
+<h2 id="data-validation-dsl">
+  Data Validation DSL
+  
+  <a class="anchor" href="#data-validation-dsl">#</a>
+  
+</h2>
+<pre><code class="language-io">Validator := Object clone
+
+Validator field := method(name,
+    f := Field clone
+    f name := name
+    f rules := list()
+    self currentField := f
+    f
+)
+
+Field := Object clone
+
+Field required := method(
+    rules append(block(value,
+        if(value isNil or value == &quot;&quot;,
+            Exception raise(name .. &quot; is required&quot;),
+            true
+        )
+    ))
+    self
+)
+
+Field minLength := method(min,
+    rules append(block(value,
+        if(value size &lt; min,
+            Exception raise(name .. &quot; must be at least &quot; .. min .. &quot; characters&quot;),
+            true
+        )
+    ))
+    self
+)
+
+Field maxLength := method(max,
+    rules append(block(value,
+        if(value size &gt; max,
+            Exception raise(name .. &quot; must be at most &quot; .. max .. &quot; characters&quot;),
+            true
+        )
+    ))
+    self
+)
+
+Field matches := method(regex,
+    rules append(block(value,
+        if(value matchesRegex(regex) not,
+            Exception raise(name .. &quot; has invalid format&quot;),
+            true
+        )
+    ))
+    self
+)
+
+Field validate := method(value,
+    rules foreach(rule,
+        rule call(value)
+    )
+    true
+)
+
+// Usage
+userValidator := Validator clone
+
+username := userValidator field(&quot;username&quot;) \
+    required \
+    minLength(3) \
+    maxLength(20) \
+    matches(&quot;^[a-zA-Z0-9_]+$&quot;)
+
+email := userValidator field(&quot;email&quot;) \
+    required \
+    matches(&quot;^[^@]+@[^@]+\\.[^@]+$&quot;)
+
+// Test validation
+try(
+    username validate(&quot;ab&quot;)
+) catch(Exception, e,
+    e message println  // username must be at least 3 characters
+)
+
+try(
+    email validate(&quot;not-an-email&quot;)
+) catch(Exception, e,
+    e message println  // email has invalid format
+)
+
+username validate(&quot;valid_user123&quot;) println  // true
+email validate(&quot;user@example.com&quot;) println  // true
+</code></pre>
+<h2 id="dsl-best-practices">
+  DSL Best Practices
+  
+  <a class="anchor" href="#dsl-best-practices">#</a>
+  
+</h2>
+<h3 id="1-natural-language-flow">
+  1. Natural Language Flow
+  
+  <a class="anchor" href="#1-natural-language-flow">#</a>
+  
+</h3>
+<pre><code class="language-io">// Good - reads naturally
+recipe needs(2) cups of(&quot;flour&quot;)
+order shipping priority within(3) days
+
+// Bad - programmer-centric
+recipe setAmount(2) setUnit(&quot;cups&quot;) setIngredient(&quot;flour&quot;)
+order setShipping(&quot;priority&quot;) setDeliveryDays(3)
+</code></pre>
+<h3 id="2-method-chaining">
+  2. Method Chaining
+  
+  <a class="anchor" href="#2-method-chaining">#</a>
+  
+</h3>
+<pre><code class="language-io">// Enable fluent interfaces
+Object withChaining := method(
+    call message arguments foreach(arg,
+        slotName := arg name
+        self setSlot(slotName, call evalArgAt(0))
+    )
+    self  // Always return self
+)
+
+Person := Object clone
+Person configure := method(
+    withChaining(
+        name(n, self name := n),
+        age(a, self age := a),
+        email(e, self email := e)
+    )
+)
+
+person := Person clone configure \
+    name(&quot;Alice&quot;) \
+    age(30) \
+    email(&quot;alice@example.com&quot;)
+</code></pre>
+<h3 id="3-context-management">
+  3. Context Management
+  
+  <a class="anchor" href="#3-context-management">#</a>
+  
+</h3>
+<pre><code class="language-io">DSLContext := Object clone
+DSLContext stack := list()
+
+DSLContext push := method(obj,
+    stack append(obj)
+)
+
+DSLContext pop := method(
+    stack pop
+)
+
+DSLContext current := method(
+    stack last
+)
+
+DSLContext with := method(obj, block,
+    push(obj)
+    e := try(result := block call)
+    pop
+    if(e, e raise, result)
+)
+
+// Usage in DSL
+Form := Object clone
+Form fields := list()
+
+Form field := method(name,
+    f := Field clone
+    f name := name
+    DSLContext with(f,
+        call evalArgAt(1)
+    )
+    fields append(f)
+)
+
+Field label := method(text,
+    DSLContext current label := text
+)
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>CSS DSL</strong>: Create a DSL for generating CSS with nested rules and variables.</p>
+</li>
+<li>
+<p><strong>Graph Description Language</strong>: Build a DSL for describing graphs and their relationships.</p>
+</li>
+<li>
+<p><strong>Build System DSL</strong>: Implement a make/rake-like build system DSL.</p>
+</li>
+<li>
+<p><strong>BDD Testing DSL</strong>: Create a Behavior-Driven Development testing framework.</p>
+</li>
+<li>
+<p><strong>Configuration Management</strong>: Build a DSL for system configuration management.</p>
+</li>
+</ol>
+<h2 id="real-world-example-migration-dsl">
+  Real-World Example: Migration DSL
+  
+  <a class="anchor" href="#real-world-example-migration-dsl">#</a>
+  
+</h2>
+<pre><code class="language-io">Migration := Object clone
+Migration changes := list()
+
+Migration createTable := method(name,
+    table := TableDefinition clone
+    table name := name
+    table columns := list()
+    
+    call evalArgAt(1)
+    
+    changes append(Map with(
+        &quot;type&quot;, &quot;createTable&quot;,
+        &quot;table&quot;, table
+    ))
+    self
+)
+
+Migration dropTable := method(name,
+    changes append(Map with(
+        &quot;type&quot;, &quot;dropTable&quot;,
+        &quot;name&quot;, name
+    ))
+    self
+)
+
+TableDefinition := Object clone
+
+TableDefinition column := method(name, type,
+    columns append(Map with(
+        &quot;name&quot;, name,
+        &quot;type&quot;, type,
+        &quot;constraints&quot;, list()
+    ))
+    self
+)
+
+TableDefinition primaryKey := method(col,
+    columns last at(&quot;constraints&quot;) append(&quot;PRIMARY KEY&quot;)
+    self
+)
+
+TableDefinition notNull := method(
+    columns last at(&quot;constraints&quot;) append(&quot;NOT NULL&quot;)
+    self
+)
+
+TableDefinition unique := method(
+    columns last at(&quot;constraints&quot;) append(&quot;UNIQUE&quot;)
+    self
+)
+
+Migration toSQL := method(
+    sql := list()
+    
+    changes foreach(change,
+        if(change at(&quot;type&quot;) == &quot;createTable&quot;,
+            table := change at(&quot;table&quot;)
+            stmt := &quot;CREATE TABLE &quot; .. table name .. &quot; (\n&quot;
+            
+            cols := table columns map(col,
+                &quot;  &quot; .. col at(&quot;name&quot;) .. &quot; &quot; .. col at(&quot;type&quot;) .. 
+                if(col at(&quot;constraints&quot;) size &gt; 0,
+                    &quot; &quot; .. col at(&quot;constraints&quot;) join(&quot; &quot;),
+                    &quot;&quot;
+                )
+            )
+            
+            stmt = stmt .. cols join(&quot;,\n&quot;) .. &quot;\n);&quot;
+            sql append(stmt)
+        )
+        
+        if(change at(&quot;type&quot;) == &quot;dropTable&quot;,
+            sql append(&quot;DROP TABLE &quot; .. change at(&quot;name&quot;) .. &quot;;&quot;)
+        )
+    )
+    
+    sql join(&quot;\n\n&quot;)
+)
+
+// Usage
+migration := Migration clone
+
+migration createTable(&quot;users&quot;,
+    column(&quot;id&quot;, &quot;INTEGER&quot;) primaryKey,
+    column(&quot;username&quot;, &quot;VARCHAR(50)&quot;) notNull unique,
+    column(&quot;email&quot;, &quot;VARCHAR(100)&quot;) notNull unique,
+    column(&quot;created_at&quot;, &quot;TIMESTAMP&quot;) notNull
+)
+
+migration createTable(&quot;posts&quot;,
+    column(&quot;id&quot;, &quot;INTEGER&quot;) primaryKey,
+    column(&quot;user_id&quot;, &quot;INTEGER&quot;) notNull,
+    column(&quot;title&quot;, &quot;VARCHAR(200)&quot;) notNull,
+    column(&quot;content&quot;, &quot;TEXT&quot;),
+    column(&quot;published_at&quot;, &quot;TIMESTAMP&quot;)
+)
+
+migration toSQL println
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Domain-Specific Languages in Io demonstrate the language&rsquo;s expressive power. By leveraging message passing, optional parentheses, method chaining, and metaprogramming, you can create DSLs that feel natural to domain experts while remaining fully integrated with the host language.</p>
+<p>The key to successful DSLs in Io is understanding that you&rsquo;re not fighting against language syntax—you&rsquo;re working with it. Messages become domain commands, objects become domain concepts, and the minimal syntax stays out of your way. This makes Io ideal for creating internal DSLs that are both powerful and readable.</p>
+<hr>
+<p><em>Next: <a href="14-c-integration.md">Chapter 14 - C Integration</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/12-concurrency/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Concurrency" />
+        <span>Concurrency</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/14-c-integration/" class="flex align-center book-icon">
+        <span>C Integration</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="C Integration" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

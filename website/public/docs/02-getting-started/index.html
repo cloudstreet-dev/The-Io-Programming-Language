@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 2: Getting Started with Io
+  
+  #
+  
+
+The best way to understand Io is to use it. In this chapter, we&rsquo;ll install Io, explore its REPL (Read-Eval-Print Loop), and write our first programs. By the end, you&rsquo;ll have a feel for Io&rsquo;s syntax and flow.
+
+  Installing Io
+  
+  #
+  
+
+
+  macOS
+  
+  #
+  
+
+If you&rsquo;re on macOS with Homebrew, installation is simple:
+brew install io
+
+
+  Linux
+  
+  #
+  
+
+On most Linux distributions, you&rsquo;ll need to build from source:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/02-getting-started/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Getting Started">
+  <meta property="og:description" content="Chapter 2: Getting Started with Io # The best way to understand Io is to use it. In this chapter, we’ll install Io, explore its REPL (Read-Eval-Print Loop), and write our first programs. By the end, you’ll have a feel for Io’s syntax and flow.
+Installing Io # macOS # If you’re on macOS with Homebrew, installation is simple:
+brew install io Linux # On most Linux distributions, you’ll need to build from source:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Getting Started | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/02-getting-started/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="active">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Getting Started</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Getting Started</h1>
+    
+    <div class="chapter-number">Chapter 2</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>The best way to understand Io is to use it. In this chapter, we&rsquo;ll install Io, explore its REPL (Read-Eval-Print Loop), and write our first programs. By the end, you&rsquo;ll have a feel for Io&rsquo;s syntax and flow.</p>
+<h2 id="installing-io">
+  Installing Io
+  
+  <a class="anchor" href="#installing-io">#</a>
+  
+</h2>
+<h3 id="macos">
+  macOS
+  
+  <a class="anchor" href="#macos">#</a>
+  
+</h3>
+<p>If you&rsquo;re on macOS with Homebrew, installation is simple:</p>
+<pre><code class="language-bash">brew install io
+</code></pre>
+<h3 id="linux">
+  Linux
+  
+  <a class="anchor" href="#linux">#</a>
+  
+</h3>
+<p>On most Linux distributions, you&rsquo;ll need to build from source:</p>
+<pre><code class="language-bash">git clone https://github.com/IoLanguage/io.git
+cd io
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+</code></pre>
+<h3 id="windows">
+  Windows
+  
+  <a class="anchor" href="#windows">#</a>
+  
+</h3>
+<p>Windows users should use WSL (Windows Subsystem for Linux) and follow the Linux instructions, or use Docker:</p>
+<pre><code class="language-bash">docker run -it --rm stevedekorte/io
+</code></pre>
+<h3 id="verifying-installation">
+  Verifying Installation
+  
+  <a class="anchor" href="#verifying-installation">#</a>
+  
+</h3>
+<p>Once installed, verify Io is working:</p>
+<pre><code class="language-bash">$ io --version
+Io Programming Language, v. 20170906
+
+$ io
+Io&gt; &quot;Hello, World!&quot; println
+Hello, World!
+==&gt; Hello, World!
+Io&gt; ^C
+</code></pre>
+<h2 id="the-repl-your-io-playground">
+  The REPL: Your Io Playground
+  
+  <a class="anchor" href="#the-repl-your-io-playground">#</a>
+  
+</h2>
+<p>Io&rsquo;s REPL is where you&rsquo;ll spend most of your learning time. Unlike compiled languages where you write, compile, and run, Io lets you experiment immediately.</p>
+<p>Start the REPL by typing <code>io</code>:</p>
+<pre><code class="language-io">$ io
+Io&gt;
+</code></pre>
+<p>The prompt <code>Io&gt;</code> indicates Io is ready for input. Let&rsquo;s explore:</p>
+<pre><code class="language-io">Io&gt; 2 + 2
+==&gt; 4
+
+Io&gt; &quot;Hello&quot; .. &quot; &quot; .. &quot;World&quot;
+==&gt; Hello World
+
+Io&gt; 10 &gt; 5
+==&gt; true
+</code></pre>
+<p>Notice the <code>==&gt;</code> prefix? That shows the return value of your expression. Everything in Io returns a value.</p>
+<h3 id="repl-tips">
+  REPL Tips
+  
+  <a class="anchor" href="#repl-tips">#</a>
+  
+</h3>
+<ol>
+<li><strong>Multi-line input</strong>: The REPL detects incomplete expressions:</li>
+</ol>
+<pre><code class="language-io">Io&gt; if(true,
+...     &quot;yes&quot; println,
+...     &quot;no&quot; println
+... )
+yes
+==&gt; yes
+</code></pre>
+<ol start="2">
+<li><strong>Previous result</strong>: Use <code>_</code> to reference the last result:</li>
+</ol>
+<pre><code class="language-io">Io&gt; 100 * 2
+==&gt; 200
+Io&gt; _ + 50
+==&gt; 250
+</code></pre>
+<ol start="3">
+<li><strong>Getting help</strong>: The REPL has built-in documentation:</li>
+</ol>
+<pre><code class="language-io">Io&gt; Lobby slotNames
+==&gt; list(Protos, _, exit, forward, set_)
+
+Io&gt; Number slotNames sort
+==&gt; list(%, *, +, -, /, &lt;, &lt;=, ==, &gt;, &gt;=, abs, acos, asin, atan, between, ceil, cos, ...)
+</code></pre>
+<h2 id="your-first-io-program">
+  Your First Io Program
+  
+  <a class="anchor" href="#your-first-io-program">#</a>
+  
+</h2>
+<p>Let&rsquo;s write the traditional &ldquo;Hello, World!&rdquo; program. Create a file called <code>hello.io</code>:</p>
+<pre><code class="language-io">&quot;Hello, World!&quot; println
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">$ io hello.io
+Hello, World!
+</code></pre>
+<p>That&rsquo;s it. No class definitions, no main function, no boilerplate. Compare with Java:</p>
+<pre><code class="language-java">public class Hello {
+    public static void main(String[] args) {
+        System.out.println(&quot;Hello, World!&quot;);
+    }
+}
+</code></pre>
+<p>Or even Python:</p>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    print(&quot;Hello, World!&quot;)
+</code></pre>
+<p>Io just runs your code.</p>
+<h2 id="understanding-basic-syntax">
+  Understanding Basic Syntax
+  
+  <a class="anchor" href="#understanding-basic-syntax">#</a>
+  
+</h2>
+<p>Io&rsquo;s syntax is minimal. Let&rsquo;s explore the basics:</p>
+<h3 id="messages-and-receivers">
+  Messages and Receivers
+  
+  <a class="anchor" href="#messages-and-receivers">#</a>
+  
+</h3>
+<p>In Io, everything is about sending messages to objects:</p>
+<pre><code class="language-io">&quot;hello&quot; size         // Send 'size' message to &quot;hello&quot;
+==&gt; 5
+
+&quot;hello&quot; at(0)        // Send 'at' message with argument 0
+==&gt; h
+
+&quot;hello&quot; upper        // Send 'upper' message
+==&gt; HELLO
+</code></pre>
+<p>Compare with method calls in Python:</p>
+<pre><code class="language-python">&quot;hello&quot;.upper()      # Python
+</code></pre>
+<pre><code class="language-io">&quot;hello&quot; upper        // Io - parentheses optional for no arguments
+</code></pre>
+<h3 id="arguments">
+  Arguments
+  
+  <a class="anchor" href="#arguments">#</a>
+  
+</h3>
+<p>Messages can have arguments, passed in parentheses:</p>
+<pre><code class="language-io">&quot;hello&quot; at(1)                    // One argument
+==&gt; e
+
+&quot;hello&quot; slice(1, 3)              // Two arguments
+==&gt; el
+
+List append(1, 2, 3)            // Multiple arguments
+==&gt; list(1, 2, 3)
+</code></pre>
+<h3 id="operators-are-messages">
+  Operators are Messages
+  
+  <a class="anchor" href="#operators-are-messages">#</a>
+  
+</h3>
+<p>This is crucial: operators in Io are just messages with special precedence:</p>
+<pre><code class="language-io">2 + 3          // Send message &quot;+&quot; to 2 with argument 3
+2 +(3)         // Exactly the same thing
+2 send(&quot;+&quot;, 3) // Still the same thing!
+</code></pre>
+<p>This uniformity means you can redefine operators:</p>
+<pre><code class="language-io">Number + := method(n, self - n)  // Redefine + to subtract!
+5 + 3
+==&gt; 2
+</code></pre>
+<p>(Don&rsquo;t actually do this in real code!)</p>
+<h2 id="variables-and-assignment">
+  Variables and Assignment
+  
+  <a class="anchor" href="#variables-and-assignment">#</a>
+  
+</h2>
+<p>In Io, variables are just slots on objects. By default, you&rsquo;re working with the <code>Lobby</code> object:</p>
+<pre><code class="language-io">x := 10        // Create slot 'x' on Lobby with value 10
+x println      // Print it
+==&gt; 10
+
+x = 20         // Update existing slot
+x println
+==&gt; 20
+
+y = 30         // Error! Slot doesn't exist
+// Exception: Slot y not found
+</code></pre>
+<p>Note the distinction:</p>
+<ul>
+<li><code>:=</code> creates a new slot</li>
+<li><code>=</code> updates an existing slot</li>
+</ul>
+<p>This prevents accidental variable creation from typos:</p>
+<pre><code class="language-io">counter := 0
+countr = 1     // Error - probably a typo!
+</code></pre>
+<p>Compare with JavaScript&rsquo;s similar issue:</p>
+<pre><code class="language-javascript">let counter = 0;
+countr = 1;    // Creates global variable - probably a bug!
+</code></pre>
+<h2 id="control-flow">
+  Control Flow
+  
+  <a class="anchor" href="#control-flow">#</a>
+  
+</h2>
+<p>Io&rsquo;s control structures are methods, not special syntax:</p>
+<h3 id="if-statements">
+  If Statements
+  
+  <a class="anchor" href="#if-statements">#</a>
+  
+</h3>
+<pre><code class="language-io">if(10 &gt; 5,
+    &quot;Yes&quot; println,
+    &quot;No&quot; println
+)
+// Prints: Yes
+</code></pre>
+<p>Compare with Python:</p>
+<pre><code class="language-python">if 10 &gt; 5:
+    print(&quot;Yes&quot;)
+else:
+    print(&quot;No&quot;)
+</code></pre>
+<p>Since <code>if</code> is a method, you can even look at its implementation:</p>
+<pre><code class="language-io">Io&gt; if
+==&gt; method(...)
+</code></pre>
+<h3 id="loops">
+  Loops
+  
+  <a class="anchor" href="#loops">#</a>
+  
+</h3>
+<pre><code class="language-io">// While loop
+i := 0
+while(i &lt; 5,
+    i println
+    i = i + 1
+)
+
+// For loop
+for(i, 0, 4,
+    i println
+)
+
+// Times loop
+5 times(i,
+    i println
+)
+</code></pre>
+<h2 id="creating-objects">
+  Creating Objects
+  
+  <a class="anchor" href="#creating-objects">#</a>
+  
+</h2>
+<p>Let&rsquo;s create our first custom object:</p>
+<pre><code class="language-io">Person := Object clone
+Person name := &quot;Unknown&quot;
+Person greet := method(
+    (&quot;Hello, I'm &quot; .. name) println
+)
+
+alice := Person clone
+alice name = &quot;Alice&quot;
+alice greet
+// Prints: Hello, I'm Alice
+</code></pre>
+<p>Compare with Python:</p>
+<pre><code class="language-python">class Person:
+    def __init__(self):
+        self.name = &quot;Unknown&quot;
+    
+    def greet(self):
+        print(f&quot;Hello, I'm {self.name}&quot;)
+
+alice = Person()
+alice.name = &quot;Alice&quot;
+alice.greet()
+</code></pre>
+<p>The key difference: Io has no class definition. <code>Person</code> is just an object we&rsquo;re using as a prototype.</p>
+<h2 id="methods">
+  Methods
+  
+  <a class="anchor" href="#methods">#</a>
+  
+</h2>
+<p>Methods in Io are created with the <code>method</code> function:</p>
+<pre><code class="language-io">Calculator := Object clone
+Calculator add := method(a, b, a + b)
+Calculator multiply := method(a, b, a * b)
+
+calc := Calculator clone
+calc add(5, 3) println        // 8
+calc multiply(4, 7) println    // 28
+</code></pre>
+<p>Methods have access to <code>self</code> (the receiver):</p>
+<pre><code class="language-io">Counter := Object clone
+Counter count := 0
+Counter increment := method(
+    count = count + 1
+    self            // Return self for chaining
+)
+
+c := Counter clone
+c increment increment increment
+c count println    // 3
+</code></pre>
+<h2 id="lists-and-iteration">
+  Lists and Iteration
+  
+  <a class="anchor" href="#lists-and-iteration">#</a>
+  
+</h2>
+<p>Lists are fundamental in Io:</p>
+<pre><code class="language-io">numbers := list(1, 2, 3, 4, 5)
+
+// Iteration
+numbers foreach(n,
+    n println
+)
+
+// Map
+squared := numbers map(n, n * n)
+squared println    // list(1, 4, 9, 16, 25)
+
+// Select (filter)
+evens := numbers select(n, n % 2 == 0)
+evens println      // list(2, 4)
+
+// Reduce
+sum := numbers reduce(+)
+sum println        // 15
+</code></pre>
+<p>Compare with Python:</p>
+<pre><code class="language-python">numbers = [1, 2, 3, 4, 5]
+
+# Iteration
+for n in numbers:
+    print(n)
+
+# Map
+squared = [n * n for n in numbers]
+
+# Filter
+evens = [n for n in numbers if n % 2 == 0]
+
+# Reduce
+from functools import reduce
+sum = reduce(lambda a, b: a + b, numbers)
+</code></pre>
+<h2 id="working-with-files">
+  Working with Files
+  
+  <a class="anchor" href="#working-with-files">#</a>
+  
+</h2>
+<p>Reading and writing files is straightforward:</p>
+<pre><code class="language-io">// Write to file
+file := File with(&quot;test.txt&quot;)
+file openForWriting
+file write(&quot;Hello, file!&quot;)
+file close
+
+// Read from file
+file := File with(&quot;test.txt&quot;)
+file openForReading
+contents := file contents
+contents println
+file close
+
+// Or more concisely
+File with(&quot;test.txt&quot;) contents println
+</code></pre>
+<h2 id="a-more-complete-example">
+  A More Complete Example
+  
+  <a class="anchor" href="#a-more-complete-example">#</a>
+  
+</h2>
+<p>Let&rsquo;s build something more substantial—a simple to-do list:</p>
+<pre><code class="language-io">// todo.io - A simple to-do list manager
+
+TodoList := Object clone
+TodoList items := list()
+
+TodoList add := method(task,
+    items append(task)
+    self
+)
+
+TodoList show := method(
+    if(items size == 0,
+        &quot;No tasks!&quot; println,
+        items foreach(i, task,
+            (&quot;  &quot; .. (i + 1) .. &quot;. &quot; .. task) println
+        )
+    )
+    self
+)
+
+TodoList complete := method(index,
+    if(index &gt; 0 and index &lt;= items size,
+        task := items at(index - 1)
+        items removeAt(index - 1)
+        (&quot;Completed: &quot; .. task) println,
+        &quot;Invalid task number&quot; println
+    )
+    self
+)
+
+TodoList save := method(filename,
+    File with(filename) openForWriting write(items asJson) close
+    &quot;Saved!&quot; println
+    self
+)
+
+TodoList load := method(filename,
+    if(File with(filename) exists,
+        items = Yajl parseJson(File with(filename) contents)
+        &quot;Loaded!&quot; println,
+        &quot;File not found&quot; println
+    )
+    self
+)
+
+// Usage
+todo := TodoList clone
+todo add(&quot;Learn Io&quot;) add(&quot;Build something cool&quot;) add(&quot;Share with friends&quot;)
+todo show
+//   1. Learn Io
+//   2. Build something cool  
+//   3. Share with friends
+
+todo complete(1)
+// Completed: Learn Io
+
+todo show
+//   1. Build something cool
+//   2. Share with friends
+</code></pre>
+<h2 id="key-takeaways">
+  Key Takeaways
+  
+  <a class="anchor" href="#key-takeaways">#</a>
+  
+</h2>
+<p>Having written your first Io programs, you&rsquo;ve probably noticed:</p>
+<ol>
+<li>
+<p><strong>Minimal syntax</strong>: No keywords for defining classes, functions, or variables. Everything uses the same message-passing syntax.</p>
+</li>
+<li>
+<p><strong>Immediate feedback</strong>: The REPL makes experimentation effortless.</p>
+</li>
+<li>
+<p><strong>Uniform model</strong>: Whether you&rsquo;re doing arithmetic, defining methods, or creating objects, it&rsquo;s all message passing.</p>
+</li>
+<li>
+<p><strong>Flexibility</strong>: You can modify anything, even built-in types and operators.</p>
+</li>
+<li>
+<p><strong>Simplicity</strong>: Programs are often shorter than their equivalents in other languages.</p>
+</li>
+</ol>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<p>Try these exercises to solidify your understanding:</p>
+<ol>
+<li>
+<p><strong>Number methods</strong>: Add a <code>squared</code> method to <code>Number</code> that returns the square of a number. Test it with <code>5 squared</code>.</p>
+</li>
+<li>
+<p><strong>String reversal</strong>: Create a method on <code>Sequence</code> (Io&rsquo;s string type) called <code>reverse</code> that returns the reversed string.</p>
+</li>
+<li>
+<p><strong>Bank account</strong>: Create a <code>BankAccount</code> object with <code>balance</code>, <code>deposit</code>, and <code>withdraw</code> methods. Include protection against negative balances.</p>
+</li>
+<li>
+<p><strong>FizzBuzz</strong>: Implement FizzBuzz in Io (print numbers 1-100, but &ldquo;Fizz&rdquo; for multiples of 3, &ldquo;Buzz&rdquo; for multiples of 5, &ldquo;FizzBuzz&rdquo; for both).</p>
+</li>
+<li>
+<p><strong>Method chaining</strong>: Create a <code>StringBuilder</code> object that allows chaining: <code>StringBuilder clone add(&quot;Hello&quot;) add(&quot; &quot;) add(&quot;World&quot;) toString</code></p>
+</li>
+</ol>
+<h2 id="whats-different">
+  What&rsquo;s Different?
+  
+  <a class="anchor" href="#whats-different">#</a>
+  
+</h2>
+<p>If you&rsquo;re coming from mainstream languages, here&rsquo;s what might feel strange:</p>
+<ul>
+<li><strong>No compile step</strong>: Your code runs immediately</li>
+<li><strong>No type declarations</strong>: Everything is dynamically typed</li>
+<li><strong>No class keyword</strong>: Objects are created by cloning</li>
+<li><strong>Operators aren&rsquo;t special</strong>: They&rsquo;re just messages</li>
+<li><strong>Everything returns a value</strong>: Even assignments and control structures</li>
+</ul>
+<p>These differences aren&rsquo;t arbitrary—they all flow from Io&rsquo;s core principle of uniform message passing.</p>
+<h2 id="moving-forward">
+  Moving Forward
+  
+  <a class="anchor" href="#moving-forward">#</a>
+  
+</h2>
+<p>You now have enough Io knowledge to explore the deeper concepts. You can:</p>
+<ul>
+<li>Create and manipulate objects</li>
+<li>Define methods</li>
+<li>Use control structures</li>
+<li>Work with collections</li>
+<li>Read and write files</li>
+</ul>
+<p>In the next chapter, we&rsquo;ll dive deep into Io&rsquo;s object model and understand what &ldquo;everything is an object&rdquo; really means.</p>
+<hr>
+<p><em>Next: <a href="03-everything-is-an-object.md">Chapter 3 - Everything is an Object</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/01-introduction/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Introduction" />
+        <span>Introduction</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/03-everything-is-an-object/" class="flex align-center book-icon">
+        <span>Everything is an Object</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Everything is an Object" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

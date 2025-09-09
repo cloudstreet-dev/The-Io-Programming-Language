@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 10: Exceptions
+  
+  #
+  
+
+Error handling is crucial for robust programs. Io provides an exception system that, like everything else in the language, is built on objects and messages. This chapter explores how exceptions work, how to handle errors gracefully, and how to create custom exception types.
+
+  Basic Exception Handling
+  
+  #
+  
+
+Io uses try, catch, and raise for exception handling:
+// Basic try-catch
+try(
+    10 / 0  // Division by zero
+) catch(Exception, e,
+    (&quot;Error: &quot; .. e message) println
+)
+// Error: divide by zero
+
+// Multiple catch blocks
+try(
+    someRiskyOperation()
+) catch(TypeError, e,
+    &quot;Type error occurred&quot; println
+) catch(IOException, e,
+    &quot;IO error occurred&quot; println
+) catch(Exception, e,
+    &quot;Some other error occurred&quot; println
+)
+
+Compare with other languages:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/10-exceptions/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Exceptions">
+  <meta property="og:description" content="Chapter 10: Exceptions # Error handling is crucial for robust programs. Io provides an exception system that, like everything else in the language, is built on objects and messages. This chapter explores how exceptions work, how to handle errors gracefully, and how to create custom exception types.
+Basic Exception Handling # Io uses try, catch, and raise for exception handling:
+// Basic try-catch try( 10 / 0 // Division by zero ) catch(Exception, e, (&#34;Error: &#34; .. e message) println ) // Error: divide by zero // Multiple catch blocks try( someRiskyOperation() ) catch(TypeError, e, &#34;Type error occurred&#34; println ) catch(IOException, e, &#34;IO error occurred&#34; println ) catch(Exception, e, &#34;Some other error occurred&#34; println ) Compare with other languages:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Exceptions | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/10-exceptions/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="active">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Exceptions</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Exceptions</h1>
+    
+    <div class="chapter-number">Chapter 10</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Error handling is crucial for robust programs. Io provides an exception system that, like everything else in the language, is built on objects and messages. This chapter explores how exceptions work, how to handle errors gracefully, and how to create custom exception types.</p>
+<h2 id="basic-exception-handling">
+  Basic Exception Handling
+  
+  <a class="anchor" href="#basic-exception-handling">#</a>
+  
+</h2>
+<p>Io uses <code>try</code>, <code>catch</code>, and <code>raise</code> for exception handling:</p>
+<pre><code class="language-io">// Basic try-catch
+try(
+    10 / 0  // Division by zero
+) catch(Exception, e,
+    (&quot;Error: &quot; .. e message) println
+)
+// Error: divide by zero
+
+// Multiple catch blocks
+try(
+    someRiskyOperation()
+) catch(TypeError, e,
+    &quot;Type error occurred&quot; println
+) catch(IOException, e,
+    &quot;IO error occurred&quot; println
+) catch(Exception, e,
+    &quot;Some other error occurred&quot; println
+)
+</code></pre>
+<p>Compare with other languages:</p>
+<pre><code class="language-python"># Python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(f&quot;Error: {e}&quot;)
+</code></pre>
+<pre><code class="language-java">// Java
+try {
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println(&quot;Error: &quot; + e.getMessage());
+}
+</code></pre>
+<h2 id="raising-exceptions">
+  Raising Exceptions
+  
+  <a class="anchor" href="#raising-exceptions">#</a>
+  
+</h2>
+<pre><code class="language-io">// Raise a simple exception
+Exception raise(&quot;Something went wrong&quot;)
+
+// Raise with more information
+e := Exception clone
+e setMessage(&quot;File not found&quot;)
+e raise
+
+// Conditional raising
+validateAge := method(age,
+    if(age &lt; 0, Exception raise(&quot;Age cannot be negative&quot;))
+    if(age &gt; 150, Exception raise(&quot;Age seems unrealistic&quot;))
+    age
+)
+
+try(
+    validateAge(-5)
+) catch(Exception, e,
+    e message println  // Age cannot be negative
+)
+</code></pre>
+<h2 id="exception-objects">
+  Exception Objects
+  
+  <a class="anchor" href="#exception-objects">#</a>
+  
+</h2>
+<p>Exceptions are just objects:</p>
+<pre><code class="language-io">// Examine exception structure
+e := Exception clone
+e type println           // Exception
+e proto println          // Object_0x...
+
+// Exception slots
+e setMessage(&quot;Test error&quot;)
+e message println        // Test error
+
+// Stack trace
+try(
+    Exception raise(&quot;Test&quot;)
+) catch(Exception, e,
+    e showStack  // Prints full stack trace
+    e coroutine println  // The coroutine where error occurred
+)
+</code></pre>
+<h2 id="creating-custom-exceptions">
+  Creating Custom Exceptions
+  
+  <a class="anchor" href="#creating-custom-exceptions">#</a>
+  
+</h2>
+<pre><code class="language-io">// Define custom exception types
+ValidationError := Exception clone
+ValidationError type := &quot;ValidationError&quot;
+
+NetworkError := Exception clone
+NetworkError type := &quot;NetworkError&quot;
+NetworkError code := nil
+NetworkError setCode := method(c, self code = c; self)
+
+// Use custom exceptions
+validateEmail := method(email,
+    if(email containsSeq(&quot;@&quot;) not,
+        ValidationError clone setMessage(&quot;Invalid email format&quot;) raise
+    )
+    email
+)
+
+fetchData := method(url,
+    // Simulate network error
+    if(Random value &lt; 0.3,
+        NetworkError clone setMessage(&quot;Connection timeout&quot;) setCode(408) raise
+    )
+    &quot;data&quot;
+)
+
+// Handle specific exception types
+try(
+    validateEmail(&quot;badEmail&quot;)
+) catch(ValidationError, e,
+    (&quot;Validation failed: &quot; .. e message) println
+) catch(Exception, e,
+    (&quot;Unexpected error: &quot; .. e message) println
+)
+</code></pre>
+<h2 id="the-finally-block">
+  The finally Block
+  
+  <a class="anchor" href="#the-finally-block">#</a>
+  
+</h2>
+<pre><code class="language-io">// Ensure cleanup with finally
+file := nil
+try(
+    file = File with(&quot;data.txt&quot;) openForReading
+    contents := file contents
+    processData(contents)
+) catch(Exception, e,
+    (&quot;Error reading file: &quot; .. e message) println
+) finally(
+    if(file, file close)
+    &quot;Cleanup complete&quot; println
+)
+
+// finally always executes
+result := try(
+    &quot;Success&quot; println
+    42
+) catch(Exception, e,
+    &quot;Error&quot; println
+    0
+) finally(
+    &quot;Always runs&quot; println
+)
+// Prints: Success, Always runs
+result println  // 42
+</code></pre>
+<h2 id="return-values-and-exceptions">
+  Return Values and Exceptions
+  
+  <a class="anchor" href="#return-values-and-exceptions">#</a>
+  
+</h2>
+<pre><code class="language-io">// try returns a value
+result := try(
+    10 / 2
+) catch(Exception, e,
+    0  // Default value on error
+)
+result println  // 5
+
+// With error
+result := try(
+    10 / 0
+) catch(Exception, e,
+    0  // Default value on error
+)
+result println  // 0
+
+// Pattern: Result or default
+safeDiv := method(a, b,
+    try(a / b) catch(Exception, 0)
+)
+
+safeDiv(10, 2) println  // 5
+safeDiv(10, 0) println  // 0
+</code></pre>
+<h2 id="exception-propagation">
+  Exception Propagation
+  
+  <a class="anchor" href="#exception-propagation">#</a>
+  
+</h2>
+<p>Exceptions bubble up through the call stack:</p>
+<pre><code class="language-io">level3 := method(
+    Exception raise(&quot;Error at level 3&quot;)
+)
+
+level2 := method(
+    &quot;Level 2 start&quot; println
+    level3()
+    &quot;Level 2 end&quot; println  // Never reached
+)
+
+level1 := method(
+    &quot;Level 1 start&quot; println
+    level2()
+    &quot;Level 1 end&quot; println  // Never reached
+)
+
+try(
+    level1()
+) catch(Exception, e,
+    (&quot;Caught at top level: &quot; .. e message) println
+)
+// Level 1 start
+// Level 2 start
+// Caught at top level: Error at level 3
+</code></pre>
+<h2 id="rethrowing-exceptions">
+  Rethrowing Exceptions
+  
+  <a class="anchor" href="#rethrowing-exceptions">#</a>
+  
+</h2>
+<pre><code class="language-io">processFile := method(filename,
+    try(
+        file := File with(filename) openForReading
+        // Process file
+    ) catch(Exception, e,
+        (&quot;Failed to process &quot; .. filename) println
+        e raise  // Rethrow the original exception
+    )
+)
+
+try(
+    processFile(&quot;nonexistent.txt&quot;)
+) catch(Exception, e,
+    &quot;Caught rethrown exception&quot; println
+)
+</code></pre>
+<h2 id="error-recovery-patterns">
+  Error Recovery Patterns
+  
+  <a class="anchor" href="#error-recovery-patterns">#</a>
+  
+</h2>
+<h3 id="retry-pattern">
+  Retry Pattern
+  
+  <a class="anchor" href="#retry-pattern">#</a>
+  
+</h3>
+<pre><code class="language-io">retryOperation := method(operation, maxAttempts,
+    attempts := 0
+    lastError := nil
+    
+    while(attempts &lt; maxAttempts,
+        attempts = attempts + 1
+        
+        e := try(
+            return operation call(attempts)
+        )
+        
+        if(e,
+            lastError = e
+            (&quot;Attempt &quot; .. attempts .. &quot; failed: &quot; .. e message) println
+            if(attempts &lt; maxAttempts, wait(0.5))
+        )
+    )
+    
+    Exception raise(&quot;All &quot; .. maxAttempts .. &quot; attempts failed. Last error: &quot; .. lastError message)
+)
+
+// Usage
+result := retryOperation(
+    block(attempt,
+        if(Random value &lt; 0.7,
+            Exception raise(&quot;Random failure&quot;),
+            &quot;Success on attempt &quot; .. attempt
+        )
+    ),
+    3
+)
+</code></pre>
+<h3 id="circuit-breaker">
+  Circuit Breaker
+  
+  <a class="anchor" href="#circuit-breaker">#</a>
+  
+</h3>
+<pre><code class="language-io">CircuitBreaker := Object clone
+CircuitBreaker init := method(threshold, timeout,
+    self failureCount := 0
+    self threshold := threshold
+    self timeout := timeout
+    self state := &quot;closed&quot;  // closed, open, half-open
+    self lastFailureTime := nil
+    self
+)
+
+CircuitBreaker call := method(operation,
+    if(state == &quot;open&quot;,
+        if(Date now - lastFailureTime &gt; timeout,
+            state = &quot;half-open&quot;
+            &quot;Circuit breaker entering half-open state&quot; println,
+            Exception raise(&quot;Circuit breaker is open&quot;)
+        )
+    )
+    
+    e := try(
+        result := operation call
+        if(state == &quot;half-open&quot;,
+            state = &quot;closed&quot;
+            failureCount = 0
+            &quot;Circuit breaker closed&quot; println
+        )
+        return result
+    )
+    
+    if(e,
+        failureCount = failureCount + 1
+        lastFailureTime = Date now
+        
+        if(failureCount &gt;= threshold,
+            state = &quot;open&quot;
+            &quot;Circuit breaker opened&quot; println
+        )
+        
+        e raise
+    )
+)
+
+// Usage
+breaker := CircuitBreaker clone init(3, 5)
+
+unreliableService := block(
+    if(Random value &lt; 0.8,
+        Exception raise(&quot;Service unavailable&quot;),
+        &quot;Service response&quot;
+    )
+)
+
+5 repeat(
+    try(
+        breaker call(unreliableService) println
+    ) catch(Exception, e,
+        (&quot;Failed: &quot; .. e message) println
+    )
+    wait(1)
+)
+</code></pre>
+<h2 id="assertion-and-validation">
+  Assertion and Validation
+  
+  <a class="anchor" href="#assertion-and-validation">#</a>
+  
+</h2>
+<pre><code class="language-io">// Simple assertion
+assert := method(condition, message,
+    if(condition not,
+        Exception raise(message ifNilEval(&quot;Assertion failed&quot;))
+    )
+)
+
+assert(5 &gt; 3, &quot;Math is broken&quot;)
+// assert(3 &gt; 5, &quot;This will fail&quot;)
+
+// Validation framework
+Validator := Object clone
+Validator rules := list()
+
+Validator addRule := method(rule, message,
+    rules append(list(rule, message))
+    self
+)
+
+Validator validate := method(value,
+    errors := list()
+    
+    rules foreach(rule,
+        if(rule at(0) call(value) not,
+            errors append(rule at(1))
+        )
+    )
+    
+    if(errors size &gt; 0,
+        ValidationError clone setMessage(errors join(&quot;, &quot;)) raise
+    )
+    
+    value
+)
+
+// Usage
+ageValidator := Validator clone \
+    addRule(block(v, v isKindOf(Number)), &quot;Must be a number&quot;) \
+    addRule(block(v, v &gt;= 0), &quot;Must be non-negative&quot;) \
+    addRule(block(v, v &lt;= 150), &quot;Must be realistic&quot;)
+
+try(
+    ageValidator validate(25) println  // 25
+    ageValidator validate(-5)  // Throws
+) catch(ValidationError, e,
+    e message println  // Must be non-negative
+)
+</code></pre>
+<h2 id="exception-context-and-debugging">
+  Exception Context and Debugging
+  
+  <a class="anchor" href="#exception-context-and-debugging">#</a>
+  
+</h2>
+<pre><code class="language-io">// Enhanced exception with context
+ContextualException := Exception clone
+ContextualException context := Map clone
+
+ContextualException addContext := method(key, value,
+    context atPut(key, value)
+    self
+)
+
+ContextualException describe := method(
+    result := message .. &quot;\nContext:\n&quot;
+    context foreach(key, value,
+        result = result .. &quot;  &quot; .. key .. &quot;: &quot; .. value .. &quot;\n&quot;
+    )
+    result
+)
+
+// Usage
+processUser := method(userData,
+    if(userData at(&quot;age&quot;) &lt; 18,
+        ContextualException clone \
+            setMessage(&quot;User too young&quot;) \
+            addContext(&quot;userId&quot;, userData at(&quot;id&quot;)) \
+            addContext(&quot;age&quot;, userData at(&quot;age&quot;)) \
+            addContext(&quot;timestamp&quot;, Date now) \
+            raise
+    )
+)
+
+try(
+    processUser(Map with(&quot;id&quot;, 123, &quot;age&quot;, 16))
+) catch(ContextualException, e,
+    e describe println
+)
+</code></pre>
+<h2 id="resource-management">
+  Resource Management
+  
+  <a class="anchor" href="#resource-management">#</a>
+  
+</h2>
+<pre><code class="language-io">// RAII-style resource management
+withResource := method(resourceCreator, resourceUser,
+    resource := nil
+    try(
+        resource = resourceCreator call
+        resourceUser call(resource)
+    ) finally(
+        if(resource and resource hasSlot(&quot;close&quot;),
+            resource close
+        )
+    )
+)
+
+// Usage
+withResource(
+    block(File with(&quot;test.txt&quot;) openForReading),
+    block(file,
+        file contents println
+    )
+)
+
+// Database connection example
+withConnection := method(dbUrl, operation,
+    conn := nil
+    try(
+        conn = Database connect(dbUrl)
+        conn beginTransaction
+        result := operation call(conn)
+        conn commit
+        result
+    ) catch(Exception, e,
+        if(conn, conn rollback)
+        e raise
+    ) finally(
+        if(conn, conn close)
+    )
+)
+</code></pre>
+<h2 id="global-exception-handling">
+  Global Exception Handling
+  
+  <a class="anchor" href="#global-exception-handling">#</a>
+  
+</h2>
+<pre><code class="language-io">// Install global exception handler
+System handleException := method(e,
+    logFile := File with(&quot;errors.log&quot;) openForAppending
+    logFile write(Date now asString .. &quot; - &quot; .. e message .. &quot;\n&quot;)
+    logFile close
+    
+    // Original behavior
+    e showStack
+    System exit(1)
+)
+
+// Uncaught exceptions now get logged
+// Exception raise(&quot;Uncaught error&quot;)
+</code></pre>
+<h2 id="testing-with-exceptions">
+  Testing with Exceptions
+  
+  <a class="anchor" href="#testing-with-exceptions">#</a>
+  
+</h2>
+<pre><code class="language-io">// Test framework with exception support
+Test := Object clone
+Test assertRaises := method(exceptionType, block,
+    raised := false
+    try(
+        block call
+    ) catch(Exception, e,
+        if(e type == exceptionType type,
+            raised = true,
+            Exception raise(&quot;Wrong exception type: expected &quot; .. exceptionType type .. &quot;, got &quot; .. e type)
+        )
+    )
+    
+    if(raised not,
+        Exception raise(&quot;Expected exception &quot; .. exceptionType type .. &quot; was not raised&quot;)
+    )
+)
+
+// Usage
+Test assertRaises(ValidationError, block(
+    validateEmail(&quot;invalid&quot;)
+))
+&quot;Test passed&quot; println
+</code></pre>
+<h2 id="performance-considerations">
+  Performance Considerations
+  
+  <a class="anchor" href="#performance-considerations">#</a>
+  
+</h2>
+<pre><code class="language-io">// Exceptions have overhead
+benchmark := method(name, iterations, block,
+    start := Date now
+    iterations repeat(block)
+    elapsed := Date now - start
+    (name .. &quot;: &quot; .. elapsed) println
+)
+
+// Without exceptions
+benchmark(&quot;No exceptions&quot;, 100000, block(
+    if(Random value &lt; 0.1, nil, &quot;success&quot;)
+))
+
+// With exceptions
+benchmark(&quot;With exceptions&quot;, 100000, block(
+    try(
+        if(Random value &lt; 0.1, Exception raise(&quot;error&quot;))
+        &quot;success&quot;
+    ) catch(Exception, nil)
+))
+
+// Exceptions are slower - use for exceptional cases, not control flow
+</code></pre>
+<h2 id="common-pitfalls">
+  Common Pitfalls
+  
+  <a class="anchor" href="#common-pitfalls">#</a>
+  
+</h2>
+<h3 id="catching-too-broadly">
+  Catching Too Broadly
+  
+  <a class="anchor" href="#catching-too-broadly">#</a>
+  
+</h3>
+<pre><code class="language-io">// BAD: Catches everything, hiding bugs
+try(
+    complexOperation()
+) catch(Exception, e,
+    // Silently ignore all errors
+)
+
+// GOOD: Catch specific exceptions
+try(
+    complexOperation()
+) catch(NetworkError, e,
+    handleNetworkError(e)
+) catch(ValidationError, e,
+    handleValidationError(e)
+)
+</code></pre>
+<h3 id="resource-leaks">
+  Resource Leaks
+  
+  <a class="anchor" href="#resource-leaks">#</a>
+  
+</h3>
+<pre><code class="language-io">// BAD: File not closed on error
+file := File with(&quot;data.txt&quot;) openForReading
+processFile(file)  // If this throws, file never closes
+file close
+
+// GOOD: Use finally
+file := nil
+try(
+    file = File with(&quot;data.txt&quot;) openForReading
+    processFile(file)
+) finally(
+    if(file, file close)
+)
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Result Type</strong>: Implement a Result type that can be either Ok(value) or Error(error), similar to Rust.</p>
+</li>
+<li>
+<p><strong>Retry with Exponential Backoff</strong>: Create a retry mechanism with exponential backoff and jitter.</p>
+</li>
+<li>
+<p><strong>Exception Logger</strong>: Build a logging system that captures and categorizes exceptions.</p>
+</li>
+<li>
+<p><strong>Validation Chain</strong>: Create a validation system that accumulates all errors instead of failing on first.</p>
+</li>
+<li>
+<p><strong>Async Exception Handling</strong>: Implement exception handling for coroutine-based async operations.</p>
+</li>
+</ol>
+<h2 id="real-world-example-http-client-with-error-handling">
+  Real-World Example: HTTP Client with Error Handling
+  
+  <a class="anchor" href="#real-world-example-http-client-with-error-handling">#</a>
+  
+</h2>
+<pre><code class="language-io">HttpClient := Object clone
+HttpClient timeoutMs := 5000
+HttpClient maxRetries := 3
+
+HttpError := Exception clone
+HttpError statusCode := nil
+
+HttpClient get := method(url,
+    retryCount := 0
+    
+    loop(
+        try(
+            response := self doRequest(url)
+            
+            if(response statusCode &gt;= 200 and response statusCode &lt; 300,
+                return response body
+            )
+            
+            if(response statusCode &gt;= 400 and response statusCode &lt; 500,
+                // Client error - don't retry
+                HttpError clone \
+                    setMessage(&quot;HTTP &quot; .. response statusCode) \
+                    setSlot(&quot;statusCode&quot;, response statusCode) \
+                    raise
+            )
+            
+            // Server error - might retry
+            if(response statusCode &gt;= 500,
+                error := HttpError clone \
+                    setMessage(&quot;Server error: &quot; .. response statusCode) \
+                    setSlot(&quot;statusCode&quot;, response statusCode)
+                
+                if(retryCount &lt; maxRetries,
+                    retryCount = retryCount + 1
+                    delay := (2 pow(retryCount)) * 100
+                    (&quot;Retry &quot; .. retryCount .. &quot; after &quot; .. delay .. &quot;ms&quot;) println
+                    wait(delay / 1000)
+                    continue,
+                    error raise
+                )
+            )
+            
+        ) catch(NetworkError, e,
+            if(retryCount &lt; maxRetries,
+                retryCount = retryCount + 1
+                (&quot;Network error, retry &quot; .. retryCount) println
+                wait(1)
+                continue,
+                e raise
+            )
+        )
+    )
+)
+
+// Usage with comprehensive error handling
+fetchUserData := method(userId,
+    try(
+        data := HttpClient get(&quot;https://api.example.com/users/&quot; .. userId)
+        JSON parse(data)
+    ) catch(HttpError, e,
+        if(e statusCode == 404,
+            nil,  // User not found
+            if(e statusCode == 401,
+                Exception raise(&quot;Authentication required&quot;),
+                Exception raise(&quot;HTTP error: &quot; .. e statusCode)
+            )
+        )
+    ) catch(NetworkError, e,
+        Exception raise(&quot;Network unavailable&quot;)
+    ) catch(Exception, e,
+        Exception raise(&quot;Unexpected error: &quot; .. e message)
+    )
+)
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Io&rsquo;s exception system demonstrates the language&rsquo;s consistency: exceptions are objects, throwing is a message, and catching is a method. This uniformity makes the system easy to understand while remaining powerful enough for sophisticated error handling.</p>
+<p>The key to effective exception handling in Io is understanding when to use exceptions (for exceptional circumstances) versus return values (for expected conditions), and ensuring proper resource cleanup with <code>finally</code> blocks. Custom exception types and contextual information make debugging easier, while patterns like retry logic and circuit breakers add robustness to applications.</p>
+<hr>
+<p><em>Next: <a href="11-metaprogramming.md">Chapter 11 - Metaprogramming</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/09-blocks-and-closures/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Blocks and Closures" />
+        <span>Blocks and Closures</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/11-metaprogramming/" class="flex align-center book-icon">
+        <span>Metaprogramming</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Metaprogramming" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

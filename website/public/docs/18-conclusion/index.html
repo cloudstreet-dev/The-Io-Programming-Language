@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 18: Conclusion - The Io Way
+  
+  #
+  
+
+We&rsquo;ve reached the end of our journey through the Io programming language. From its minimal syntax to its powerful metaprogramming capabilities, from prototype-based objects to concurrent actors, we&rsquo;ve explored a language that challenges conventional programming wisdom. This final chapter reflects on what we&rsquo;ve learned, when to use Io, and what it teaches us about programming itself.
+
+  What Makes Io Special
+  
+  #
+  
+
+After eighteen chapters, we can distill Io&rsquo;s essence to a few key principles:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/18-conclusion/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Conclusion">
+  <meta property="og:description" content="Chapter 18: Conclusion - The Io Way # We’ve reached the end of our journey through the Io programming language. From its minimal syntax to its powerful metaprogramming capabilities, from prototype-based objects to concurrent actors, we’ve explored a language that challenges conventional programming wisdom. This final chapter reflects on what we’ve learned, when to use Io, and what it teaches us about programming itself.
+What Makes Io Special # After eighteen chapters, we can distill Io’s essence to a few key principles:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Conclusion | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/18-conclusion/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="active">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Conclusion</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Conclusion</h1>
+    
+    <div class="chapter-number">Chapter 18</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>We&rsquo;ve reached the end of our journey through the Io programming language. From its minimal syntax to its powerful metaprogramming capabilities, from prototype-based objects to concurrent actors, we&rsquo;ve explored a language that challenges conventional programming wisdom. This final chapter reflects on what we&rsquo;ve learned, when to use Io, and what it teaches us about programming itself.</p>
+<h2 id="what-makes-io-special">
+  What Makes Io Special
+  
+  <a class="anchor" href="#what-makes-io-special">#</a>
+  
+</h2>
+<p>After eighteen chapters, we can distill Io&rsquo;s essence to a few key principles:</p>
+<h3 id="radical-simplicity">
+  Radical Simplicity
+  
+  <a class="anchor" href="#radical-simplicity">#</a>
+  
+</h3>
+<p>Io achieves remarkable expressiveness with minimal concepts:</p>
+<ul>
+<li>Everything is an object</li>
+<li>All computation is message passing</li>
+<li>Objects clone objects (no classes)</li>
+<li>Code is data (messages are objects)</li>
+</ul>
+<p>Compare Io&rsquo;s ~10,000 lines of C to Python&rsquo;s ~500,000 or Java&rsquo;s millions. This isn&rsquo;t just about code size—it&rsquo;s about conceptual simplicity. You can understand all of Io, not just use it.</p>
+<h3 id="uniformity">
+  Uniformity
+  
+  <a class="anchor" href="#uniformity">#</a>
+  
+</h3>
+<p>Where other languages have special cases, Io has objects:</p>
+<pre><code class="language-io">// Numbers? Objects.
+5 squared := method(self * self)
+
+// Booleans? Objects.
+true celebrate := method(&quot;Yes!&quot; println)
+
+// Control structures? Objects receiving messages.
+if := method(condition, trueBlock, falseBlock, ...)
+
+// Operators? Messages.
+Number + := method(n, ...)
+
+// Even nil? An object.
+nil comfort := method(&quot;It's okay to be nothing&quot; println)
+</code></pre>
+<p>This uniformity isn&rsquo;t just elegant—it&rsquo;s powerful. When everything follows the same rules, there&rsquo;s less to remember and more you can do.</p>
+<h3 id="openness">
+  Openness
+  
+  <a class="anchor" href="#openness">#</a>
+  
+</h3>
+<p>Most languages protect you from yourself. Io trusts you completely:</p>
+<pre><code class="language-io">// Modify fundamental types
+String shout := method(self upper .. &quot;!!!&quot;)
+
+// Change how the language works
+Object if := method(...)  // Redefine conditionals
+
+// Inspect everything
+anyObject slotNames  // See all slots
+anyMethod code       // See implementation
+</code></pre>
+<p>This openness enables profound metaprogramming but requires responsibility.</p>
+<h2 id="when-to-use-io">
+  When to Use Io
+  
+  <a class="anchor" href="#when-to-use-io">#</a>
+  
+</h2>
+<p>Io excels in specific contexts:</p>
+<h3 id="rapid-prototyping">
+  Rapid Prototyping
+  
+  <a class="anchor" href="#rapid-prototyping">#</a>
+  
+</h3>
+<p>When you need to explore ideas quickly:</p>
+<pre><code class="language-io">// From idea to working code in minutes
+Api := Object clone
+Api route := method(path, handler, ...)
+Api get(&quot;/users&quot;, block(...))
+Api start(8080)
+</code></pre>
+<h3 id="domain-specific-languages">
+  Domain-Specific Languages
+  
+  <a class="anchor" href="#domain-specific-languages">#</a>
+  
+</h3>
+<p>When you need expressive, domain-appropriate interfaces:</p>
+<pre><code class="language-io">recipe &quot;Pasta&quot; serves(4) {
+    boil water in(&quot;large pot&quot;)
+    add pasta after(&quot;water boils&quot;)
+    cook for(8) minutes
+    drain
+    serve with(&quot;marinara sauce&quot;)
+}
+</code></pre>
+<h3 id="learning-and-teaching">
+  Learning and Teaching
+  
+  <a class="anchor" href="#learning-and-teaching">#</a>
+  
+</h3>
+<p>When you want to understand programming concepts deeply:</p>
+<ul>
+<li>How objects really work</li>
+<li>What message passing means</li>
+<li>How languages are implemented</li>
+<li>Why certain design choices matter</li>
+</ul>
+<h3 id="embedded-scripting">
+  Embedded Scripting
+  
+  <a class="anchor" href="#embedded-scripting">#</a>
+  
+</h3>
+<p>When you need a lightweight, embeddable language:</p>
+<ul>
+<li>Game scripting</li>
+<li>Application automation</li>
+<li>Configuration languages</li>
+<li>Plugin systems</li>
+</ul>
+<h2 id="when-not-to-use-io">
+  When Not to Use Io
+  
+  <a class="anchor" href="#when-not-to-use-io">#</a>
+  
+</h2>
+<p>Io has limitations to consider:</p>
+<h3 id="performance-critical-systems">
+  Performance-Critical Systems
+  
+  <a class="anchor" href="#performance-critical-systems">#</a>
+  
+</h3>
+<pre><code class="language-io">// Io: Elegant but slower
+numbers map(x, x * x) select(x, x &gt; 100)
+
+// C: Verbose but fast
+for(int i = 0; i &lt; n; i++) {
+    squared[i] = numbers[i] * numbers[i];
+    if(squared[i] &gt; 100) ...
+}
+</code></pre>
+<p>Message passing has overhead. For number crunching, system programming, or real-time systems, choose C, Rust, or C++.</p>
+<h3 id="large-team-projects">
+  Large Team Projects
+  
+  <a class="anchor" href="#large-team-projects">#</a>
+  
+</h3>
+<p>Io lacks:</p>
+<ul>
+<li>Static type checking</li>
+<li>Comprehensive IDE support</li>
+<li>Large ecosystem of libraries</li>
+<li>Extensive documentation</li>
+<li>Big community for support</li>
+</ul>
+<p>For enterprise applications with many developers, Java, C#, or TypeScript offer better tooling and guardrails.</p>
+<h3 id="production-web-services">
+  Production Web Services
+  
+  <a class="anchor" href="#production-web-services">#</a>
+  
+</h3>
+<p>While you can build web services in Io, you probably shouldn&rsquo;t for production:</p>
+<ul>
+<li>Limited web frameworks</li>
+<li>No battle-tested libraries</li>
+<li>Small community for security issues</li>
+<li>Few deployment options</li>
+</ul>
+<p>Use Python, Ruby, JavaScript, or Go instead.</p>
+<h2 id="lessons-for-other-languages">
+  Lessons for Other Languages
+  
+  <a class="anchor" href="#lessons-for-other-languages">#</a>
+  
+</h2>
+<p>Even if you never use Io professionally, it teaches valuable lessons:</p>
+<h3 id="question-everything">
+  Question Everything
+  
+  <a class="anchor" href="#question-everything">#</a>
+  
+</h3>
+<p>Why do we need classes? Io shows prototypes work fine.
+Why special syntax for control flow? Io uses methods.
+Why distinguish data and code? Io treats both as messages.</p>
+<p>These aren&rsquo;t necessarily better—but questioning assumptions makes you a better programmer.</p>
+<h3 id="simplicity-has-power">
+  Simplicity Has Power
+  
+  <a class="anchor" href="#simplicity-has-power">#</a>
+  
+</h3>
+<p>Io shows how much you can achieve with few concepts. This influences how you design:</p>
+<ul>
+<li>APIs with consistent interfaces</li>
+<li>Systems with uniform principles</li>
+<li>Code that does one thing well</li>
+</ul>
+<h3 id="metaprogramming-isnt-magic">
+  Metaprogramming Isn&rsquo;t Magic
+  
+  <a class="anchor" href="#metaprogramming-isnt-magic">#</a>
+  
+</h3>
+<p>In Io, metaprogramming is just programming:</p>
+<pre><code class="language-io">// Not magic, just objects
+method := block(x, x * 2)
+method code println       // x *(2)
+method setCode(&quot;x + 2&quot;)  // Changed!
+</code></pre>
+<p>This demystifies metaprogramming in any language.</p>
+<h3 id="everything-has-trade-offs">
+  Everything Has Trade-offs
+  
+  <a class="anchor" href="#everything-has-trade-offs">#</a>
+  
+</h3>
+<p>Io&rsquo;s choices have consequences:</p>
+<ul>
+<li>Simplicity vs Performance</li>
+<li>Flexibility vs Safety</li>
+<li>Power vs Complexity</li>
+<li>Expressiveness vs Familiarity</li>
+</ul>
+<p>Understanding these trade-offs helps you choose the right tool for each job.</p>
+<h2 id="ios-influence">
+  Io&rsquo;s Influence
+  
+  <a class="anchor" href="#ios-influence">#</a>
+  
+</h2>
+<p>Despite its small community, Io has influenced programming:</p>
+<h3 id="javascripts-prototype-pattern">
+  JavaScript&rsquo;s Prototype Pattern
+  
+  <a class="anchor" href="#javascripts-prototype-pattern">#</a>
+  
+</h3>
+<pre><code class="language-javascript">// JavaScript embracing prototypes (pre-ES6)
+var animal = {
+    speak: function() { console.log(&quot;...&quot;); }
+};
+
+var dog = Object.create(animal);
+dog.bark = function() { console.log(&quot;Woof!&quot;); };
+</code></pre>
+<h3 id="rubys-method-missing">
+  Ruby&rsquo;s Method Missing
+  
+  <a class="anchor" href="#rubys-method-missing">#</a>
+  
+</h3>
+<pre><code class="language-ruby">class DynamicObject
+  def method_missing(name, *args)
+    if name.to_s.start_with?(&quot;get_&quot;)
+      # Handle dynamically
+    end
+  end
+end
+</code></pre>
+<h3 id="minimalist-language-design">
+  Minimalist Language Design
+  
+  <a class="anchor" href="#minimalist-language-design">#</a>
+  
+</h3>
+<p>Languages like Lua and Factor share Io&rsquo;s minimalist philosophy, proving that small can be powerful.</p>
+<h2 id="the-future-of-io">
+  The Future of Io
+  
+  <a class="anchor" href="#the-future-of-io">#</a>
+  
+</h2>
+<p>Io may never become mainstream, and that&rsquo;s okay. Its value isn&rsquo;t in market share but in:</p>
+<h3 id="educational-impact">
+  Educational Impact
+  
+  <a class="anchor" href="#educational-impact">#</a>
+  
+</h3>
+<p>Io remains excellent for teaching:</p>
+<ul>
+<li>Prototype-based OOP</li>
+<li>Message passing</li>
+<li>Language implementation</li>
+<li>Metaprogramming concepts</li>
+</ul>
+<h3 id="research-platform">
+  Research Platform
+  
+  <a class="anchor" href="#research-platform">#</a>
+  
+</h3>
+<p>Io&rsquo;s simplicity makes it ideal for experimenting with:</p>
+<ul>
+<li>New concurrency models</li>
+<li>Novel object systems</li>
+<li>DSL techniques</li>
+<li>Language features</li>
+</ul>
+<h3 id="inspiration">
+  Inspiration
+  
+  <a class="anchor" href="#inspiration">#</a>
+  
+</h3>
+<p>Future language designers study Io to understand:</p>
+<ul>
+<li>How simple a language can be</li>
+<li>Alternative object models</li>
+<li>The power of uniformity</li>
+<li>Trade-offs in language design</li>
+</ul>
+<h2 id="personal-reflection">
+  Personal Reflection
+  
+  <a class="anchor" href="#personal-reflection">#</a>
+  
+</h2>
+<p>Learning Io changes how you think about programming. You realize that many &ldquo;fundamental&rdquo; concepts are just choices. Classes aren&rsquo;t necessary. Syntax isn&rsquo;t sacred. Types aren&rsquo;t mandatory. These aren&rsquo;t revelations that everything should be like Io—rather, they free you to think more broadly about problems and solutions.</p>
+<p>When you return to your daily programming language—be it Python, JavaScript, Java, or something else—you bring new perspectives:</p>
+<ul>
+<li>You see the prototype pattern hiding in JavaScript&rsquo;s classes</li>
+<li>You recognize message passing in Ruby&rsquo;s method calls</li>
+<li>You understand metaprogramming isn&rsquo;t mysterious</li>
+<li>You appreciate both the safety of types and the freedom of their absence</li>
+</ul>
+<h2 id="a-final-example">
+  A Final Example
+  
+  <a class="anchor" href="#a-final-example">#</a>
+  
+</h2>
+<p>Let&rsquo;s end with a small program that captures Io&rsquo;s spirit:</p>
+<pre><code class="language-io">// The Io Philosophy in Code
+Philosophy := Object clone
+
+Philosophy simplicity := &quot;Everything is an object&quot;
+Philosophy uniformity := &quot;Everything is a message&quot;
+Philosophy openness := &quot;Everything is modifiable&quot;
+
+Philosophy embrace := method(concept,
+    (&quot;Embracing &quot; .. concept .. &quot;...&quot;) println
+    self setSlot(concept, true)
+    self
+)
+
+Philosophy question := method(assumption,
+    (&quot;Why must &quot; .. assumption .. &quot;?&quot;) println
+    (&quot;Perhaps there's another way...&quot;) println
+)
+
+Philosophy learn := method(
+    lessons := list(
+        &quot;Simplicity enables understanding&quot;,
+        &quot;Uniformity reduces cognitive load&quot;,
+        &quot;Openness enables exploration&quot;,
+        &quot;Constraints inspire creativity&quot;,
+        &quot;Every choice has consequences&quot;
+    )
+    
+    lessons foreach(lesson,
+        (&quot;  • &quot; .. lesson) println
+        wait(0.5)  // Pause to reflect
+    )
+)
+
+// The journey
+journey := Philosophy clone
+
+journey embrace(&quot;simplicity&quot;) \
+        embrace(&quot;uniformity&quot;) \
+        embrace(&quot;openness&quot;)
+
+journey question(&quot;languages be complex&quot;)
+journey question(&quot;we have classes&quot;)
+journey question(&quot;syntax be fixed&quot;)
+
+&quot;Lessons learned:&quot; println
+journey learn
+
+&quot;Thank you for exploring Io.&quot; println
+&quot;May it inspire your programming journey.&quot; println
+</code></pre>
+<h2 id="parting-thoughts">
+  Parting Thoughts
+  
+  <a class="anchor" href="#parting-thoughts">#</a>
+  
+</h2>
+<p>Io isn&rsquo;t trying to replace your favorite language. It&rsquo;s not competing for market dominance. It&rsquo;s not the solution to all programming problems.</p>
+<p>What Io offers is perspective—a radically different view of what programming can be. It shows that our familiar concepts aren&rsquo;t immutable laws but design choices. It demonstrates that simplicity and power aren&rsquo;t opposites. It proves that small languages can have big ideas.</p>
+<p>Whether you use Io for a weekend experiment, a personal project, or just intellectual exploration, it will change how you think about programming. You&rsquo;ll question more, assume less, and see possibilities where you once saw constraints.</p>
+<p>That&rsquo;s the real gift of Io: not the language itself, but the mindset it instills. A mindset that questions, explores, and imagines. A mindset that sees programming not as applying fixed rules but as creatively solving problems with the tools at hand—or creating new tools when needed.</p>
+<h2 id="thank-you">
+  Thank You
+  
+  <a class="anchor" href="#thank-you">#</a>
+  
+</h2>
+<p>Thank you for joining me on this exploration of Io. I hope you&rsquo;ve found it as enlightening to read as I found it to write. The language may be small, but the ideas are vast.</p>
+<p>Now go forth and experiment. Clone some objects. Send some messages. Build something unusual. Question something fundamental. And remember: in Io, as in programming, as in life—everything is possible when you embrace simplicity, seek uniformity, and remain open to new ideas.</p>
+<p>Happy coding, and may your messages always find their slots.</p>
+<hr>
+<p><em>End of Book</em></p>
+<h2 id="appendices">
+  Appendices
+  
+  <a class="anchor" href="#appendices">#</a>
+  
+</h2>
+<p>For continued learning:</p>
+<ul>
+<li><strong>Appendix A</strong>: Io Language Reference</li>
+<li><strong>Appendix B</strong>: Standard Library Documentation</li>
+<li><strong>Appendix C</strong>: Building Io from Source</li>
+<li><strong>Appendix D</strong>: Creating C Addons</li>
+<li><strong>Appendix E</strong>: Io Resources and Community</li>
+</ul>
+<p>Visit <a href="https://iolanguage.org">https://iolanguage.org</a> for more information.</p>
+<p><em>&ldquo;Simplicity is the ultimate sophistication.&rdquo;</em> — Leonardo da Vinci</p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/17-ecosystem-and-libraries/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Ecosystem and Libraries" />
+        <span>Ecosystem and Libraries</span>
+      </a>
+    
+    </span>
+    <span>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 3: Everything is an Object
+  
+  #
+  
+
+&ldquo;Everything is an object&rdquo; is a claim made by many languages. Ruby says it. Smalltalk says it. Even Java claims it (though primitives like int and boolean break the rule). But what does it really mean? And how thoroughly does Io embrace this principle?
+In this chapter, we&rsquo;ll explore how Io takes &ldquo;everything is an object&rdquo; to its logical extreme, and what this means for how you write and think about programs.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/03-everything-is-an-object/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Everything is an Object">
+  <meta property="og:description" content="Chapter 3: Everything is an Object # “Everything is an object” is a claim made by many languages. Ruby says it. Smalltalk says it. Even Java claims it (though primitives like int and boolean break the rule). But what does it really mean? And how thoroughly does Io embrace this principle?
+In this chapter, we’ll explore how Io takes “everything is an object” to its logical extreme, and what this means for how you write and think about programs.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Everything is an Object | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/03-everything-is-an-object/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="active">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Everything is an Object</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Everything is an Object</h1>
+    
+    <div class="chapter-number">Chapter 3</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>&ldquo;Everything is an object&rdquo; is a claim made by many languages. Ruby says it. Smalltalk says it. Even Java claims it (though primitives like <code>int</code> and <code>boolean</code> break the rule). But what does it really mean? And how thoroughly does Io embrace this principle?</p>
+<p>In this chapter, we&rsquo;ll explore how Io takes &ldquo;everything is an object&rdquo; to its logical extreme, and what this means for how you write and think about programs.</p>
+<h2 id="what-is-an-object">
+  What Is an Object?
+  
+  <a class="anchor" href="#what-is-an-object">#</a>
+  
+</h2>
+<p>Before we dive into Io&rsquo;s object model, let&rsquo;s establish what we mean by &ldquo;object.&rdquo; In most object-oriented languages, an object is:</p>
+<ol>
+<li>A bundle of state (data/attributes/fields)</li>
+<li>A set of behaviors (methods/functions)</li>
+<li>An identity (distinct from other objects)</li>
+</ol>
+<p>In Java, you might have:</p>
+<pre><code class="language-java">class Dog {
+    String name;        // state
+    int age;           // state
+    
+    void bark() {      // behavior
+        System.out.println(&quot;Woof!&quot;);
+    }
+}
+
+Dog fido = new Dog();  // identity (fido is distinct from other Dogs)
+</code></pre>
+<p>But Java immediately breaks its own rules:</p>
+<pre><code class="language-java">int x = 5;          // Not an object!
+x.toString();       // Error: int cannot be dereferenced
+Integer y = 5;      // Now it's an object (boxed)
+y.toString();       // &quot;5&quot;
+</code></pre>
+<p>Let&rsquo;s see how Io handles this.</p>
+<h2 id="numbers-are-objects">
+  Numbers are Objects
+  
+  <a class="anchor" href="#numbers-are-objects">#</a>
+  
+</h2>
+<p>In Io, numbers aren&rsquo;t primitives—they&rsquo;re full objects:</p>
+<pre><code class="language-io">5 type println           // Number
+5 slotNames println      // list(%, *, +, -, /, &lt;, ...)
+
+// Numbers have methods
+5 abs println            // 5
+-5 abs println           // 5
+5 sqrt println           // 2.236...
+5 sin println            // -0.958...
+
+// You can add methods to numbers!
+Number double := method(self * 2)
+5 double println         // 10
+
+// You can even inspect a number's prototype chain
+5 proto println          // Number_0x...
+5 proto proto println    // Object_0x...
+</code></pre>
+<p>Compare this to Python, which claims everything is an object:</p>
+<pre><code class="language-python">x = 5
+print(type(x))           # &lt;class 'int'&gt;
+print(dir(x))            # ['__abs__', '__add__', ...]
+
+# But you can't add methods to numbers
+x.double = lambda: x * 2  # AttributeError!
+</code></pre>
+<p>Python&rsquo;s numbers are objects, but they&rsquo;re <em>immutable</em> objects with a <em>fixed</em> set of methods. Io&rsquo;s numbers are fully modifiable objects.</p>
+<h2 id="strings-are-objects-and-mutable">
+  Strings are Objects (and Mutable!)
+  
+  <a class="anchor" href="#strings-are-objects-and-mutable">#</a>
+  
+</h2>
+<pre><code class="language-io">text := &quot;hello&quot;
+text type println        // Sequence
+
+// Strings have methods
+text size println        // 5
+text upper println       // HELLO
+text reverse println     // olleh
+
+// But here's where it gets interesting - strings are MUTABLE
+text atPut(0, 72)       // ASCII for 'H'
+text println            // Hello
+
+// You can add methods to strings
+Sequence shout := method(self upper .. &quot;!!!&quot;)
+&quot;hello&quot; shout println   // HELLO!!!
+</code></pre>
+<p>This mutability might shock programmers from languages where strings are immutable:</p>
+<pre><code class="language-python"># Python - strings are immutable
+text = &quot;hello&quot;
+text[0] = 'H'  # TypeError: 'str' object does not support item assignment
+
+# Java - strings are immutable
+String text = &quot;hello&quot;;
+text.charAt(0) = 'H';  // Error: cannot assign a value
+</code></pre>
+<h2 id="booleans-are-objects">
+  Booleans are Objects
+  
+  <a class="anchor" href="#booleans-are-objects">#</a>
+  
+</h2>
+<p>Even <code>true</code> and <code>false</code> are objects:</p>
+<pre><code class="language-io">true type println        // true
+false type println       // false
+
+// They have methods
+true and(false) println  // false
+true or(false) println   // true
+true not println         // false
+
+// The actual objects
+true println             // true
+true proto println       // Object_0x...
+
+// You can even add methods to booleans!
+true celebrate := method(&quot;Yay!&quot; println)
+(5 &gt; 3) celebrate       // Yay!
+</code></pre>
+<p>This is different from most languages where booleans are either primitives or special immutable objects.</p>
+<h2 id="nil-is-an-object">
+  nil is an Object
+  
+  <a class="anchor" href="#nil-is-an-object">#</a>
+  
+</h2>
+<p>Even nothingness is an object in Io:</p>
+<pre><code class="language-io">nil type println         // Object
+nil slotNames println    // list(type, ...)
+
+// nil has methods!
+nil isNil println        // true
+nil not println          // true
+
+// You can add methods to nil
+nil greet := method(&quot;Hello from nothing!&quot; println)
+x := nil
+x greet                  // Hello from nothing!
+</code></pre>
+<p>Compare with JavaScript&rsquo;s confusing null:</p>
+<pre><code class="language-javascript">typeof null          // &quot;object&quot; (but it's not really)
+null.toString()      // TypeError: Cannot read property 'toString' of null
+</code></pre>
+<h2 id="methods-are-objects">
+  Methods are Objects
+  
+  <a class="anchor" href="#methods-are-objects">#</a>
+  
+</h2>
+<p>This is where things get really interesting. Methods themselves are objects:</p>
+<pre><code class="language-io">add := method(a, b, a + b)
+add type println         // Block
+
+// Methods have methods!
+add argumentNames println // list(a, b)
+add code println         // a +(b)
+
+// You can modify methods
+add code println                    // a +(b)
+add setCode(block(a, b, a * b))   // Change implementation!
+add(3, 4) println                  // 12 (now multiplies!)
+
+// You can create methods from strings
+code := &quot;a + b + 100&quot;
+newMethod := block(a, b) setCode(code)
+newMethod call(5, 10) println      // 115
+</code></pre>
+<p>This is far more powerful than most languages&rsquo; function objects:</p>
+<pre><code class="language-python"># Python
+def add(a, b):
+    return a + b
+
+print(type(add))         # &lt;class 'function'&gt;
+print(add.__code__)      # &lt;code object...&gt;
+# But you can't easily modify the function's code at runtime
+</code></pre>
+<h2 id="control-structures-are-objects-messages">
+  Control Structures are Objects (Messages)
+  
+  <a class="anchor" href="#control-structures-are-objects-messages">#</a>
+  
+</h2>
+<p>This might be the most mind-bending: <code>if</code>, <code>while</code>, and <code>for</code> aren&rsquo;t syntax—they&rsquo;re methods:</p>
+<pre><code class="language-io">// 'if' is a method on Object
+if type println          // nil (it's a method)
+
+// You can see its implementation
+Object getSlot(&quot;if&quot;) println  // method(...)
+
+// You can even redefine it!
+Object if := method(condition, trueBlock, falseBlock,
+    &quot;Making a decision...&quot; println
+    if(condition, trueBlock call, falseBlock call)
+)
+
+if(true, &quot;yes&quot; println, &quot;no&quot; println)
+// Prints: Making a decision...
+// Prints: yes
+</code></pre>
+<p>Let&rsquo;s create our own control structure:</p>
+<pre><code class="language-io">Object unless := method(condition, block,
+    if(condition not, block call)
+)
+
+unless(5 &gt; 10,
+    &quot;Math still works!&quot; println
+)
+// Prints: Math still works!
+</code></pre>
+<p>Try doing that in Java or C++!</p>
+<h2 id="operators-are-objects-messages">
+  Operators are Objects (Messages)
+  
+  <a class="anchor" href="#operators-are-objects-messages">#</a>
+  
+</h2>
+<p>Operators aren&rsquo;t special syntax—they&rsquo;re messages:</p>
+<pre><code class="language-io">// These are equivalent
+2 + 3
+2 +(3)
+2 send(&quot;+&quot;, 3)
+
+// You can redefine operators
+Number + := method(n,
+    &quot;Adding #{self} and #{n}&quot; interpolate println
+    self + n  // Would cause infinite recursion!
+)
+
+// Let's be more careful
+Number plusWithLogging := Number getSlot(&quot;+&quot;)
+Number + := method(n,
+    &quot;Adding #{self} and #{n}&quot; interpolate println
+    self plusWithLogging(n)
+)
+
+2 + 3
+// Prints: Adding 2 and 3
+// Returns: 5
+</code></pre>
+<p>You can even create new operators:</p>
+<pre><code class="language-io">OperatorTable addOperator(&quot;**&quot;, 3)  // Right-associative, precedence 3
+Number ** := method(n, self pow(n))
+
+2 ** 3 println  // 8
+2 ** 3 ** 2 println  // 512 (right-associative: 2 ** (3 ** 2))
+</code></pre>
+<h2 id="lists-are-objects">
+  Lists are Objects
+  
+  <a class="anchor" href="#lists-are-objects">#</a>
+  
+</h2>
+<pre><code class="language-io">nums := list(1, 2, 3)
+nums type println        // List
+
+// Lists have many methods
+nums size println        // 3
+nums first println       // 1
+nums last println        // 3
+nums reverse println     // list(3, 2, 1)
+
+// Lists are mutable
+nums append(4)
+nums println            // list(1, 2, 3, 4)
+
+// You can add custom methods to lists
+List sum := method(
+    self reduce(+)
+)
+
+list(1, 2, 3, 4, 5) sum println  // 15
+</code></pre>
+<h2 id="even-the-lobby-is-an-object">
+  Even the Lobby is an Object
+  
+  <a class="anchor" href="#even-the-lobby-is-an-object">#</a>
+  
+</h2>
+<p>The global namespace in Io is an object called <code>Lobby</code>:</p>
+<pre><code class="language-io">Lobby type println       // Object
+Lobby slotNames println  // list(all your global variables)
+
+// When you create a &quot;global&quot; variable, you're adding a slot to Lobby
+x := 10
+Lobby hasSlot(&quot;x&quot;) println  // true
+Lobby x println             // 10
+
+// You can manipulate the global namespace as an object
+Lobby removeSlot(&quot;x&quot;)
+x println                   // Exception: Slot x not found
+</code></pre>
+<p>This is radically different from languages with special global scope rules.</p>
+<h2 id="messages-themselves-are-objects">
+  Messages Themselves are Objects
+  
+  <a class="anchor" href="#messages-themselves-are-objects">#</a>
+  
+</h2>
+<p>When you send a message, that message is an object:</p>
+<pre><code class="language-io">msg := message(2 + 3)
+msg type println         // Message
+msg name println         // +
+msg arguments println    // list(Message_0x...)
+msg arguments first code println  // 3
+
+// You can evaluate messages
+msg doInContext(Lobby) println   // 5
+
+// You can build messages programmatically
+msg := Message clone setName(&quot;+&quot;) setArguments(list(Message clone setName(&quot;3&quot;)))
+2 doMessage(msg) println          // 5
+</code></pre>
+<p>This is the foundation of Io&rsquo;s metaprogramming capabilities.</p>
+<h2 id="the-object-hierarchy">
+  The Object Hierarchy
+  
+  <a class="anchor" href="#the-object-hierarchy">#</a>
+  
+</h2>
+<p>Let&rsquo;s explore how all these objects relate:</p>
+<pre><code class="language-io">// Everything ultimately inherits from Object
+5 proto proto == Object println      // true
+&quot;hi&quot; proto proto == Object println   // true
+true proto == Object println         // true
+list() proto proto == Object println // true
+
+// You can walk the prototype chain
+obj := 5
+while(obj,
+    obj type println
+    obj = obj proto
+)
+// Prints:
+// Number
+// Object
+</code></pre>
+<h2 id="practical-implications">
+  Practical Implications
+  
+  <a class="anchor" href="#practical-implications">#</a>
+  
+</h2>
+<p>What does it mean that everything is truly an object?</p>
+<h3 id="1-uniform-interface">
+  1. Uniform Interface
+  
+  <a class="anchor" href="#1-uniform-interface">#</a>
+  
+</h3>
+<p>You can treat everything uniformly:</p>
+<pre><code class="language-io">things := list(5, &quot;hello&quot;, true, nil, method(x, x * 2), list(1, 2))
+
+things foreach(thing,
+    (&quot;Type: &quot; .. thing type) println
+)
+// Type: Number
+// Type: Sequence  
+// Type: true
+// Type: Object
+// Type: Block
+// Type: List
+</code></pre>
+<h3 id="2-no-special-cases">
+  2. No Special Cases
+  
+  <a class="anchor" href="#2-no-special-cases">#</a>
+  
+</h3>
+<p>You don&rsquo;t need to remember different rules for different types:</p>
+<pre><code class="language-io">// Everything can receive messages
+5 println
+&quot;hello&quot; println
+true println
+nil println
+list(1,2,3) println
+
+// Everything can be inspected
+5 slotNames
+&quot;hello&quot; slotNames
+true slotNames
+nil slotNames
+</code></pre>
+<h3 id="3-extensibility">
+  3. Extensibility
+  
+  <a class="anchor" href="#3-extensibility">#</a>
+  
+</h3>
+<p>You can extend anything:</p>
+<pre><code class="language-io">// Add methods to numbers for DSL
+Number days := method(
+    Duration clone setDays(self)
+)
+
+Number hours := method(
+    Duration clone setHours(self)
+)
+
+// Now you can write
+deadline := Date now + 3 days + 4 hours
+</code></pre>
+<h3 id="4-debugging-power">
+  4. Debugging Power
+  
+  <a class="anchor" href="#4-debugging-power">#</a>
+  
+</h3>
+<p>Since everything is an object, you can inspect everything:</p>
+<pre><code class="language-io">Object debugMethod := method(name,
+    m := self getSlot(name)
+    (&quot;Method &quot; .. name .. &quot;:&quot;) println
+    (&quot;  Arguments: &quot; .. m argumentNames) println
+    (&quot;  Code: &quot; .. m code) println
+)
+
+List debugMethod(&quot;append&quot;)
+// Method append:
+//   Arguments: list(...)
+//   Code: ...
+</code></pre>
+<h2 id="comparison-with-other-languages">
+  Comparison with Other Languages
+  
+  <a class="anchor" href="#comparison-with-other-languages">#</a>
+  
+</h2>
+<h3 id="ruby-everything-is-an-object-mostly">
+  Ruby: &ldquo;Everything is an object&rdquo; (mostly)
+  
+  <a class="anchor" href="#ruby-everything-is-an-object-mostly">#</a>
+  
+</h3>
+<pre><code class="language-ruby">5.class          # Integer
+&quot;hello&quot;.class    # String
+true.class       # TrueClass
+nil.class        # NilClass
+
+# But...
+if.class         # SyntaxError! 'if' isn't an object
+</code></pre>
+<h3 id="python-everything-is-an-object-sort-of">
+  Python: &ldquo;Everything is an object&rdquo; (sort of)
+  
+  <a class="anchor" href="#python-everything-is-an-object-sort-of">#</a>
+  
+</h3>
+<pre><code class="language-python">type(5)          # &lt;class 'int'&gt;
+type(&quot;hello&quot;)    # &lt;class 'str'&gt;
+type(True)       # &lt;class 'bool'&gt;
+type(None)       # &lt;class 'NoneType'&gt;
+
+# But...
+type(if)         # SyntaxError! 'if' isn't an object
+type(+)          # SyntaxError! '+' isn't an object
+</code></pre>
+<h3 id="javascript-everything-is-an-object-except-when-its-not">
+  JavaScript: &ldquo;Everything is an object&rdquo; (except when it&rsquo;s not)
+  
+  <a class="anchor" href="#javascript-everything-is-an-object-except-when-its-not">#</a>
+  
+</h3>
+<pre><code class="language-javascript">typeof 5         // &quot;number&quot; (primitive)
+typeof &quot;hello&quot;   // &quot;string&quot; (primitive)
+typeof true      // &quot;boolean&quot; (primitive)
+typeof {}        // &quot;object&quot;
+
+// Autoboxing happens sometimes
+(5).toString()   // &quot;5&quot; (temporarily boxed)
+5.x = 10         // Silently fails!
+</code></pre>
+<h3 id="io-everything-is-an-object-no-exceptions">
+  Io: Everything IS an object (no exceptions)
+  
+  <a class="anchor" href="#io-everything-is-an-object-no-exceptions">#</a>
+  
+</h3>
+<pre><code class="language-io">5 type           // Number (object)
+&quot;hello&quot; type     // Sequence (object)
+true type        // true (object)
+if type          // nil (it's a method, which is an object)
++ type           // nil (it's a method, which is an object)
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Object Inspector</strong>: Write a method <code>inspect</code> that can be called on any object and prints:</p>
+<ul>
+<li>Its type</li>
+<li>Its slot names</li>
+<li>Its prototype chain</li>
+</ul>
+</li>
+<li>
+<p><strong>Custom Boolean</strong>: Create your own boolean system with objects <code>Yes</code> and <code>No</code> that have methods <code>and</code>, <code>or</code>, and <code>not</code>.</p>
+</li>
+<li>
+<p><strong>Operator Overloading</strong>: Define a <code>Vector</code> object with <code>x</code> and <code>y</code> slots, then overload the <code>+</code> operator to add vectors.</p>
+</li>
+<li>
+<p><strong>Control Structure</strong>: Create a <code>repeat(n, block)</code> control structure that executes a block n times.</p>
+</li>
+<li>
+<p><strong>Message Logger</strong>: Modify the <code>Object</code> prototype to log every message sent to any object (hint: override <code>forward</code>).</p>
+</li>
+</ol>
+<h2 id="philosophical-implications">
+  Philosophical Implications
+  
+  <a class="anchor" href="#philosophical-implications">#</a>
+  
+</h2>
+<p>Io&rsquo;s radical &ldquo;everything is an object&rdquo; approach has profound implications:</p>
+<ol>
+<li><strong>Simplicity through uniformity</strong>: One concept (objects) explains everything</li>
+<li><strong>Power through openness</strong>: Nothing is sealed or special</li>
+<li><strong>Learning through exploration</strong>: You can inspect and understand everything</li>
+<li><strong>Danger through freedom</strong>: You can break everything</li>
+</ol>
+<p>This last point is important. With great power comes great responsibility. Io trusts you completely. You can redefine addition, break the <code>if</code> statement, or delete critical system objects. This isn&rsquo;t a bug—it&rsquo;s a philosophy.</p>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>In Io, &ldquo;everything is an object&rdquo; isn&rsquo;t marketing—it&rsquo;s a fundamental truth that shapes every aspect of the language. Numbers, strings, booleans, nil, methods, operators, control structures, and even messages themselves are all objects with slots that can be inspected, modified, and extended.</p>
+<p>This uniformity eliminates special cases, enables powerful metaprogramming, and provides a conceptually simple (if initially mind-bending) programming model. Once you internalize that <em>everything</em> is just objects sending messages to other objects, Io&rsquo;s entire design clicks into place.</p>
+<p>Next, we&rsquo;ll explore how objects relate to each other through Io&rsquo;s prototype-based inheritance system—a world without classes.</p>
+<hr>
+<p><em>Next: <a href="04-prototypes-not-classes.md">Chapter 4 - Prototypes, Not Classes</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/02-getting-started/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Getting Started" />
+        <span>Getting Started</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/04-prototypes-not-classes/" class="flex align-center book-icon">
+        <span>Prototypes, Not Classes</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Prototypes, Not Classes" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 4: Prototypes, Not Classes
+  
+  #
+  
+
+Most object-oriented languages use classes as templates or blueprints for creating objects. You define a class, then instantiate objects from it. There&rsquo;s a fundamental distinction between the template (class) and the things created from it (instances).
+Io takes a different approach: prototype-based inheritance. There are no classes, only objects. New objects are created by cloning existing objects, and objects can serve as prototypes for other objects. This might seem like a small change, but it fundamentally alters how you think about and structure programs.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/04-prototypes-not-classes/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Prototypes, Not Classes">
+  <meta property="og:description" content="Chapter 4: Prototypes, Not Classes # Most object-oriented languages use classes as templates or blueprints for creating objects. You define a class, then instantiate objects from it. There’s a fundamental distinction between the template (class) and the things created from it (instances).
+Io takes a different approach: prototype-based inheritance. There are no classes, only objects. New objects are created by cloning existing objects, and objects can serve as prototypes for other objects. This might seem like a small change, but it fundamentally alters how you think about and structure programs.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Prototypes, Not Classes | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/04-prototypes-not-classes/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="active">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Prototypes, Not Classes</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Prototypes, Not Classes</h1>
+    
+    <div class="chapter-number">Chapter 4</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Most object-oriented languages use classes as templates or blueprints for creating objects. You define a class, then instantiate objects from it. There&rsquo;s a fundamental distinction between the template (class) and the things created from it (instances).</p>
+<p>Io takes a different approach: prototype-based inheritance. There are no classes, only objects. New objects are created by cloning existing objects, and objects can serve as prototypes for other objects. This might seem like a small change, but it fundamentally alters how you think about and structure programs.</p>
+<h2 id="the-class-based-world">
+  The Class-Based World
+  
+  <a class="anchor" href="#the-class-based-world">#</a>
+  
+</h2>
+<p>Let&rsquo;s start with what you probably know. In a class-based language like Java:</p>
+<pre><code class="language-java">// Define a class (template)
+class Animal {
+    String name;
+    
+    void speak() {
+        System.out.println(&quot;Some sound&quot;);
+    }
+}
+
+// Define a subclass
+class Dog extends Animal {
+    void speak() {
+        System.out.println(&quot;Woof!&quot;);
+    }
+}
+
+// Create instances
+Dog fido = new Dog();
+Dog rover = new Dog();
+</code></pre>
+<p>The key points:</p>
+<ul>
+<li><code>Animal</code> and <code>Dog</code> are classes (templates)</li>
+<li><code>fido</code> and <code>rover</code> are instances (objects)</li>
+<li>Classes and instances are fundamentally different things</li>
+<li>Inheritance happens between classes</li>
+</ul>
+<h2 id="the-prototype-based-world">
+  The Prototype-Based World
+  
+  <a class="anchor" href="#the-prototype-based-world">#</a>
+  
+</h2>
+<p>In Io, there are no classes:</p>
+<pre><code class="language-io">// Create an object to serve as a prototype
+Animal := Object clone
+Animal speak := method(&quot;Some sound&quot; println)
+
+// Create another object using Animal as a prototype
+Dog := Animal clone
+Dog speak := method(&quot;Woof!&quot; println)
+
+// Create more objects using Dog as a prototype
+fido := Dog clone
+rover := Dog clone
+</code></pre>
+<p>The key differences:</p>
+<ul>
+<li><code>Animal</code>, <code>Dog</code>, <code>fido</code>, and <code>rover</code> are all objects</li>
+<li>No fundamental distinction between &ldquo;classes&rdquo; and &ldquo;instances&rdquo;</li>
+<li>Objects are created by cloning other objects</li>
+<li>Any object can serve as a prototype for other objects</li>
+</ul>
+<h2 id="understanding-cloning">
+  Understanding Cloning
+  
+  <a class="anchor" href="#understanding-cloning">#</a>
+  
+</h2>
+<p>When you clone an object in Io, you don&rsquo;t copy all its slots. Instead, you create a new, empty object that maintains a reference to its prototype:</p>
+<pre><code class="language-io">Animal := Object clone
+Animal name := &quot;Generic Animal&quot;
+Animal speak := method(name println)
+
+dog := Animal clone
+
+// dog doesn't have its own 'name' slot
+dog hasLocalSlot(&quot;name&quot;) println    // false
+
+// But it can access 'name' through its prototype
+dog name println                     // &quot;Generic Animal&quot;
+
+// Now give dog its own name
+dog name = &quot;Fido&quot;
+dog hasLocalSlot(&quot;name&quot;) println    // true
+dog name println                     // &quot;Fido&quot;
+
+// Animal's name is unchanged
+Animal name println                  // &quot;Generic Animal&quot;
+</code></pre>
+<p>This is called <strong>differential inheritance</strong>—objects only store their differences from their prototypes.</p>
+<h2 id="the-prototype-chain">
+  The Prototype Chain
+  
+  <a class="anchor" href="#the-prototype-chain">#</a>
+  
+</h2>
+<p>When you send a message to an object, Io looks for a matching slot:</p>
+<ol>
+<li>First in the object itself</li>
+<li>Then in its prototype</li>
+<li>Then in the prototype&rsquo;s prototype</li>
+<li>And so on until it reaches Object</li>
+</ol>
+<pre><code class="language-io">// Create a chain of prototypes
+Organism := Object clone
+Organism live := method(&quot;Living...&quot; println)
+
+Animal := Organism clone
+Animal move := method(&quot;Moving...&quot; println)
+
+Dog := Animal clone
+Dog bark := method(&quot;Woof!&quot; println)
+
+fido := Dog clone
+fido name := &quot;Fido&quot;
+
+// fido can access methods from anywhere in the chain
+fido live    // &quot;Living...&quot; (from Organism)
+fido move    // &quot;Moving...&quot; (from Animal)
+fido bark    // &quot;Woof!&quot; (from Dog)
+
+// You can inspect the chain
+fido proto == Dog println           // true
+fido proto proto == Animal println  // true
+fido proto proto proto == Organism println  // true
+</code></pre>
+<h2 id="dynamic-prototype-modification">
+  Dynamic Prototype Modification
+  
+  <a class="anchor" href="#dynamic-prototype-modification">#</a>
+  
+</h2>
+<p>Since prototypes are just objects, you can modify them at runtime, and all objects using that prototype see the changes:</p>
+<pre><code class="language-io">Dog := Object clone
+fido := Dog clone
+rover := Dog clone
+
+// Add a method to Dog
+Dog bark := method(&quot;Woof!&quot; println)
+
+// Both fido and rover can now bark
+fido bark    // &quot;Woof!&quot;
+rover bark   // &quot;Woof!&quot;
+
+// Modify the method
+Dog bark = method(&quot;WOOF! WOOF!&quot; println)
+
+// The change affects all dogs
+fido bark    // &quot;WOOF! WOOF!&quot;
+rover bark   // &quot;WOOF! WOOF!&quot;
+</code></pre>
+<p>Try doing that with classes in Java! You&rsquo;d need complex reflection APIs, and even then, you couldn&rsquo;t modify existing instances.</p>
+<h2 id="multiple-prototypes">
+  Multiple Prototypes
+  
+  <a class="anchor" href="#multiple-prototypes">#</a>
+  
+</h2>
+<p>Io supports multiple inheritance through its <code>Protos</code> list:</p>
+<pre><code class="language-io">// Create two prototypes
+Flyable := Object clone
+Flyable fly := method(&quot;Flying...&quot; println)
+
+Swimmable := Object clone
+Swimmable swim := method(&quot;Swimming...&quot; println)
+
+// Create an object with multiple prototypes
+Duck := Object clone
+Duck appendProto(Flyable)
+Duck appendProto(Swimmable)
+
+mallard := Duck clone
+mallard fly     // &quot;Flying...&quot;
+mallard swim    // &quot;Swimming...&quot;
+
+// Inspect the prototype list
+Duck protos println  // list(Object_0x..., Flyable_0x..., Swimmable_0x...)
+</code></pre>
+<p>The search order for slots is depth-first through the <code>Protos</code> list.</p>
+<h2 id="comparing-approaches-class-vs-prototype">
+  Comparing Approaches: Class vs Prototype
+  
+  <a class="anchor" href="#comparing-approaches-class-vs-prototype">#</a>
+  
+</h2>
+<p>Let&rsquo;s implement the same concept in both paradigms to see the differences.</p>
+<h3 id="class-based-python">
+  Class-Based (Python)
+  
+  <a class="anchor" href="#class-based-python">#</a>
+  
+</h3>
+<pre><code class="language-python">class Shape:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+    
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy
+
+class Circle(Shape):
+    def __init__(self, radius):
+        super().__init__()
+        self.radius = radius
+    
+    def area(self):
+        return 3.14159 * self.radius ** 2
+
+# Usage
+circle = Circle(5)
+circle.move(10, 20)
+print(circle.area())
+
+# Can't easily create a one-off variation
+# Would need to define a new class
+</code></pre>
+<h3 id="prototype-based-io">
+  Prototype-Based (Io)
+  
+  <a class="anchor" href="#prototype-based-io">#</a>
+  
+</h3>
+<pre><code class="language-io">Shape := Object clone
+Shape x := 0
+Shape y := 0
+Shape move := method(dx, dy,
+    x = x + dx
+    y = y + dy
+)
+
+Circle := Shape clone
+Circle radius := 0
+Circle area := method(
+    3.14159 * radius * radius
+)
+
+// Usage
+circle := Circle clone
+circle radius = 5
+circle move(10, 20)
+circle area println
+
+// Easy to create one-off variations
+specialCircle := Circle clone
+specialCircle area = method(
+    &quot;Special area: &quot; print
+    resend  // Call the original method
+)
+specialCircle area  // &quot;Special area: 78.53975&quot;
+</code></pre>
+<h2 id="the-power-of-prototypes">
+  The Power of Prototypes
+  
+  <a class="anchor" href="#the-power-of-prototypes">#</a>
+  
+</h2>
+<h3 id="1-objects-as-classes">
+  1. Objects as Classes
+  
+  <a class="anchor" href="#1-objects-as-classes">#</a>
+  
+</h3>
+<p>In Io, objects can act as classes when needed:</p>
+<pre><code class="language-io">// Person acts like a class
+Person := Object clone
+Person init := method(
+    self name := &quot;Unknown&quot;
+    self age := 0
+    self
+)
+
+Person create := method(n, a,
+    clone init name = n age = a
+)
+
+// Usage feels class-like
+alice := Person create(&quot;Alice&quot;, 30)
+bob := Person create(&quot;Bob&quot;, 25)
+</code></pre>
+<h3 id="2-one-off-objects">
+  2. One-Off Objects
+  
+  <a class="anchor" href="#2-one-off-objects">#</a>
+  
+</h3>
+<p>You can create unique objects without defining a &ldquo;class&rdquo;:</p>
+<pre><code class="language-io">// Create a unique object with no &quot;class&quot;
+singleton := Object clone
+singleton data := Map clone
+singleton store := method(key, value,
+    data atPut(key, value)
+)
+singleton retrieve := method(key,
+    data at(key)
+)
+
+// Use it directly
+singleton store(&quot;user&quot;, &quot;Alice&quot;)
+singleton retrieve(&quot;user&quot;) println  // &quot;Alice&quot;
+</code></pre>
+<h3 id="3-runtime-class-modification">
+  3. Runtime Class Modification
+  
+  <a class="anchor" href="#3-runtime-class-modification">#</a>
+  
+</h3>
+<p>You can fundamentally change what a &ldquo;class&rdquo; does:</p>
+<pre><code class="language-io">Number := Object clone
+Number value := 0
+Number + := method(n,
+    result := Number clone
+    result value = self value + n value
+    result
+)
+
+// Create numbers
+five := Number clone value = 5
+three := Number clone value = 3
+
+// Now change how Number works
+Number + = method(n,
+    result := Number clone
+    result value = self value * n value  // Multiply instead!
+    result
+)
+
+// Existing numbers use the new behavior
+eight := five + three
+eight value println  // 15 (multiplication!)
+</code></pre>
+<h2 id="delegation-vs-inheritance">
+  Delegation vs Inheritance
+  
+  <a class="anchor" href="#delegation-vs-inheritance">#</a>
+  
+</h2>
+<p>Prototype-based languages use delegation rather than inheritance. When an object doesn&rsquo;t have a slot, it delegates to its prototype:</p>
+<pre><code class="language-io">Account := Object clone
+Account balance := 0
+Account deposit := method(amount,
+    balance = balance + amount
+    self
+)
+
+savings := Account clone
+savings deposit(100)
+
+// Let's trace what happens:
+// 1. savings receives 'deposit' message
+// 2. savings doesn't have 'deposit' slot
+// 3. savings delegates to Account
+// 4. Account's deposit method runs
+// 5. But 'self' is still savings
+// 6. So savings's balance is updated
+
+savings balance println    // 100
+Account balance println    // 0 (unchanged)
+</code></pre>
+<p>This is subtly different from class-based inheritance where methods are copied or looked up in a class hierarchy.</p>
+<h2 id="practical-patterns">
+  Practical Patterns
+  
+  <a class="anchor" href="#practical-patterns">#</a>
+  
+</h2>
+<h3 id="the-constructor-pattern">
+  The Constructor Pattern
+  
+  <a class="anchor" href="#the-constructor-pattern">#</a>
+  
+</h3>
+<p>While Io doesn&rsquo;t have constructors, you can create them:</p>
+<pre><code class="language-io">Person := Object clone
+Person init := method(name, age,
+    self name := name
+    self age := age
+    self
+)
+
+Person new := method(name, age,
+    self clone init(name, age)
+)
+
+// Usage
+alice := Person new(&quot;Alice&quot;, 30)
+</code></pre>
+<h3 id="the-mixin-pattern">
+  The Mixin Pattern
+  
+  <a class="anchor" href="#the-mixin-pattern">#</a>
+  
+</h3>
+<p>Use prototypes as mixins for shared behavior:</p>
+<pre><code class="language-io">// Define mixins
+Timestamped := Object clone
+Timestamped createdAt := Date now
+Timestamped age := method(
+    Date now - createdAt
+)
+
+Serializable := Object clone
+Serializable toJson := method(
+    // Implementation
+)
+
+// Use mixins
+Document := Object clone
+Document appendProto(Timestamped)
+Document appendProto(Serializable)
+
+doc := Document clone
+doc age println
+doc toJson
+</code></pre>
+<h3 id="the-factory-pattern">
+  The Factory Pattern
+  
+  <a class="anchor" href="#the-factory-pattern">#</a>
+  
+</h3>
+<p>Objects can create other objects with specific configurations:</p>
+<pre><code class="language-io">ShapeFactory := Object clone
+ShapeFactory circle := method(radius,
+    c := Object clone
+    c radius := radius
+    c area := method(3.14159 * radius * radius)
+    c
+)
+
+ShapeFactory rectangle := method(width, height,
+    r := Object clone
+    r width := width
+    r height := height
+    r area := method(width * height)
+    r
+)
+
+// Usage
+myCircle := ShapeFactory circle(5)
+myRect := ShapeFactory rectangle(10, 20)
+</code></pre>
+<h2 id="javascript-a-familiar-prototype-system">
+  JavaScript: A Familiar Prototype System
+  
+  <a class="anchor" href="#javascript-a-familiar-prototype-system">#</a>
+  
+</h2>
+<p>If you know JavaScript, you&rsquo;ve already used prototype-based programming:</p>
+<pre><code class="language-javascript">// JavaScript (before ES6 classes)
+function Animal(name) {
+    this.name = name;
+}
+
+Animal.prototype.speak = function() {
+    console.log(&quot;Some sound&quot;);
+};
+
+function Dog(name) {
+    Animal.call(this, name);
+}
+
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.bark = function() {
+    console.log(&quot;Woof!&quot;);
+};
+</code></pre>
+<p>But JavaScript complicated things with constructor functions and later added class syntax as sugar. Io keeps prototypes pure and simple.</p>
+<h2 id="common-misconceptions">
+  Common Misconceptions
+  
+  <a class="anchor" href="#common-misconceptions">#</a>
+  
+</h2>
+<h3 id="no-classes-means-no-structure">
+  &ldquo;No Classes Means No Structure&rdquo;
+  
+  <a class="anchor" href="#no-classes-means-no-structure">#</a>
+  
+</h3>
+<p>False. You can create well-structured programs with prototypes:</p>
+<pre><code class="language-io">// Define clear prototype hierarchies
+Vehicle := Object clone
+Vehicle speed := 0
+
+Car := Vehicle clone
+Car wheels := 4
+
+ElectricCar := Car clone
+ElectricCar batteryLevel := 100
+
+// The structure is clear and maintainable
+</code></pre>
+<h3 id="prototypes-are-just-classes-with-different-syntax">
+  &ldquo;Prototypes Are Just Classes With Different Syntax&rdquo;
+  
+  <a class="anchor" href="#prototypes-are-just-classes-with-different-syntax">#</a>
+  
+</h3>
+<p>False. Prototypes are more flexible:</p>
+<pre><code class="language-io">// Start with a prototype
+Dog := Object clone
+Dog bark := method(&quot;Woof!&quot; println)
+
+fido := Dog clone
+
+// Later, change fido's prototype!
+Cat := Object clone
+Cat meow := method(&quot;Meow!&quot; println)
+
+fido protos = list(Cat)
+fido meow  // &quot;Meow!&quot; - fido is now a cat!
+</code></pre>
+<p>You can&rsquo;t change an object&rsquo;s class at runtime in most class-based languages.</p>
+<h3 id="multiple-inheritance-is-always-confusing">
+  &ldquo;Multiple Inheritance Is Always Confusing&rdquo;
+  
+  <a class="anchor" href="#multiple-inheritance-is-always-confusing">#</a>
+  
+</h3>
+<p>Io&rsquo;s prototype lists make multiple inheritance explicit and controllable:</p>
+<pre><code class="language-io">A := Object clone
+A foo := method(&quot;A's foo&quot; println)
+
+B := Object clone  
+B foo := method(&quot;B's foo&quot; println)
+
+C := Object clone
+C appendProto(A)
+C appendProto(B)
+
+C foo  // &quot;A's foo&quot; (A comes first in the list)
+
+// Reorder to change priority
+C protos = list(B, A)
+C foo  // &quot;B's foo&quot; (B now comes first)
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Prototype Chain Explorer</strong>: Write a method that prints an object&rsquo;s complete prototype chain with indentation showing the hierarchy.</p>
+</li>
+<li>
+<p><strong>Class Emulator</strong>: Create a <code>Class</code> object that provides <code>new</code>, <code>extends</code>, and other class-like conveniences while using prototypes underneath.</p>
+</li>
+<li>
+<p><strong>Multiple Inheritance Diamond</strong>: Create a diamond inheritance pattern (D inherits from B and C, which both inherit from A) and explore how Io resolves method conflicts.</p>
+</li>
+<li>
+<p><strong>Dynamic Reclassing</strong>: Write a <code>become</code> method that changes an object&rsquo;s prototype chain to make it &ldquo;become&rdquo; an instance of a different prototype.</p>
+</li>
+<li>
+<p><strong>Prototype Versioning</strong>: Implement a system where objects can &ldquo;lock&rdquo; to a specific version of their prototype, unaffected by later prototype modifications.</p>
+</li>
+</ol>
+<h2 id="real-world-implications">
+  Real-World Implications
+  
+  <a class="anchor" href="#real-world-implications">#</a>
+  
+</h2>
+<p>Prototype-based programming shines in certain scenarios:</p>
+<ol>
+<li><strong>Rapid Prototyping</strong>: Create and modify objects on the fly without defining classes</li>
+<li><strong>Dynamic Systems</strong>: Systems where object behavior needs to change at runtime</li>
+<li><strong>DSLs</strong>: Domain-specific languages where objects morph based on context</li>
+<li><strong>Learning</strong>: Understanding prototypes deepens your understanding of JavaScript</li>
+<li><strong>Simplicity</strong>: No distinction between classes and objects means fewer concepts</li>
+</ol>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Prototype-based programming isn&rsquo;t just &ldquo;classes with different syntax&rdquo;—it&rsquo;s a fundamentally different way of thinking about objects and inheritance. Instead of rigid templates (classes) and instances, you have a fluid world where any object can serve as a template for others, where inheritance is delegation, and where the structure of your program can change at runtime.</p>
+<p>This flexibility can be overwhelming at first, especially if you&rsquo;re used to the safety of static classes. But it can also be liberating. You&rsquo;re not constrained by decisions made at compile time. You can experiment, evolve, and adapt your objects as your understanding of the problem grows.</p>
+<p>In the next chapter, we&rsquo;ll dive deeper into how objects communicate through Io&rsquo;s message passing system—the heartbeat of the language.</p>
+<hr>
+<p><em>Next: <a href="05-messages-and-slots.md">Chapter 5 - Messages and Slots</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/03-everything-is-an-object/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Everything is an Object" />
+        <span>Everything is an Object</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/05-messages-and-slots/" class="flex align-center book-icon">
+        <span>Messages and Slots</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Messages and Slots" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

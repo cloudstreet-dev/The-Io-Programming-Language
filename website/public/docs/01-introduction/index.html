@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 1: Introduction - The Philosophy of Io
+  
+  #
+  
+
+
+
+  &ldquo;The limits of my language mean the limits of my world.&rdquo; - Ludwig Wittgenstein
+Every programming language embodies a philosophy—a set of beliefs about how programs should be structured, how complexity should be managed, and what concepts are fundamental versus incidental. Java believes in protective encapsulation and type safety. Lisp believes in code as data. Haskell believes in mathematical purity.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/01-introduction/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Introduction">
+  <meta property="og:description" content="Chapter 1: Introduction - The Philosophy of Io # “The limits of my language mean the limits of my world.” - Ludwig Wittgenstein
+Every programming language embodies a philosophy—a set of beliefs about how programs should be structured, how complexity should be managed, and what concepts are fundamental versus incidental. Java believes in protective encapsulation and type safety. Lisp believes in code as data. Haskell believes in mathematical purity.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Introduction | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/01-introduction/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="active">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Introduction</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Introduction</h1>
+    
+    <div class="chapter-number">Chapter 1</div>
+    
+  </div>
+  
+  
+  
+  
+  
+
+<blockquote class='book-hint '>
+  <p>&ldquo;The limits of my language mean the limits of my world.&rdquo; - Ludwig Wittgenstein</p>
+</blockquote><p>Every programming language embodies a philosophy—a set of beliefs about how programs should be structured, how complexity should be managed, and what concepts are fundamental versus incidental. Java believes in protective encapsulation and type safety. Lisp believes in code as data. Haskell believes in mathematical purity.</p>
+<p>Io believes in radical simplicity through uniform message passing.</p>
+<h2 id="the-birth-of-io">
+  The Birth of Io
+  
+  <a class="anchor" href="#the-birth-of-io">#</a>
+  
+</h2>
+<p>Steve Dekorte created Io in 2002, during an interesting period in programming language history. Java had conquered the enterprise. Python and Ruby were gaining traction as &ldquo;scripting&rdquo; languages. JavaScript was still dismissed as a toy for web browsers. The mainstream programming world had largely settled on class-based object-orientation as the &ldquo;right&rdquo; way to organize programs.</p>
+<p>But Dekorte was inspired by older, more radical ideas:</p>
+<ul>
+<li><strong>Smalltalk</strong> (1972): Everything is an object, computation happens through message passing</li>
+<li><strong>Self</strong> (1986): Objects without classes, prototype-based inheritance</li>
+<li><strong>Lisp</strong> (1958): Code as data, minimal syntax, powerful macros</li>
+<li><strong>Lua</strong> (1993): Simplicity, embeddability, tables as the universal data structure</li>
+<li><strong>NewtonScript</strong> (1993): Prototype-based inheritance in a practical system</li>
+</ul>
+<p>Here&rsquo;s how Dekorte himself described his motivation:</p>
+
+<blockquote class='book-hint '>
+  <p>&ldquo;I wanted a language that was small, simple, and consistent. Something you could understand completely. Most languages accumulate features over time, becoming more complex. I wanted to go the opposite direction—to see how much you could accomplish with how little.&rdquo;</p>
+</blockquote><h2 id="the-seven-pillars-of-io">
+  The Seven Pillars of Io
+  
+  <a class="anchor" href="#the-seven-pillars-of-io">#</a>
+  
+</h2>
+<p>Io rests on seven fundamental concepts. Master these, and you&rsquo;ve mastered the language:</p>
+<h3 id="1-everything-is-an-object">
+  1. <strong>Everything is an Object</strong>
+  
+  <a class="anchor" href="#1-everything-is-an-object">#</a>
+  
+</h3>
+<p>In Java or C++, primitives like integers and booleans aren&rsquo;t objects—they&rsquo;re special cases with different rules. In Io, everything is an object:</p>
+<pre><code class="language-io">3 type println          // Number
+&quot;hello&quot; type println    // Sequence
+true type println       // true
+method() type println   // Block
+</code></pre>
+<p>Even <code>true</code> and <code>false</code> are objects. Even methods are objects. This uniformity eliminates countless special cases.</p>
+<h3 id="2-objects-are-collections-of-slots">
+  2. <strong>Objects are Collections of Slots</strong>
+  
+  <a class="anchor" href="#2-objects-are-collections-of-slots">#</a>
+  
+</h3>
+<p>An object in Io is essentially a collection of named slots. Each slot can hold any value—data, methods, other objects:</p>
+<pre><code class="language-io">person := Object clone
+person name := &quot;Alice&quot;              // data slot
+person age := 30                    // data slot  
+person greet := method(&quot;Hello!&quot;)    // method slot
+person friend := Object clone       // object slot
+</code></pre>
+<p>Compare this to JavaScript, which has a similar model but complicated by functions, prototypes, constructors, and (now) classes. Io keeps it simple: objects have slots, period.</p>
+<h3 id="3-computation-is-message-passing">
+  3. <strong>Computation is Message Passing</strong>
+  
+  <a class="anchor" href="#3-computation-is-message-passing">#</a>
+  
+</h3>
+<p>This is perhaps Io&rsquo;s most radical idea. In most languages, computation involves various mechanisms:</p>
+<ul>
+<li>Function calls: <code>sqrt(16)</code></li>
+<li>Method invocations: <code>list.append(5)</code></li>
+<li>Operators: <code>x + y</code></li>
+<li>Control structures: <code>if (x &gt; 0) { ... }</code></li>
+<li>Assignment: <code>x = 5</code></li>
+</ul>
+<p>In Io, all of these are just messages sent to objects:</p>
+<pre><code class="language-io">sqrt(16)           // send message &quot;sqrt&quot; with argument 16 to current object
+list append(5)     // send message &quot;append&quot; with argument 5 to list
+x + y              // send message &quot;+&quot; with argument y to x
+if(x &gt; 0, ...)     // send message &quot;if&quot; with arguments to current object
+x = 5              // send message &quot;setSlot&quot; to current object
+</code></pre>
+<p>This uniformity has profound implications we&rsquo;ll explore throughout this book.</p>
+<h3 id="4-objects-inherit-from-prototypes">
+  4. <strong>Objects Inherit from Prototypes</strong>
+  
+  <a class="anchor" href="#4-objects-inherit-from-prototypes">#</a>
+  
+</h3>
+<p>Rather than defining classes as templates for objects, Io uses prototypes—objects that serve as templates for other objects:</p>
+<pre><code class="language-io">Animal := Object clone
+Animal move := method(&quot;Moving...&quot; println)
+
+Dog := Animal clone
+Dog bark := method(&quot;Woof!&quot; println)
+
+fido := Dog clone
+fido move  // &quot;Moving...&quot; (inherited from Animal)
+fido bark  // &quot;Woof!&quot; (inherited from Dog)
+</code></pre>
+<p>There&rsquo;s no distinction between &ldquo;class&rdquo; and &ldquo;instance&rdquo;—just objects cloning other objects.</p>
+<h3 id="5-differential-inheritance">
+  5. <strong>Differential Inheritance</strong>
+  
+  <a class="anchor" href="#5-differential-inheritance">#</a>
+  
+</h3>
+<p>When you clone an object in Io, the new object doesn&rsquo;t copy all the slots from its prototype. Instead, it maintains a reference to its prototype and only stores its differences:</p>
+<pre><code class="language-io">proto := Object clone
+proto x := 10
+proto y := 20
+
+child := proto clone
+child y = 30  // Only stores the difference
+
+child x println  // 10 (from proto)
+child y println  // 30 (from child)
+</code></pre>
+<p>This is memory efficient and enables powerful runtime modifications.</p>
+<h3 id="6-everything-is-modifiable-at-runtime">
+  6. <strong>Everything is Modifiable at Runtime</strong>
+  
+  <a class="anchor" href="#6-everything-is-modifiable-at-runtime">#</a>
+  
+</h3>
+<p>In Io, nothing is sacred. You can modify any object at any time, including built-in types:</p>
+<pre><code class="language-io">Number double := method(self * 2)
+5 double println  // 10
+
+// Even more radical - redefine addition!
+Number + := method(n, self * n)
+3 + 4 println  // 12 (now multiplication!)
+</code></pre>
+<p>This flexibility enables patterns impossible in more restrictive languages.</p>
+<h3 id="7-homoiconicity-through-messages">
+  7. <strong>Homoiconicity Through Messages</strong>
+  
+  <a class="anchor" href="#7-homoiconicity-through-messages">#</a>
+  
+</h3>
+<p>Like Lisp, Io code is represented as data structures that can be manipulated by the program itself. But where Lisp uses lists, Io uses messages:</p>
+<pre><code class="language-io">code := message(1 + 2)
+code println        // 1 +(2)
+code name println   // +
+code arguments println  // list(2)
+</code></pre>
+<p>This enables powerful metaprogramming without special syntax.</p>
+<h2 id="comparing-philosophies">
+  Comparing Philosophies
+  
+  <a class="anchor" href="#comparing-philosophies">#</a>
+  
+</h2>
+<p>To understand Io&rsquo;s philosophy, let&rsquo;s contrast it with mainstream languages:</p>
+<h3 id="java-protection-through-types">
+  Java: Protection Through Types
+  
+  <a class="anchor" href="#java-protection-through-types">#</a>
+  
+</h3>
+<pre><code class="language-java">public class BankAccount {
+    private double balance;  // Protected from direct access
+    
+    public void deposit(double amount) {
+        if (amount &gt; 0) {
+            balance += amount;
+        }
+    }
+}
+</code></pre>
+<p>Java believes in protection—private fields, type checking, compile-time verification. The compiler prevents mistakes.</p>
+<h3 id="python-practicality-and-conventions">
+  Python: Practicality and Conventions
+  
+  <a class="anchor" href="#python-practicality-and-conventions">#</a>
+  
+</h3>
+<pre><code class="language-python">class BankAccount:
+    def __init__(self):
+        self._balance = 0  # Convention: _ means &quot;private&quot;
+    
+    def deposit(self, amount):
+        if amount &gt; 0:
+            self._balance += amount
+</code></pre>
+<p>Python believes in &ldquo;we&rsquo;re all consenting adults.&rdquo; Protection through convention, not enforcement.</p>
+<h3 id="io-radical-flexibility">
+  Io: Radical Flexibility
+  
+  <a class="anchor" href="#io-radical-flexibility">#</a>
+  
+</h3>
+<pre><code class="language-io">BankAccount := Object clone
+BankAccount balance := 0
+BankAccount deposit := method(amount,
+    if(amount &gt; 0, balance = balance + amount)
+)
+</code></pre>
+<p>Io believes in complete openness. Any object can be modified by any code at any time. Power with responsibility.</p>
+<h2 id="the-cost-of-simplicity">
+  The Cost of Simplicity
+  
+  <a class="anchor" href="#the-cost-of-simplicity">#</a>
+  
+</h2>
+<p>Io&rsquo;s radical simplicity comes with trade-offs:</p>
+<p><strong>Performance</strong>: Without static typing or compile-time optimization, Io can&rsquo;t match the speed of C++ or even JIT-compiled languages like Java. Message passing has overhead.</p>
+<p><strong>Tool Support</strong>: IDEs can&rsquo;t provide the same level of assistance without static types and fixed class definitions. Refactoring tools are limited.</p>
+<p><strong>Error Detection</strong>: Many errors that would be caught at compile-time in other languages only surface at runtime in Io.</p>
+<p><strong>Learning Curve</strong>: Paradoxically, Io&rsquo;s simplicity can make it harder to learn. With fewer built-in concepts, you have to build more from primitives.</p>
+<h2 id="the-power-of-simplicity">
+  The Power of Simplicity
+  
+  <a class="anchor" href="#the-power-of-simplicity">#</a>
+  
+</h2>
+<p>But simplicity also brings power:</p>
+<p><strong>Understandability</strong>: You can understand the entire language. No edge cases, no historical baggage, no features that interact in surprising ways.</p>
+<p><strong>Flexibility</strong>: Patterns that require language extensions or complex frameworks in other languages are trivial in Io.</p>
+<p><strong>Expressiveness</strong>: With everything built from the same primitives, you can create abstractions that feel native to the language.</p>
+<p><strong>Exploration</strong>: Io is a playground for ideas that would be difficult to explore in more complex languages.</p>
+<h2 id="a-living-language">
+  A Living Language
+  
+  <a class="anchor" href="#a-living-language">#</a>
+  
+</h2>
+<p>Despite its small community, Io continues to evolve and inspire. Its ideas have influenced:</p>
+<ul>
+<li><strong>JavaScript frameworks</strong> that embrace prototype-based patterns</li>
+<li><strong>Ruby libraries</strong> that use method_missing for DSLs</li>
+<li><strong>Newer languages</strong> like Factor and Ioke</li>
+</ul>
+<p>More importantly, Io continues to teach programmers that our familiar concepts—classes, types, compilation—are choices, not requirements.</p>
+<h2 id="whats-next">
+  What&rsquo;s Next
+  
+  <a class="anchor" href="#whats-next">#</a>
+  
+</h2>
+<p>In the following chapters, we&rsquo;ll explore Io systematically:</p>
+<ul>
+<li>First, we&rsquo;ll get Io running and write our first programs</li>
+<li>Then, we&rsquo;ll dive deep into the object model</li>
+<li>We&rsquo;ll explore message passing and method resolution</li>
+<li>We&rsquo;ll see how control structures emerge from simple primitives</li>
+<li>We&rsquo;ll build increasingly sophisticated abstractions</li>
+<li>Finally, we&rsquo;ll tackle advanced topics like concurrency and metaprogramming</li>
+</ul>
+<p>Along the way, we&rsquo;ll constantly compare Io with languages you know, helping you see familiar concepts in a new light.</p>
+<p>Ready to challenge everything you know about objects? Let&rsquo;s begin.</p>
+<hr>
+<p><em>Next: <a href="02-getting-started.md">Chapter 2 - Getting Started with Io</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/00-preface/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Why Io?" />
+        <span>Why Io?</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/02-getting-started/" class="flex align-center book-icon">
+        <span>Getting Started</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Getting Started" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

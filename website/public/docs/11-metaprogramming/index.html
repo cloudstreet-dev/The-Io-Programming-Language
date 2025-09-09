@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 11: Metaprogramming
+  
+  #
+  
+
+Metaprogramming—writing code that manipulates code—is where Io truly shines. Since everything in Io is an object, including messages and methods, you can inspect, modify, and generate code at runtime. This chapter explores Io&rsquo;s powerful metaprogramming capabilities.
+
+  Messages as Data
+  
+  #
+  
+
+In Io, code is data. Messages are objects you can create, inspect, and manipulate:
+// Create a message from code
+msg := message(2 &#43; 3 * 4)
+
+// Inspect its structure
+msg println              // 2 &#43;(3 *(4))
+msg name println         // &#43;
+msg arguments println    // list(Message_0x...)
+msg arguments at(0) println  // 3 *(4)
+
+// Evaluate it
+result := msg doInContext(Lobby)
+result println           // 14
+
+// Modify it
+msg setName(&quot;*&quot;)
+msg doInContext(Lobby) println  // 6 (now it&#39;s 2 * 3 * 4)
+
+Compare this to Lisp&rsquo;s code-as-data philosophy:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/11-metaprogramming/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Metaprogramming">
+  <meta property="og:description" content="Chapter 11: Metaprogramming # Metaprogramming—writing code that manipulates code—is where Io truly shines. Since everything in Io is an object, including messages and methods, you can inspect, modify, and generate code at runtime. This chapter explores Io’s powerful metaprogramming capabilities.
+Messages as Data # In Io, code is data. Messages are objects you can create, inspect, and manipulate:
+// Create a message from code msg := message(2 &#43; 3 * 4) // Inspect its structure msg println // 2 &#43;(3 *(4)) msg name println // &#43; msg arguments println // list(Message_0x...) msg arguments at(0) println // 3 *(4) // Evaluate it result := msg doInContext(Lobby) result println // 14 // Modify it msg setName(&#34;*&#34;) msg doInContext(Lobby) println // 6 (now it&#39;s 2 * 3 * 4) Compare this to Lisp’s code-as-data philosophy:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Metaprogramming | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/11-metaprogramming/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.6127d649f2e0bf8a827d7be8952f94a47fbc47a345e1a59a4efed4351e016764.js" integrity="sha256-YSfWSfLgv4qCfXvolS&#43;UpH&#43;8R6NF4aWaTv7UNR4BZ2Q=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="active">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Metaprogramming</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Metaprogramming</h1>
+    
+    <div class="chapter-number">Chapter 11</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Metaprogramming—writing code that manipulates code—is where Io truly shines. Since everything in Io is an object, including messages and methods, you can inspect, modify, and generate code at runtime. This chapter explores Io&rsquo;s powerful metaprogramming capabilities.</p>
+<h2 id="messages-as-data">
+  Messages as Data
+  
+  <a class="anchor" href="#messages-as-data">#</a>
+  
+</h2>
+<p>In Io, code is data. Messages are objects you can create, inspect, and manipulate:</p>
+<pre><code class="language-io">// Create a message from code
+msg := message(2 + 3 * 4)
+
+// Inspect its structure
+msg println              // 2 +(3 *(4))
+msg name println         // +
+msg arguments println    // list(Message_0x...)
+msg arguments at(0) println  // 3 *(4)
+
+// Evaluate it
+result := msg doInContext(Lobby)
+result println           // 14
+
+// Modify it
+msg setName(&quot;*&quot;)
+msg doInContext(Lobby) println  // 6 (now it's 2 * 3 * 4)
+</code></pre>
+<p>Compare this to Lisp&rsquo;s code-as-data philosophy:</p>
+<pre><code class="language-lisp">; Lisp
+(defparameter code '(+ 2 (* 3 4)))
+(eval code)  ; 14
+</code></pre>
+<p>But Io uses messages instead of lists, which feels more natural for object-oriented code.</p>
+<h2 id="building-messages-programmatically">
+  Building Messages Programmatically
+  
+  <a class="anchor" href="#building-messages-programmatically">#</a>
+  
+</h2>
+<pre><code class="language-io">// Build a message from scratch
+msg := Message clone
+msg setName(&quot;println&quot;)
+msg setArguments(list(Message clone setName(&quot;\&quot;Hello, World!\&quot;&quot;)))
+
+// Execute it
+Lobby doMessage(msg)  // Hello, World!
+
+// Build more complex messages
+createAdder := method(n,
+    msg := Message clone setName(&quot;+&quot;)
+    msg setArguments(list(Message clone setName(n asString)))
+    msg
+)
+
+adder5 := createAdder(5)
+7 doMessage(adder5) println  // 12
+</code></pre>
+<h2 id="method-introspection">
+  Method Introspection
+  
+  <a class="anchor" href="#method-introspection">#</a>
+  
+</h2>
+<p>Methods are objects you can examine and modify:</p>
+<pre><code class="language-io">obj := Object clone
+obj greet := method(name, &quot;Hello, &quot; .. name .. &quot;!&quot;)
+
+// Get the method object
+m := obj getSlot(&quot;greet&quot;)
+m type println                    // Block
+m argumentNames println           // list(name)
+m code println                   // &quot;Hello, &quot; ..(name) ..(&quot;!&quot;)
+
+// Modify method implementation
+obj greet = method(name, &quot;Goodbye, &quot; .. name .. &quot;!&quot;)
+obj greet(&quot;World&quot;) println       // Goodbye, World!
+
+// Copy methods between objects
+other := Object clone
+other sayHi := obj getSlot(&quot;greet&quot;)
+other sayHi(&quot;Io&quot;) println        // Goodbye, Io!
+</code></pre>
+<h2 id="the-call-object">
+  The call Object
+  
+  <a class="anchor" href="#the-call-object">#</a>
+  
+</h2>
+<p>The <code>call</code> object provides runtime context information:</p>
+<pre><code class="language-io">Object introspect := method(
+    &quot;=== Call Introspection ===&quot; println
+    (&quot;Sender: &quot; .. call sender type) println
+    (&quot;Target: &quot; .. call target type) println
+    (&quot;Message: &quot; .. call message) println
+    (&quot;Arguments: &quot; .. call message arguments) println
+    (&quot;Activated: &quot; .. call activated) println
+    &quot;========================&quot; println
+)
+
+TestObj := Object clone
+TestObj test := method(a, b,
+    introspect
+    a + b
+)
+
+TestObj test(5, 3)
+// === Call Introspection ===
+// Sender: Lobby
+// Target: TestObj
+// Message: introspect
+// Arguments: list()
+// Activated: method(...)
+// ========================
+</code></pre>
+<h2 id="dynamic-method-creation">
+  Dynamic Method Creation
+  
+  <a class="anchor" href="#dynamic-method-creation">#</a>
+  
+</h2>
+<p>Create methods at runtime:</p>
+<pre><code class="language-io">// Create getters and setters dynamically
+Object addProperty := method(name, defaultValue,
+    // Create storage slot
+    self setSlot(&quot;_&quot; .. name, defaultValue)
+    
+    // Create getter
+    self setSlot(name, 
+        method(self getSlot(&quot;_&quot; .. call message name))
+    )
+    
+    // Create setter
+    self setSlot(&quot;set&quot; .. name asCapitalized,
+        method(value,
+            self setSlot(&quot;_&quot; .. call message name beforeSeq(&quot;set&quot;) asLowercase, value)
+            self  // For chaining
+        )
+    )
+)
+
+Person := Object clone
+Person addProperty(&quot;name&quot;, &quot;Unknown&quot;)
+Person addProperty(&quot;age&quot;, 0)
+
+p := Person clone
+p setName(&quot;Alice&quot;) setAge(30)
+p name println   // Alice
+p age println    // 30
+</code></pre>
+<h2 id="method-missing-pattern">
+  Method Missing Pattern
+  
+  <a class="anchor" href="#method-missing-pattern">#</a>
+  
+</h2>
+<p>Intercept undefined method calls:</p>
+<pre><code class="language-io">DynamicObject := Object clone
+DynamicObject forward := method(
+    messageName := call message name
+    args := call message arguments
+    
+    (&quot;Intercepted: &quot; .. messageName) println
+    (&quot;Arguments: &quot; .. args) println
+    
+    // Handle dynamically
+    if(messageName beginsWithSeq(&quot;get&quot;),
+        property := messageName afterSeq(&quot;get&quot;) asLowercase
+        return self getSlot(property)
+    )
+    
+    if(messageName beginsWithSeq(&quot;set&quot;),
+        property := messageName afterSeq(&quot;set&quot;) asLowercase
+        value := call evalArgAt(0)
+        return self setSlot(property, value)
+    )
+    
+    Exception raise(&quot;Unknown method: &quot; .. messageName)
+)
+
+obj := DynamicObject clone
+obj setName(&quot;Bob&quot;)      // Intercepted: setName
+obj getName println      // Bob
+</code></pre>
+<h2 id="code-generation">
+  Code Generation
+  
+  <a class="anchor" href="#code-generation">#</a>
+  
+</h2>
+<p>Generate code as strings and evaluate:</p>
+<pre><code class="language-io">// Generate a class-like structure
+generateClass := method(className, properties,
+    code := className .. &quot; := Object clone\n&quot;
+    
+    // Generate init method
+    code = code .. className .. &quot; init := method(\n&quot;
+    properties foreach(prop,
+        code = code .. &quot;    self &quot; .. prop .. &quot; := nil\n&quot;
+    )
+    code = code .. &quot;    self\n)\n&quot;
+    
+    // Generate property accessors
+    properties foreach(prop,
+        // Getter
+        code = code .. className .. &quot; &quot; .. prop .. &quot; := method(_&quot; .. prop .. &quot;)\n&quot;
+        // Setter
+        code = code .. className .. &quot; set&quot; .. prop asCapitalized .. &quot; := method(v, _&quot; .. prop .. &quot; = v; self)\n&quot;
+    )
+    
+    code doString  // Evaluate the generated code
+    Lobby getSlot(className)  // Return the created object
+)
+
+// Use the generator
+Car := generateClass(&quot;Car&quot;, list(&quot;make&quot;, &quot;model&quot;, &quot;year&quot;))
+myCar := Car clone init
+myCar setMake(&quot;Toyota&quot;) setModel(&quot;Camry&quot;) setYear(2020)
+myCar make println  // Toyota
+</code></pre>
+<h2 id="aspect-oriented-programming">
+  Aspect-Oriented Programming
+  
+  <a class="anchor" href="#aspect-oriented-programming">#</a>
+  
+</h2>
+<p>Implement cross-cutting concerns:</p>
+<pre><code class="language-io">// Method wrapping for logging
+Object addLogging := method(methodName,
+    original := self getSlot(methodName)
+    
+    self setSlot(methodName, method(
+        (&quot;Calling &quot; .. methodName .. &quot; with args: &quot; .. call message arguments) println
+        result := nil
+        e := try(result = original doMessage(call message, call sender))
+        if(e,
+            (&quot;Error in &quot; .. methodName .. &quot;: &quot; .. e message) println
+            e raise,
+            (&quot;Returned: &quot; .. result) println
+            result
+        )
+    ))
+)
+
+Calculator := Object clone
+Calculator add := method(a, b, a + b)
+Calculator divide := method(a, b, a / b)
+
+Calculator addLogging(&quot;add&quot;)
+Calculator addLogging(&quot;divide&quot;)
+
+Calculator add(5, 3)
+// Calling add with args: list(5, 3)
+// Returned: 8
+
+Calculator divide(10, 0)
+// Calling divide with args: list(10, 0)
+// Error in divide: divide by zero
+</code></pre>
+<h2 id="macro-system">
+  Macro System
+  
+  <a class="anchor" href="#macro-system">#</a>
+  
+</h2>
+<p>Io&rsquo;s macros transform code before evaluation:</p>
+<pre><code class="language-io">// Define a macro
+Object unless := macro(condition, action,
+    // Macros receive unevaluated arguments as messages
+    // Transform to if(condition not, action)
+    message(if) setArguments(
+        list(
+            message(not) setTarget(condition),
+            action
+        )
+    )
+)
+
+// Use the macro
+x := 5
+unless(x &gt; 10, &quot;x is not greater than 10&quot; println)
+// x is not greater than 10
+
+// Timing macro
+Object time := macro(code,
+    // Generate timing code
+    message(do) setArguments(list(
+        message(start := Date now),
+        code,
+        message(elapsed := Date now - start),
+        message((&quot;Elapsed: &quot; .. elapsed) println),
+        message(result)
+    ))
+)
+
+// Use it
+time(
+    sum := 0
+    for(i, 1, 1000000, sum = sum + i)
+    sum
+)
+// Elapsed: 0.234
+</code></pre>
+<h2 id="self-modifying-code">
+  Self-Modifying Code
+  
+  <a class="anchor" href="#self-modifying-code">#</a>
+  
+</h2>
+<p>Objects can modify their own methods:</p>
+<pre><code class="language-io">Counter := Object clone
+Counter count := 0
+Counter increment := method(
+    count = count + 1
+    
+    // Self-modify after 5 calls
+    if(count &gt;= 5,
+        self increment = method(
+            Exception raise(&quot;Counter limit reached&quot;)
+        )
+    )
+    
+    count
+)
+
+c := Counter clone
+5 repeat(i, c increment println)  // 1, 2, 3, 4, 5
+c increment  // Exception: Counter limit reached
+</code></pre>
+<h2 id="reflection-api">
+  Reflection API
+  
+  <a class="anchor" href="#reflection-api">#</a>
+  
+</h2>
+<p>Io provides comprehensive reflection capabilities:</p>
+<pre><code class="language-io">// Object introspection utilities
+Object describe := method(
+    (&quot;Type: &quot; .. self type) println
+    
+    &quot;Local Slots:&quot; println
+    self slotNames sort foreach(name,
+        value := self getSlot(name)
+        (&quot;  &quot; .. name .. &quot; = &quot; .. value type) println
+    )
+    
+    &quot;Proto chain:&quot; println
+    proto := self proto
+    while(proto and proto != Object,
+        (&quot;  -&gt; &quot; .. proto type) println
+        proto = proto proto
+    )
+)
+
+// Usage
+person := Object clone
+person name := &quot;Alice&quot;
+person age := 30
+person greet := method(&quot;Hello!&quot;)
+
+person describe
+// Type: Object
+// Local Slots:
+//   age = Number
+//   greet = Block
+//   name = Sequence
+// Proto chain:
+//   -&gt; Object
+</code></pre>
+<h2 id="dsl-creation-with-metaprogramming">
+  DSL Creation with Metaprogramming
+  
+  <a class="anchor" href="#dsl-creation-with-metaprogramming">#</a>
+  
+</h2>
+<p>Build domain-specific languages:</p>
+<pre><code class="language-io">// SQL-like DSL
+Table := Object clone
+Table columns := list()
+Table rows := list()
+
+Table select := method(
+    query := SelectQuery clone
+    query table := self
+    query
+)
+
+SelectQuery := Object clone
+SelectQuery conditions := list()
+
+SelectQuery where := method(
+    // Parse conditions from arguments
+    args := call message arguments
+    args foreach(arg,
+        conditions append(arg)
+    )
+    self
+)
+
+SelectQuery execute := method(
+    table rows select(row,
+        result := true
+        conditions foreach(cond,
+            result = result and cond doInContext(row)
+        )
+        result
+    )
+)
+
+// Usage
+users := Table clone
+users columns = list(&quot;name&quot;, &quot;age&quot;, &quot;city&quot;)
+users rows = list(
+    Object clone do(name := &quot;Alice&quot;; age := 30; city := &quot;NYC&quot;),
+    Object clone do(name := &quot;Bob&quot;; age := 25; city := &quot;LA&quot;),
+    Object clone do(name := &quot;Charlie&quot;; age := 35; city := &quot;NYC&quot;)
+)
+
+results := users select where(age &gt; 25, city == &quot;NYC&quot;) execute
+results foreach(r, (r name .. &quot;: &quot; .. r age) println)
+// Alice: 30
+// Charlie: 35
+</code></pre>
+<h2 id="performance-profiling">
+  Performance Profiling
+  
+  <a class="anchor" href="#performance-profiling">#</a>
+  
+</h2>
+<p>Use metaprogramming for profiling:</p>
+<pre><code class="language-io">Profiler := Object clone
+Profiler stats := Map clone
+
+Object profile := method(methodName,
+    original := self getSlot(methodName)
+    
+    self setSlot(methodName, method(
+        start := Date now
+        result := original doMessage(call message, call sender)
+        elapsed := Date now - start
+        
+        key := self type .. &quot;::&quot; .. methodName
+        if(Profiler stats hasKey(key) not,
+            Profiler stats atPut(key, list(0, 0))
+        )
+        
+        stats := Profiler stats at(key)
+        stats atPut(0, stats at(0) + 1)      // Count
+        stats atPut(1, stats at(1) + elapsed) // Total time
+        
+        result
+    ))
+)
+
+Profiler report := method(
+    &quot;=== Profiling Report ===&quot; println
+    stats foreach(key, data,
+        avg := data at(1) / data at(0)
+        (key .. &quot;: &quot; .. data at(0) .. &quot; calls, &quot; .. 
+         data at(1) .. &quot;s total, &quot; .. avg .. &quot;s avg&quot;) println
+    )
+)
+
+// Usage
+Math := Object clone
+Math factorial := method(n,
+    if(n &lt;= 1, 1, n * factorial(n - 1))
+)
+Math profile(&quot;factorial&quot;)
+
+10 repeat(Math factorial(20))
+Profiler report
+</code></pre>
+<h2 id="compile-time-computation">
+  Compile-Time Computation
+  
+  <a class="anchor" href="#compile-time-computation">#</a>
+  
+</h2>
+<p>Use macros for compile-time optimization:</p>
+<pre><code class="language-io">// Macro that pre-computes constant expressions
+Object precompute := macro(expr,
+    // If expression contains only literals, evaluate now
+    result := nil
+    e := try(result = expr doInContext(Object clone))
+    
+    if(e isNil,
+        // Successfully evaluated - return literal
+        Message clone setName(result asString),
+        // Contains variables - return original
+        expr
+    )
+)
+
+// Usage
+x := 10
+y := precompute(5 * 6 + 7)  // Computed at parse time
+z := precompute(x * 2)      // Can't precompute, has variable
+
+y println  // 37 (was precomputed)
+</code></pre>
+<h2 id="method-combination">
+  Method Combination
+  
+  <a class="anchor" href="#method-combination">#</a>
+  
+</h2>
+<p>Implement method combination patterns:</p>
+<pre><code class="language-io">// Before/After/Around methods
+Object addBefore := method(methodName, beforeBlock,
+    original := self getSlot(methodName)
+    self setSlot(methodName, method(
+        beforeBlock doMessage(call message, call sender)
+        original doMessage(call message, call sender)
+    ))
+)
+
+Object addAfter := method(methodName, afterBlock,
+    original := self getSlot(methodName)
+    self setSlot(methodName, method(
+        result := original doMessage(call message, call sender)
+        afterBlock call(result)
+        result
+    ))
+)
+
+Object addAround := method(methodName, aroundBlock,
+    original := self getSlot(methodName)
+    self setSlot(methodName, method(
+        aroundBlock call(original, call message, call sender)
+    ))
+)
+
+// Usage
+BankAccount := Object clone
+BankAccount balance := 100
+BankAccount withdraw := method(amount, balance = balance - amount)
+
+BankAccount addBefore(&quot;withdraw&quot;, method(amount,
+    (&quot;Withdrawing &quot; .. amount) println
+))
+
+BankAccount addAfter(&quot;withdraw&quot;, method(result,
+    (&quot;New balance: &quot; .. balance) println
+))
+
+BankAccount addAround(&quot;withdraw&quot;, method(original, msg, sender,
+    amount := msg argAt(0) doInContext(sender)
+    if(amount &gt; balance,
+        Exception raise(&quot;Insufficient funds&quot;),
+        original doMessage(msg, sender)
+    )
+))
+
+account := BankAccount clone
+account withdraw(50)
+// Withdrawing 50
+// New balance: 50
+</code></pre>
+<h2 id="common-pitfalls">
+  Common Pitfalls
+  
+  <a class="anchor" href="#common-pitfalls">#</a>
+  
+</h2>
+<h3 id="evaluation-context">
+  Evaluation Context
+  
+  <a class="anchor" href="#evaluation-context">#</a>
+  
+</h3>
+<pre><code class="language-io">// PROBLEM: Wrong context
+makeMethod := method(code,
+    method doString(code)  // code evaluates in method's context
+)
+
+obj := Object clone
+obj value := 10
+obj badMethod := makeMethod(&quot;value * 2&quot;)
+// obj badMethod  // Error: value not found
+
+// SOLUTION: Use message objects
+makeMethod := method(code,
+    method(code doInContext(self))
+)
+</code></pre>
+<h3 id="performance-impact">
+  Performance Impact
+  
+  <a class="anchor" href="#performance-impact">#</a>
+  
+</h3>
+<pre><code class="language-io">// Metaprogramming has runtime cost
+directCall := method(x, x * 2)
+dynamicCall := method(x,
+    msg := Message clone setName(&quot;*&quot;) setArguments(list(Message clone setName(&quot;2&quot;)))
+    x doMessage(msg)
+)
+
+// directCall is much faster than dynamicCall
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Memoization Decorator</strong>: Create a decorator that automatically memoizes any method.</p>
+</li>
+<li>
+<p><strong>Contract System</strong>: Implement Design by Contract with pre/post conditions.</p>
+</li>
+<li>
+<p><strong>Mock Object Generator</strong>: Build a system that generates mock objects for testing.</p>
+</li>
+<li>
+<p><strong>Dependency Injection</strong>: Create a DI container using metaprogramming.</p>
+</li>
+<li>
+<p><strong>ORM</strong>: Build a simple object-relational mapper that generates methods from table schemas.</p>
+</li>
+</ol>
+<h2 id="real-world-example-activerecord-pattern">
+  Real-World Example: ActiveRecord Pattern
+  
+  <a class="anchor" href="#real-world-example-activerecord-pattern">#</a>
+  
+</h2>
+<pre><code class="language-io">// Simple ActiveRecord implementation
+ActiveRecord := Object clone
+ActiveRecord tableName := nil
+ActiveRecord connection := nil  // Database connection
+
+ActiveRecord findById := method(id,
+    sql := &quot;SELECT * FROM &quot; .. tableName .. &quot; WHERE id = &quot; .. id
+    row := connection execute(sql) first
+    if(row,
+        obj := self clone
+        row foreach(column, value,
+            obj setSlot(column, value)
+        )
+        obj
+    )
+)
+
+ActiveRecord save := method(
+    if(hasSlot(&quot;id&quot;),
+        // Update
+        sql := &quot;UPDATE &quot; .. tableName .. &quot; SET &quot;
+        updates := list()
+        slotNames foreach(name,
+            if(name != &quot;id&quot;,
+                updates append(name .. &quot; = '&quot; .. getSlot(name) .. &quot;'&quot;)
+            )
+        )
+        sql = sql .. updates join(&quot;, &quot;) .. &quot; WHERE id = &quot; .. id
+    ,
+        // Insert
+        sql := &quot;INSERT INTO &quot; .. tableName
+        columns := list()
+        values := list()
+        slotNames foreach(name,
+            columns append(name)
+            values append(&quot;'&quot; .. getSlot(name) .. &quot;'&quot;)
+        )
+        sql = sql .. &quot; (&quot; .. columns join(&quot;, &quot;) .. &quot;) VALUES (&quot; .. values join(&quot;, &quot;) .. &quot;)&quot;
+    )
+    
+    connection execute(sql)
+    self
+)
+
+// Generate model from table
+generateModel := method(name, table, columns,
+    model := ActiveRecord clone
+    model type := name
+    model tableName = table
+    
+    // Add properties
+    columns foreach(column,
+        model setSlot(column, nil)
+    )
+    
+    // Add validations
+    model validate := method(
+        // Generated validation code
+        true
+    )
+    
+    // Store in Lobby
+    Lobby setSlot(name, model)
+    model
+)
+
+// Usage
+User := generateModel(&quot;User&quot;, &quot;users&quot;, list(&quot;id&quot;, &quot;name&quot;, &quot;email&quot;, &quot;age&quot;))
+
+user := User clone
+user name = &quot;Alice&quot;
+user email = &quot;alice@example.com&quot;
+user age = 30
+// user save
+
+foundUser := User findById(1)
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Metaprogramming in Io isn&rsquo;t a special feature—it&rsquo;s a natural consequence of the language&rsquo;s design. When everything is an object, including code itself, manipulation becomes straightforward. Messages as first-class objects, comprehensive reflection, and runtime modification enable powerful patterns that would require complex machinery in other languages.</p>
+<p>The key to effective metaprogramming in Io is understanding that you&rsquo;re not working with special metaprogramming constructs, but simply manipulating objects that happen to represent code. This uniformity makes metaprogramming accessible and powerful, though it requires careful consideration of evaluation contexts and performance implications.</p>
+<hr>
+<p><em>Next: <a href="12-concurrency.md">Chapter 12 - Concurrency</a></em></p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/10-exceptions/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Exceptions" />
+        <span>Exceptions</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/12-concurrency/" class="flex align-center book-icon">
+        <span>Concurrency</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Concurrency" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
