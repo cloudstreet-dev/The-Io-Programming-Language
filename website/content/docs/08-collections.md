@@ -708,4 +708,3 @@ The real power comes from Io's flexibility: you can add methods to existing coll
 
 ---
 
-*Next: [Chapter 9 - Blocks and Closures](09-blocks-and-closures.md)*

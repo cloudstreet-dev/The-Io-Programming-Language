@@ -639,4 +639,3 @@ Whether you're optimizing hot paths, wrapping existing libraries, or embedding a
 
 ---
 
-*Next: [Chapter 15 - Real-World Patterns](15-real-world-patterns.md)*

@@ -548,4 +548,3 @@ In the next chapter, we'll dive deep into Io's object model and understand what 
 
 ---
 
-*Next: [Chapter 3 - Everything is an Object](03-everything-is-an-object.md)*

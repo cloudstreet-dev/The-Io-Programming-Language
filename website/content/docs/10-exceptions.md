@@ -695,4 +695,3 @@ The key to effective exception handling in Io is understanding when to use excep
 
 ---
 
-*Next: [Chapter 11 - Metaprogramming](11-metaprogramming.md)*

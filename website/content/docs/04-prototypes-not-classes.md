@@ -544,4 +544,3 @@ In the next chapter, we'll dive deeper into how objects communicate through Io's
 
 ---
 
-*Next: [Chapter 5 - Messages and Slots](05-messages-and-slots.md)*

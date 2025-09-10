@@ -664,4 +664,3 @@ Understanding blocks deeply unlocks Io's full potential, enabling you to write c
 
 ---
 
-*Next: [Chapter 10 - Exceptions](10-exceptions.md)*

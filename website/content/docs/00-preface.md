@@ -112,4 +112,3 @@ Let's begin.
 
 ---
 
-*Next: [Chapter 1 - Introduction: The Philosophy of Io](01-introduction.md)*

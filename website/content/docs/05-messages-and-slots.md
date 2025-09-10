@@ -617,4 +617,3 @@ Understanding messages and slots deeply is essential to mastering Io. They're no
 
 ---
 
-*Next: [Chapter 6 - Cloning and Inheritance](06-cloning-and-inheritance.md)*

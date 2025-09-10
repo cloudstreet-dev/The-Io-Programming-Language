@@ -865,4 +865,3 @@ The key to working effectively with Io's ecosystem is understanding that it favo
 
 ---
 
-*Next: [Chapter 18 - Conclusion](18-conclusion.md)*

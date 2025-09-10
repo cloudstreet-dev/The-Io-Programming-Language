@@ -1,6 +1,7 @@
 # Chapter 1: Introduction - The Philosophy of Io
 
-> "The limits of my language mean the limits of my world." - Ludwig Wittgenstein
+> "The limits of my language mean the limits of my world." 
+> - Ludwig Wittgenstein
 
 Every programming language embodies a philosophy—a set of beliefs about how programs should be structured, how complexity should be managed, and what concepts are fundamental versus incidental. Java believes in protective encapsulation and type safety. Lisp believes in code as data. Haskell believes in mathematical purity.
 

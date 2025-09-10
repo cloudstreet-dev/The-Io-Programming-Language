@@ -668,4 +668,3 @@ Understanding cloning and inheritance deeply is essential for effective Io progr
 
 ---
 
-*Next: [Chapter 7 - Control Flow](07-control-flow.md)*

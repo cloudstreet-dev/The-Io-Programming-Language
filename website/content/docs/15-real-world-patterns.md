@@ -953,4 +953,3 @@ The key insight is that Io's uniform object model means patterns aren't special 
 
 ---
 
-*Next: [Chapter 16 - Case Studies](16-case-studies.md)*

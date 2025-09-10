@@ -687,4 +687,3 @@ The key to effective metaprogramming in Io is understanding that you're not work
 
 ---
 
-*Next: [Chapter 12 - Concurrency](12-concurrency.md)*

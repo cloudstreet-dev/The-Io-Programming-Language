@@ -676,4 +676,3 @@ The cost is performance and perhaps initial unfamiliarity. But the benefit is a 
 
 ---
 
-*Next: [Chapter 8 - Collections](08-collections.md)*

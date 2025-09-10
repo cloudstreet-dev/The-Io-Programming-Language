@@ -1246,4 +1246,3 @@ These case studies show that Io is capable of building real applications, though
 
 ---
 
-*Next: [Chapter 17 - Ecosystem and Libraries](17-ecosystem-and-libraries.md)*

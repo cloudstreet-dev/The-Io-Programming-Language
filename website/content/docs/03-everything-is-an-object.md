@@ -522,4 +522,3 @@ Next, we'll explore how objects relate to each other through Io's prototype-base
 
 ---
 
-*Next: [Chapter 4 - Prototypes, Not Classes](04-prototypes-not-classes.md)*
