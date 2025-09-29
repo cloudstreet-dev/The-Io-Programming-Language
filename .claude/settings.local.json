@@ -13,7 +13,9 @@
       "Bash(__NEW_LINE__ sed -i '' 's/title: \"\"Getting Started with Io\"\"/title: \"\"Getting Started\"\"/' 02-getting-started.md)",
       "Bash(if [[ \"$file\" != \"_index.md\")",
       "Bash(unzip:*)",
-      "Bash(do sed -i '' '/^\\*Next:/d' \"$file\")"
+      "Bash(do sed -i '' '/^\\*Next:/d' \"$file\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
