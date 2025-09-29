@@ -298,7 +298,9 @@ TestObject test
 
 ## Operator Messages
 
-Operators are messages with special precedence rules:
+Operators are messages with special precedence rules. Unlike many languages where operators are built-in syntax, in Io they're regular messages that follow configurable precedence levels. This means you can treat operators like any other method - you can override them, create new ones, or call them using regular message passing syntax.
+
+The OperatorTable manages operator precedence, with levels from 0 (highest) to 13 (lowest). Standard arithmetic follows familiar rules: multiplication and division (level 3) bind tighter than addition and subtraction (level 4). Assignment operators like := and = have the lowest precedence (level 13), ensuring they capture everything to their right.
 
 ```io
 // These are equivalent
@@ -320,6 +322,8 @@ Number @@ := method(n,
 5 send("+", 3) println  // 8
 "hello" send("at", 1) println  // e
 ```
+
+This unified treatment of operators as messages enables powerful metaprogramming techniques. You can intercept arithmetic operations for logging, create domain-specific operators for mathematical or business logic, or even implement operator overloading for custom types - all using the same message passing mechanism that underlies the entire language.
 
 ## Assignment Messages
 
@@ -438,17 +442,23 @@ msg := Message clone setName("directMethod") setArguments(list(Message clone set
 time(
     100000 times(obj directMethod(5))
 )
+// 0.015000 seconds
 
 time(
     100000 times(obj doMessage(msg))
 )
+// 0.048000 seconds
 
-// Direct calls are faster, but message objects enable metaprogramming
+// Direct calls are ~3x faster, but message objects enable metaprogramming
 ```
 
 ## Common Patterns
 
+Message passing and slot manipulation enable elegant implementations of common design patterns. These patterns leverage Io's dynamic nature to create flexible, maintainable code structures that would require significant boilerplate in more static languages.
+
 ### Property Access Pattern
+
+This pattern demonstrates how to dynamically generate getters and setters using message construction. Instead of manually writing accessor methods for each property, we use Io's metaprogramming capabilities to create them on demand. The generated methods follow a naming convention where properties are stored with an underscore prefix internally, while the public interface uses clean method names.
 
 ```io
 Person := Object clone
@@ -461,11 +471,11 @@ Person init := method(
 // Generate getters/setters with messages
 Person addAccessors := method(slotName,
     // Getter
-    self setSlot(slotName, 
+    self setSlot(slotName,
         method(self getSlot("_" .. slotName))
     )
-    
-    // Setter  
+
+    // Setter
     self setSlot("set" .. slotName asCapitalized,
         method(value, self setSlot("_" .. slotName, value))
     )
@@ -479,7 +489,11 @@ p setName("Alice")
 p name println  // "Alice"
 ```
 
+The beauty of this approach is that it scales effortlessly - adding new properties requires just one line of code per property, and the accessor methods are created with consistent behavior and naming. This pattern is particularly useful when building data models or domain objects where property access needs to be controlled or monitored.
+
 ### Chain of Responsibility
+
+The Chain of Responsibility pattern creates a pipeline of handlers where each handler decides whether to process a request or pass it to the next handler. In Io, this pattern is particularly clean because message passing naturally supports delegation. Each handler in the chain examines the request and either processes it or forwards it using simple message passing.
 
 ```io
 Handler := Object clone
@@ -499,7 +513,7 @@ AuthHandler process := method(request,
     "Authenticating..." println
 )
 
-LogHandler := Handler clone  
+LogHandler := Handler clone
 LogHandler canHandle := method(request, true)
 LogHandler process := method(request,
     ("Logging: " .. request type) println
@@ -519,6 +533,8 @@ auth handle(request)
 // Authenticating...
 // Logging: GET
 ```
+
+This pattern is invaluable for building middleware systems, request processors, or event handling pipelines. The chain can be dynamically reconfigured at runtime by simply changing the `next` references, and new handler types can be added without modifying existing code. The pattern also naturally supports optional processing - handlers can choose to stop the chain or allow it to continue based on the request's characteristics.
 
 ## Debugging Messages
 
