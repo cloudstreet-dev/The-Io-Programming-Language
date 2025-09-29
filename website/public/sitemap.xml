@@ -2,52 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/docs/</loc>
+    <loc>https://example.org/docs/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/00-preface/</loc>
+    <loc>https://example.org/docs/00-preface/</loc>
   </url><url>
-    <loc>http://localhost:1313/examples/</loc>
+    <loc>https://example.org/examples/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/01-introduction/</loc>
+    <loc>https://example.org/docs/01-introduction/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/02-getting-started/</loc>
+    <loc>https://example.org/docs/02-getting-started/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/03-everything-is-an-object/</loc>
+    <loc>https://example.org/docs/03-everything-is-an-object/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/04-prototypes-not-classes/</loc>
+    <loc>https://example.org/docs/04-prototypes-not-classes/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/05-messages-and-slots/</loc>
+    <loc>https://example.org/docs/05-messages-and-slots/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/06-cloning-and-inheritance/</loc>
+    <loc>https://example.org/docs/06-cloning-and-inheritance/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/07-control-flow/</loc>
+    <loc>https://example.org/docs/07-control-flow/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/08-collections/</loc>
+    <loc>https://example.org/docs/08-collections/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/09-blocks-and-closures/</loc>
+    <loc>https://example.org/docs/09-blocks-and-closures/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/10-exceptions/</loc>
+    <loc>https://example.org/docs/10-exceptions/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/11-metaprogramming/</loc>
+    <loc>https://example.org/docs/11-metaprogramming/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/12-concurrency/</loc>
+    <loc>https://example.org/docs/12-concurrency/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/13-domain-specific-languages/</loc>
+    <loc>https://example.org/docs/13-domain-specific-languages/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/14-c-integration/</loc>
+    <loc>https://example.org/docs/14-c-integration/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/15-real-world-patterns/</loc>
+    <loc>https://example.org/docs/15-real-world-patterns/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/16-case-studies/</loc>
+    <loc>https://example.org/docs/16-case-studies/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/17-ecosystem-and-libraries/</loc>
+    <loc>https://example.org/docs/17-ecosystem-and-libraries/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/18-conclusion/</loc>
+    <loc>https://example.org/docs/18-conclusion/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://example.org/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://example.org/tags/</loc>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://example.org/</loc>
   </url>
 </urlset>
