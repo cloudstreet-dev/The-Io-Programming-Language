@@ -1,4 +1,4 @@
-baseURL: 'https://example.org/'
+baseURL: 'https://cloudstreet-dev.github.io/The-Io-Programming-Language/'
 languageCode: 'en-us'
 title: 'The Io Programming Language'
 theme: 'hugo-book'
