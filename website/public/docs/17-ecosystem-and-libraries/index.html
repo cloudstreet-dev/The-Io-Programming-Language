@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 17: Ecosystem and Libraries
+  
+  #
+  
+
+While Io has a smaller ecosystem compared to mainstream languages, it offers a thoughtfully curated set of libraries and tools. This chapter explores the available resources, how to use them effectively, and how to contribute to the Io ecosystem.
+
+  Core Libraries
+  
+  #
+  
+
+Io comes with several built-in libraries that extend its capabilities:
+
+  File I/O and System
+  
+  #
+  
+
+// File operations
+file := File with(&quot;data.txt&quot;)
+
+// Reading
+if(file exists,
+    contents := file contents
+    lines := file readLines
+    
+    // Read with encoding
+    file setEncoding(&quot;UTF-8&quot;)
+    text := file contents
+)
+
+// Writing
+file openForWriting
+file write(&quot;Hello, World!\n&quot;)
+file write(&quot;Line 2\n&quot;)
+file close
+
+// Appending
+file openForAppending
+file write(&quot;Additional line\n&quot;)
+file close
+
+// File information
+file size println
+file lastModified println
+file isDirectory println
+
+// Directory operations
+dir := Directory with(&quot;./src&quot;)
+dir files foreach(file,
+    file name println
+)
+
+dir directories foreach(subdir,
+    subdir path println
+)
+
+// Recursive directory walking
+dir recursiveFilesOfType(&quot;io&quot;) foreach(ioFile,
+    ioFile path println
+)
+
+// System operations
+System system(&quot;ls -la&quot;)  // Execute shell command
+System getEnvironmentVariable(&quot;HOME&quot;) println
+System setEnvironmentVariable(&quot;MY_VAR&quot;, &quot;value&quot;)
+System exit(0)
+
+
+  Networking
+  
+  #
+  
+
+// HTTP Client
+url := URL with(&quot;https://api.example.com/data&quot;)
+url fetch println  // Simple GET request
+
+// With headers
+url setHeader(&quot;Authorization&quot;, &quot;Bearer token&quot;)
+url setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+response := url fetch
+
+// POST request
+url setMethod(&quot;POST&quot;)
+url setBody(&quot;{\&quot;key\&quot;: \&quot;value\&quot;}&quot;)
+response := url fetch
+
+// Socket programming
+// Server
+server := Socket clone
+server setHost(&quot;127.0.0.1&quot;)
+server setPort(8080)
+server bind
+server listen
+
+loop(
+    client := server accept
+    @(
+        data := client readUntilSeq(&quot;\n&quot;)
+        client write(&quot;Echo: &quot; .. data)
+        client close
+    )
+)
+
+// Client
+client := Socket clone
+client setHost(&quot;127.0.0.1&quot;)
+client setPort(8080)
+client connect
+client write(&quot;Hello, server!\n&quot;)
+response := client readUntilSeq(&quot;\n&quot;)
+response println
+client close
+
+
+  Date and Time
+  
+  #
+  
+
+// Current date/time
+now := Date now
+now println
+
+// Date components
+now year println
+now month println
+now day println
+now hour println
+now minute println
+now second println
+
+// Date arithmetic
+tomorrow := now &#43; Duration days(1)
+nextWeek := now &#43; Duration weeks(1)
+hourAgo := now - Duration hours(1)
+
+// Formatting
+now asString(&quot;%Y-%m-%d %H:%M:%S&quot;) println
+now asString(&quot;%B %d, %Y&quot;) println
+
+// Parsing
+date := Date fromString(&quot;2024-01-15&quot;, &quot;%Y-%m-%d&quot;)
+
+// Duration
+duration := Duration clone
+duration setDays(2) setHours(3) setMinutes(30)
+duration asSeconds println
+
+// Timing code
+start := Date now
+// ... code to time ...
+elapsed := Date now - start
+(&quot;Elapsed: &quot; .. elapsed) println
+
+
+  Regular Expressions
+  
+  #
+  
+
+// Basic matching
+text := &quot;The year 2024 has 365 days&quot;
+text matchesRegex(&quot;\\d&#43;&quot;) println  // true
+
+// Finding matches
+match := text findRegex(&quot;\\d&#43;&quot;)
+match start println  // Starting position
+match end println    // Ending position
+match string println // Matched string
+
+// All matches
+matches := text allMatchesOfRegex(&quot;\\d&#43;&quot;)
+matches foreach(m,
+    m string println  // 2024, 365
+)
+
+// Replacement
+result := text replaceFirstRegex(&quot;\\d&#43;&quot;, &quot;N&quot;)
+result println  // The year N has 365 days
+
+result := text replaceAllRegex(&quot;\\d&#43;&quot;, &quot;N&quot;)
+result println  // The year N has N days
+
+// Capture groups
+email := &quot;user@example.com&quot;
+pattern := &quot;(\\w&#43;)@([\\w.]&#43;)&quot;
+if(match := email matchesOfRegex(pattern),
+    match at(1) println  // user
+    match at(2) println  // example.com
+)
+
+// Compiling regex for reuse
+regex := Regex with(&quot;\\b\\w{5}\\b&quot;)  // 5-letter words
+regex matches(&quot;hello&quot;) println  // true
+regex matches(&quot;hi&quot;) println     // false
+
+
+  JSON
+  
+  #
+  
+
+// Parsing JSON
+jsonString := &quot;&quot;&quot;
+{
+    &quot;name&quot;: &quot;Alice&quot;,
+    &quot;age&quot;: 30,
+    &quot;interests&quot;: [&quot;coding&quot;, &quot;music&quot;],
+    &quot;address&quot;: {
+        &quot;city&quot;: &quot;New York&quot;,
+        &quot;zip&quot;: &quot;10001&quot;
+    }
+}
+&quot;&quot;&quot;
+
+data := jsonString parseJson
+data at(&quot;name&quot;) println  // Alice
+data at(&quot;interests&quot;) at(0) println  // coding
+data at(&quot;address&quot;) at(&quot;city&quot;) println  // New York
+
+// Creating JSON
+person := Map with(
+    &quot;name&quot;, &quot;Bob&quot;,
+    &quot;age&quot;, 25,
+    &quot;active&quot;, true,
+    &quot;tags&quot;, list(&quot;developer&quot;, &quot;gamer&quot;)
+)
+
+json := person asJson
+json println  // {&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25,&quot;active&quot;:true,&quot;tags&quot;:[&quot;developer&quot;,&quot;gamer&quot;]}
+
+// Pretty printing
+json := person asJson(true)  // Pretty format
+
+
+  XML
+  
+  #
+  
+
+// Parsing XML
+xmlString := &quot;&quot;&quot;
+&lt;root&gt;
+    &lt;person id=&quot;1&quot;&gt;
+        &lt;name&gt;Alice&lt;/name&gt;
+        &lt;age&gt;30&lt;/age&gt;
+    &lt;/person&gt;
+    &lt;person id=&quot;2&quot;&gt;
+        &lt;name&gt;Bob&lt;/name&gt;
+        &lt;age&gt;25&lt;/age&gt;
+    &lt;/person&gt;
+&lt;/root&gt;
+&quot;&quot;&quot;
+
+doc := SGML parseString(xmlString)
+root := doc root
+
+// Navigate XML
+people := root elementsWithName(&quot;person&quot;)
+people foreach(person,
+    id := person attributeAt(&quot;id&quot;)
+    name := person elementWithName(&quot;name&quot;) text
+    age := person elementWithName(&quot;age&quot;) text
+    (id .. &quot;: &quot; .. name .. &quot; (&quot; .. age .. &quot;)&quot;) println
+)
+
+// Build XML
+doc := SGML clone
+root := doc addElement(&quot;catalog&quot;)
+
+book := root addElement(&quot;book&quot;)
+book setAttribute(&quot;isbn&quot;, &quot;123456&quot;)
+book addElement(&quot;title&quot;) setText(&quot;Io Programming&quot;)
+book addElement(&quot;author&quot;) setText(&quot;Jane Doe&quot;)
+book addElement(&quot;price&quot;) setText(&quot;29.99&quot;)
+
+doc asString println
+
+
+  Addon System
+  
+  #
+  
+
+Io&rsquo;s addon system allows loading C-based extensions:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/17-ecosystem-and-libraries/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Ecosystem and Libraries">
+  <meta property="og:description" content="Chapter 17: Ecosystem and Libraries # While Io has a smaller ecosystem compared to mainstream languages, it offers a thoughtfully curated set of libraries and tools. This chapter explores the available resources, how to use them effectively, and how to contribute to the Io ecosystem.
+Core Libraries # Io comes with several built-in libraries that extend its capabilities:
+File I/O and System # // File operations file := File with(&#34;data.txt&#34;) // Reading if(file exists, contents := file contents lines := file readLines // Read with encoding file setEncoding(&#34;UTF-8&#34;) text := file contents ) // Writing file openForWriting file write(&#34;Hello, World!\n&#34;) file write(&#34;Line 2\n&#34;) file close // Appending file openForAppending file write(&#34;Additional line\n&#34;) file close // File information file size println file lastModified println file isDirectory println // Directory operations dir := Directory with(&#34;./src&#34;) dir files foreach(file, file name println ) dir directories foreach(subdir, subdir path println ) // Recursive directory walking dir recursiveFilesOfType(&#34;io&#34;) foreach(ioFile, ioFile path println ) // System operations System system(&#34;ls -la&#34;) // Execute shell command System getEnvironmentVariable(&#34;HOME&#34;) println System setEnvironmentVariable(&#34;MY_VAR&#34;, &#34;value&#34;) System exit(0) Networking # // HTTP Client url := URL with(&#34;https://api.example.com/data&#34;) url fetch println // Simple GET request // With headers url setHeader(&#34;Authorization&#34;, &#34;Bearer token&#34;) url setHeader(&#34;Content-Type&#34;, &#34;application/json&#34;) response := url fetch // POST request url setMethod(&#34;POST&#34;) url setBody(&#34;{\&#34;key\&#34;: \&#34;value\&#34;}&#34;) response := url fetch // Socket programming // Server server := Socket clone server setHost(&#34;127.0.0.1&#34;) server setPort(8080) server bind server listen loop( client := server accept @( data := client readUntilSeq(&#34;\n&#34;) client write(&#34;Echo: &#34; .. data) client close ) ) // Client client := Socket clone client setHost(&#34;127.0.0.1&#34;) client setPort(8080) client connect client write(&#34;Hello, server!\n&#34;) response := client readUntilSeq(&#34;\n&#34;) response println client close Date and Time # // Current date/time now := Date now now println // Date components now year println now month println now day println now hour println now minute println now second println // Date arithmetic tomorrow := now &#43; Duration days(1) nextWeek := now &#43; Duration weeks(1) hourAgo := now - Duration hours(1) // Formatting now asString(&#34;%Y-%m-%d %H:%M:%S&#34;) println now asString(&#34;%B %d, %Y&#34;) println // Parsing date := Date fromString(&#34;2024-01-15&#34;, &#34;%Y-%m-%d&#34;) // Duration duration := Duration clone duration setDays(2) setHours(3) setMinutes(30) duration asSeconds println // Timing code start := Date now // ... code to time ... elapsed := Date now - start (&#34;Elapsed: &#34; .. elapsed) println Regular Expressions # // Basic matching text := &#34;The year 2024 has 365 days&#34; text matchesRegex(&#34;\\d&#43;&#34;) println // true // Finding matches match := text findRegex(&#34;\\d&#43;&#34;) match start println // Starting position match end println // Ending position match string println // Matched string // All matches matches := text allMatchesOfRegex(&#34;\\d&#43;&#34;) matches foreach(m, m string println // 2024, 365 ) // Replacement result := text replaceFirstRegex(&#34;\\d&#43;&#34;, &#34;N&#34;) result println // The year N has 365 days result := text replaceAllRegex(&#34;\\d&#43;&#34;, &#34;N&#34;) result println // The year N has N days // Capture groups email := &#34;user@example.com&#34; pattern := &#34;(\\w&#43;)@([\\w.]&#43;)&#34; if(match := email matchesOfRegex(pattern), match at(1) println // user match at(2) println // example.com ) // Compiling regex for reuse regex := Regex with(&#34;\\b\\w{5}\\b&#34;) // 5-letter words regex matches(&#34;hello&#34;) println // true regex matches(&#34;hi&#34;) println // false JSON # // Parsing JSON jsonString := &#34;&#34;&#34; { &#34;name&#34;: &#34;Alice&#34;, &#34;age&#34;: 30, &#34;interests&#34;: [&#34;coding&#34;, &#34;music&#34;], &#34;address&#34;: { &#34;city&#34;: &#34;New York&#34;, &#34;zip&#34;: &#34;10001&#34; } } &#34;&#34;&#34; data := jsonString parseJson data at(&#34;name&#34;) println // Alice data at(&#34;interests&#34;) at(0) println // coding data at(&#34;address&#34;) at(&#34;city&#34;) println // New York // Creating JSON person := Map with( &#34;name&#34;, &#34;Bob&#34;, &#34;age&#34;, 25, &#34;active&#34;, true, &#34;tags&#34;, list(&#34;developer&#34;, &#34;gamer&#34;) ) json := person asJson json println // {&#34;name&#34;:&#34;Bob&#34;,&#34;age&#34;:25,&#34;active&#34;:true,&#34;tags&#34;:[&#34;developer&#34;,&#34;gamer&#34;]} // Pretty printing json := person asJson(true) // Pretty format XML # // Parsing XML xmlString := &#34;&#34;&#34; &lt;root&gt; &lt;person id=&#34;1&#34;&gt; &lt;name&gt;Alice&lt;/name&gt; &lt;age&gt;30&lt;/age&gt; &lt;/person&gt; &lt;person id=&#34;2&#34;&gt; &lt;name&gt;Bob&lt;/name&gt; &lt;age&gt;25&lt;/age&gt; &lt;/person&gt; &lt;/root&gt; &#34;&#34;&#34; doc := SGML parseString(xmlString) root := doc root // Navigate XML people := root elementsWithName(&#34;person&#34;) people foreach(person, id := person attributeAt(&#34;id&#34;) name := person elementWithName(&#34;name&#34;) text age := person elementWithName(&#34;age&#34;) text (id .. &#34;: &#34; .. name .. &#34; (&#34; .. age .. &#34;)&#34;) println ) // Build XML doc := SGML clone root := doc addElement(&#34;catalog&#34;) book := root addElement(&#34;book&#34;) book setAttribute(&#34;isbn&#34;, &#34;123456&#34;) book addElement(&#34;title&#34;) setText(&#34;Io Programming&#34;) book addElement(&#34;author&#34;) setText(&#34;Jane Doe&#34;) book addElement(&#34;price&#34;) setText(&#34;29.99&#34;) doc asString println Addon System # Io’s addon system allows loading C-based extensions:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Ecosystem and Libraries | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/17-ecosystem-and-libraries/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="active">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Ecosystem and Libraries</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Ecosystem and Libraries</h1>
+    
+    <div class="chapter-number">Chapter 17</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>While Io has a smaller ecosystem compared to mainstream languages, it offers a thoughtfully curated set of libraries and tools. This chapter explores the available resources, how to use them effectively, and how to contribute to the Io ecosystem.</p>
+<h2 id="core-libraries">
+  Core Libraries
+  
+  <a class="anchor" href="#core-libraries">#</a>
+  
+</h2>
+<p>Io comes with several built-in libraries that extend its capabilities:</p>
+<h3 id="file-io-and-system">
+  File I/O and System
+  
+  <a class="anchor" href="#file-io-and-system">#</a>
+  
+</h3>
+<pre><code class="language-io">// File operations
+file := File with(&quot;data.txt&quot;)
+
+// Reading
+if(file exists,
+    contents := file contents
+    lines := file readLines
+    
+    // Read with encoding
+    file setEncoding(&quot;UTF-8&quot;)
+    text := file contents
+)
+
+// Writing
+file openForWriting
+file write(&quot;Hello, World!\n&quot;)
+file write(&quot;Line 2\n&quot;)
+file close
+
+// Appending
+file openForAppending
+file write(&quot;Additional line\n&quot;)
+file close
+
+// File information
+file size println
+file lastModified println
+file isDirectory println
+
+// Directory operations
+dir := Directory with(&quot;./src&quot;)
+dir files foreach(file,
+    file name println
+)
+
+dir directories foreach(subdir,
+    subdir path println
+)
+
+// Recursive directory walking
+dir recursiveFilesOfType(&quot;io&quot;) foreach(ioFile,
+    ioFile path println
+)
+
+// System operations
+System system(&quot;ls -la&quot;)  // Execute shell command
+System getEnvironmentVariable(&quot;HOME&quot;) println
+System setEnvironmentVariable(&quot;MY_VAR&quot;, &quot;value&quot;)
+System exit(0)
+</code></pre>
+<h3 id="networking">
+  Networking
+  
+  <a class="anchor" href="#networking">#</a>
+  
+</h3>
+<pre><code class="language-io">// HTTP Client
+url := URL with(&quot;https://api.example.com/data&quot;)
+url fetch println  // Simple GET request
+
+// With headers
+url setHeader(&quot;Authorization&quot;, &quot;Bearer token&quot;)
+url setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+response := url fetch
+
+// POST request
+url setMethod(&quot;POST&quot;)
+url setBody(&quot;{\&quot;key\&quot;: \&quot;value\&quot;}&quot;)
+response := url fetch
+
+// Socket programming
+// Server
+server := Socket clone
+server setHost(&quot;127.0.0.1&quot;)
+server setPort(8080)
+server bind
+server listen
+
+loop(
+    client := server accept
+    @(
+        data := client readUntilSeq(&quot;\n&quot;)
+        client write(&quot;Echo: &quot; .. data)
+        client close
+    )
+)
+
+// Client
+client := Socket clone
+client setHost(&quot;127.0.0.1&quot;)
+client setPort(8080)
+client connect
+client write(&quot;Hello, server!\n&quot;)
+response := client readUntilSeq(&quot;\n&quot;)
+response println
+client close
+</code></pre>
+<h3 id="date-and-time">
+  Date and Time
+  
+  <a class="anchor" href="#date-and-time">#</a>
+  
+</h3>
+<pre><code class="language-io">// Current date/time
+now := Date now
+now println
+
+// Date components
+now year println
+now month println
+now day println
+now hour println
+now minute println
+now second println
+
+// Date arithmetic
+tomorrow := now + Duration days(1)
+nextWeek := now + Duration weeks(1)
+hourAgo := now - Duration hours(1)
+
+// Formatting
+now asString(&quot;%Y-%m-%d %H:%M:%S&quot;) println
+now asString(&quot;%B %d, %Y&quot;) println
+
+// Parsing
+date := Date fromString(&quot;2024-01-15&quot;, &quot;%Y-%m-%d&quot;)
+
+// Duration
+duration := Duration clone
+duration setDays(2) setHours(3) setMinutes(30)
+duration asSeconds println
+
+// Timing code
+start := Date now
+// ... code to time ...
+elapsed := Date now - start
+(&quot;Elapsed: &quot; .. elapsed) println
+</code></pre>
+<h3 id="regular-expressions">
+  Regular Expressions
+  
+  <a class="anchor" href="#regular-expressions">#</a>
+  
+</h3>
+<pre><code class="language-io">// Basic matching
+text := &quot;The year 2024 has 365 days&quot;
+text matchesRegex(&quot;\\d+&quot;) println  // true
+
+// Finding matches
+match := text findRegex(&quot;\\d+&quot;)
+match start println  // Starting position
+match end println    // Ending position
+match string println // Matched string
+
+// All matches
+matches := text allMatchesOfRegex(&quot;\\d+&quot;)
+matches foreach(m,
+    m string println  // 2024, 365
+)
+
+// Replacement
+result := text replaceFirstRegex(&quot;\\d+&quot;, &quot;N&quot;)
+result println  // The year N has 365 days
+
+result := text replaceAllRegex(&quot;\\d+&quot;, &quot;N&quot;)
+result println  // The year N has N days
+
+// Capture groups
+email := &quot;user@example.com&quot;
+pattern := &quot;(\\w+)@([\\w.]+)&quot;
+if(match := email matchesOfRegex(pattern),
+    match at(1) println  // user
+    match at(2) println  // example.com
+)
+
+// Compiling regex for reuse
+regex := Regex with(&quot;\\b\\w{5}\\b&quot;)  // 5-letter words
+regex matches(&quot;hello&quot;) println  // true
+regex matches(&quot;hi&quot;) println     // false
+</code></pre>
+<h3 id="json">
+  JSON
+  
+  <a class="anchor" href="#json">#</a>
+  
+</h3>
+<pre><code class="language-io">// Parsing JSON
+jsonString := &quot;&quot;&quot;
+{
+    &quot;name&quot;: &quot;Alice&quot;,
+    &quot;age&quot;: 30,
+    &quot;interests&quot;: [&quot;coding&quot;, &quot;music&quot;],
+    &quot;address&quot;: {
+        &quot;city&quot;: &quot;New York&quot;,
+        &quot;zip&quot;: &quot;10001&quot;
+    }
+}
+&quot;&quot;&quot;
+
+data := jsonString parseJson
+data at(&quot;name&quot;) println  // Alice
+data at(&quot;interests&quot;) at(0) println  // coding
+data at(&quot;address&quot;) at(&quot;city&quot;) println  // New York
+
+// Creating JSON
+person := Map with(
+    &quot;name&quot;, &quot;Bob&quot;,
+    &quot;age&quot;, 25,
+    &quot;active&quot;, true,
+    &quot;tags&quot;, list(&quot;developer&quot;, &quot;gamer&quot;)
+)
+
+json := person asJson
+json println  // {&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25,&quot;active&quot;:true,&quot;tags&quot;:[&quot;developer&quot;,&quot;gamer&quot;]}
+
+// Pretty printing
+json := person asJson(true)  // Pretty format
+</code></pre>
+<h3 id="xml">
+  XML
+  
+  <a class="anchor" href="#xml">#</a>
+  
+</h3>
+<pre><code class="language-io">// Parsing XML
+xmlString := &quot;&quot;&quot;
+&lt;root&gt;
+    &lt;person id=&quot;1&quot;&gt;
+        &lt;name&gt;Alice&lt;/name&gt;
+        &lt;age&gt;30&lt;/age&gt;
+    &lt;/person&gt;
+    &lt;person id=&quot;2&quot;&gt;
+        &lt;name&gt;Bob&lt;/name&gt;
+        &lt;age&gt;25&lt;/age&gt;
+    &lt;/person&gt;
+&lt;/root&gt;
+&quot;&quot;&quot;
+
+doc := SGML parseString(xmlString)
+root := doc root
+
+// Navigate XML
+people := root elementsWithName(&quot;person&quot;)
+people foreach(person,
+    id := person attributeAt(&quot;id&quot;)
+    name := person elementWithName(&quot;name&quot;) text
+    age := person elementWithName(&quot;age&quot;) text
+    (id .. &quot;: &quot; .. name .. &quot; (&quot; .. age .. &quot;)&quot;) println
+)
+
+// Build XML
+doc := SGML clone
+root := doc addElement(&quot;catalog&quot;)
+
+book := root addElement(&quot;book&quot;)
+book setAttribute(&quot;isbn&quot;, &quot;123456&quot;)
+book addElement(&quot;title&quot;) setText(&quot;Io Programming&quot;)
+book addElement(&quot;author&quot;) setText(&quot;Jane Doe&quot;)
+book addElement(&quot;price&quot;) setText(&quot;29.99&quot;)
+
+doc asString println
+</code></pre>
+<h2 id="addon-system">
+  Addon System
+  
+  <a class="anchor" href="#addon-system">#</a>
+  
+</h2>
+<p>Io&rsquo;s addon system allows loading C-based extensions:</p>
+<pre><code class="language-io">// Loading addons
+Addon load(&quot;Socket&quot;)   // Network programming
+Addon load(&quot;Random&quot;)   // Random number generation
+Addon load(&quot;Regex&quot;)    // Regular expressions
+Addon load(&quot;SQLite&quot;)   // Database access
+
+// Check available addons
+Addon availableAddons foreach(name,
+    name println
+)
+
+// Addon information
+addon := Addon named(&quot;Socket&quot;)
+addon path println
+addon dependencies println
+</code></pre>
+<h2 id="database-libraries">
+  Database Libraries
+  
+  <a class="anchor" href="#database-libraries">#</a>
+  
+</h2>
+<h3 id="sqlite">
+  SQLite
+  
+  <a class="anchor" href="#sqlite">#</a>
+  
+</h3>
+<pre><code class="language-io">// SQLite integration
+db := SQLite clone
+db open(&quot;app.db&quot;)
+
+// Create table
+db exec(&quot;&quot;&quot;
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+&quot;&quot;&quot;)
+
+// Insert data
+stmt := db prepare(&quot;INSERT INTO users (name, email) VALUES (?, ?)&quot;)
+stmt bind(1, &quot;Alice&quot;)
+stmt bind(2, &quot;alice@example.com&quot;)
+stmt step
+stmt reset
+
+// Query data
+results := db exec(&quot;SELECT * FROM users WHERE name LIKE 'A%'&quot;)
+results foreach(row,
+    (&quot;ID: &quot; .. row at(&quot;id&quot;) .. &quot;, Name: &quot; .. row at(&quot;name&quot;)) println
+)
+
+// Prepared statements with results
+stmt := db prepare(&quot;SELECT * FROM users WHERE id = ?&quot;)
+stmt bind(1, 1)
+
+while(stmt step == SQLite ROW,
+    name := stmt columnText(1)
+    email := stmt columnText(2)
+    (name .. &quot; - &quot; .. email) println
+)
+
+stmt finalize
+db close
+
+// Transactions
+db begin
+try(
+    db exec(&quot;INSERT INTO users ...&quot;)
+    db exec(&quot;UPDATE users ...&quot;)
+    db commit
+) catch(Exception, e,
+    db rollback
+    e raise
+)
+</code></pre>
+<h2 id="graphics-and-gui">
+  Graphics and GUI
+  
+  <a class="anchor" href="#graphics-and-gui">#</a>
+  
+</h2>
+<h3 id="opengl">
+  OpenGL
+  
+  <a class="anchor" href="#opengl">#</a>
+  
+</h3>
+<pre><code class="language-io">// OpenGL addon (if available)
+Addon load(&quot;OpenGL&quot;)
+
+// Basic window setup
+window := GLApp clone
+window width := 800
+window height := 600
+window title := &quot;Io OpenGL&quot;
+
+window draw := method(
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    
+    glBegin(GL_TRIANGLES)
+    glColor3f(1, 0, 0)
+    glVertex2f(-0.5, -0.5)
+    glColor3f(0, 1, 0)
+    glVertex2f(0.5, -0.5)
+    glColor3f(0, 0, 1)
+    glVertex2f(0, 0.5)
+    glEnd
+    
+    swapBuffers
+)
+
+window run
+</code></pre>
+<h3 id="image-processing">
+  Image Processing
+  
+  <a class="anchor" href="#image-processing">#</a>
+  
+</h3>
+<pre><code class="language-io">// Image addon
+Addon load(&quot;Image&quot;)
+
+// Load and manipulate images
+img := Image clone
+img open(&quot;photo.jpg&quot;)
+
+// Get information
+img width println
+img height println
+img componentCount println  // Color channels
+
+// Basic operations
+img resize(800, 600)
+img crop(100, 100, 400, 300)
+img flip(&quot;horizontal&quot;)
+img rotate(90)
+
+// Filters
+img blur(5)
+img sharpen
+img adjustBrightness(1.2)
+img adjustContrast(1.5)
+img grayscale
+
+// Save
+img save(&quot;modified.png&quot;)
+
+// Create new image
+canvas := Image clone
+canvas allocate(500, 500, 3)  // RGB
+canvas fill(Color with(0.5, 0.5, 1.0))  // Light blue
+
+// Draw on image
+canvas drawLine(0, 0, 500, 500, Color red)
+canvas drawCircle(250, 250, 100, Color green)
+canvas drawRectangle(100, 100, 300, 200, Color blue)
+
+canvas save(&quot;drawing.png&quot;)
+</code></pre>
+<h2 id="cryptography">
+  Cryptography
+  
+  <a class="anchor" href="#cryptography">#</a>
+  
+</h2>
+<pre><code class="language-io">// Crypto addon
+Addon load(&quot;MD5&quot;)
+Addon load(&quot;SHA1&quot;)
+
+// Hashing
+text := &quot;Hello, World!&quot;
+
+md5 := MD5 clone
+md5 appendSeq(text)
+md5 hexDigest println  // MD5 hash
+
+sha := SHA1 clone
+sha appendSeq(text)
+sha hexDigest println  // SHA1 hash
+
+// File hashing
+file := File with(&quot;document.pdf&quot;)
+hash := MD5 hashFile(file path)
+hash println
+
+// HMAC (if available)
+key := &quot;secret-key&quot;
+message := &quot;Important message&quot;
+hmac := HMAC sha256(key, message)
+hmac println
+</code></pre>
+<h2 id="third-party-libraries">
+  Third-Party Libraries
+  
+  <a class="anchor" href="#third-party-libraries">#</a>
+  
+</h2>
+<h3 id="package-management">
+  Package Management
+  
+  <a class="anchor" href="#package-management">#</a>
+  
+</h3>
+<p>While Io doesn&rsquo;t have a centralized package manager like npm or pip, libraries can be managed through:</p>
+<pre><code class="language-io">// Simple package loader
+PackageLoader := Object clone
+PackageLoader paths := list(
+    &quot;~/.io/packages&quot;,
+    &quot;/usr/local/io/packages&quot;,
+    &quot;./packages&quot;
+)
+
+PackageLoader load := method(name,
+    paths foreach(path,
+        packageFile := Path with(path, name, &quot;init.io&quot;)
+        if(File with(packageFile) exists,
+            doFile(packageFile)
+            return true
+        )
+    )
+    Exception raise(&quot;Package not found: &quot; .. name)
+)
+
+// Usage
+PackageLoader load(&quot;web-framework&quot;)
+PackageLoader load(&quot;test-framework&quot;)
+</code></pre>
+<h3 id="creating-libraries">
+  Creating Libraries
+  
+  <a class="anchor" href="#creating-libraries">#</a>
+  
+</h3>
+<p>Structure for an Io library:</p>
+<pre><code class="language-io">// mylib/init.io - Entry point
+MyLib := Object clone
+MyLib version := &quot;1.0.0&quot;
+
+// Load components
+doRelativeFile(&quot;core.io&quot;)
+doRelativeFile(&quot;utils.io&quot;)
+doRelativeFile(&quot;extensions.io&quot;)
+
+// Export public API
+MyLib
+
+// mylib/core.io
+MyLib Core := Object clone
+MyLib Core process := method(data,
+    // Core functionality
+)
+
+// mylib/utils.io
+MyLib Utils := Object clone
+MyLib Utils helper := method(
+    // Utility functions
+)
+
+// mylib/extensions.io
+// Extend built-in types
+List customMethod := method(
+    // Extended functionality
+)
+</code></pre>
+<h3 id="testing-frameworks">
+  Testing Frameworks
+  
+  <a class="anchor" href="#testing-frameworks">#</a>
+  
+</h3>
+<p>Simple testing framework example:</p>
+<pre><code class="language-io">// SimpleTest framework
+Test := Object clone
+Test suites := list()
+
+Test describe := method(name, block,
+    suite := TestSuite clone
+    suite name := name
+    suite tests := list()
+    
+    suite it := method(desc, testBlock,
+        tests append(list(desc, testBlock))
+    )
+    
+    block call(suite)
+    suites append(suite)
+)
+
+Test run := method(
+    totalTests := 0
+    passedTests := 0
+    
+    suites foreach(suite,
+        (&quot;\n&quot; .. suite name) println
+        (&quot;=&quot; repeated(suite name size)) println
+        
+        suite tests foreach(test,
+            desc := test at(0)
+            block := test at(1)
+            totalTests = totalTests + 1
+            
+            e := try(
+                block call
+                (&quot;  ✓ &quot; .. desc) println
+                passedTests = passedTests + 1
+            ) catch(Exception, e,
+                (&quot;  ✗ &quot; .. desc) println
+                (&quot;    &quot; .. e message) println
+            )
+        )
+    )
+    
+    (&quot;\n&quot; .. passedTests .. &quot;/&quot; .. totalTests .. &quot; tests passed&quot;) println
+)
+
+// Usage
+Test describe(&quot;Array operations&quot;, suite,
+    suite it(&quot;should append elements&quot;, 
+        arr := list(1, 2)
+        arr append(3)
+        assert(arr size == 3)
+    )
+    
+    suite it(&quot;should remove elements&quot;,
+        arr := list(1, 2, 3)
+        arr remove(2)
+        assert(arr contains(2) not)
+    )
+)
+
+Test run
+</code></pre>
+<h2 id="documentation-tools">
+  Documentation Tools
+  
+  <a class="anchor" href="#documentation-tools">#</a>
+  
+</h2>
+<h3 id="generating-documentation">
+  Generating Documentation
+  
+  <a class="anchor" href="#generating-documentation">#</a>
+  
+</h3>
+<pre><code class="language-io">// Simple documentation generator
+DocGen := Object clone
+DocGen init := method(
+    self docs := Map clone
+    self
+)
+
+DocGen document := method(obj, name,
+    info := Map clone
+    info atPut(&quot;name&quot;, name)
+    info atPut(&quot;type&quot;, obj type)
+    info atPut(&quot;slots&quot;, obj slotNames sort)
+    
+    // Extract method signatures
+    methods := Map clone
+    obj slotNames foreach(slotName,
+        slot := obj getSlot(slotName)
+        if(slot type == &quot;Block&quot;,
+            methods atPut(slotName, slot argumentNames)
+        )
+    )
+    info atPut(&quot;methods&quot;, methods)
+    
+    docs atPut(name, info)
+    self
+)
+
+DocGen generateMarkdown := method(
+    md := &quot;# API Documentation\n\n&quot;
+    
+    docs foreach(name, info,
+        md = md .. &quot;## &quot; .. name .. &quot;\n\n&quot;
+        md = md .. &quot;**Type**: &quot; .. info at(&quot;type&quot;) .. &quot;\n\n&quot;
+        
+        methods := info at(&quot;methods&quot;)
+        if(methods size &gt; 0,
+            md = md .. &quot;### Methods\n\n&quot;
+            methods foreach(method, args,
+                md = md .. &quot;- `&quot; .. method .. &quot;(&quot; .. args join(&quot;, &quot;) .. &quot;)`\n&quot;
+            )
+            md = md .. &quot;\n&quot;
+        )
+    )
+    
+    md
+)
+
+// Usage
+docGen := DocGen clone init
+docGen document(MyClass, &quot;MyClass&quot;)
+docGen document(MyUtils, &quot;MyUtils&quot;)
+
+File with(&quot;API.md&quot;) openForWriting write(docGen generateMarkdown) close
+</code></pre>
+<h2 id="development-tools">
+  Development Tools
+  
+  <a class="anchor" href="#development-tools">#</a>
+  
+</h2>
+<h3 id="repl-enhancements">
+  REPL Enhancements
+  
+  <a class="anchor" href="#repl-enhancements">#</a>
+  
+</h3>
+<pre><code class="language-io">// Enhanced REPL
+REPL := Object clone
+REPL history := list()
+REPL commands := Map clone
+
+REPL registerCommand := method(name, block,
+    commands atPut(name, block)
+)
+
+REPL run := method(
+    loop(
+        &quot;io&gt; &quot; print
+        input := File standardInput readLine
+        
+        if(input beginsWithSeq(&quot;:&quot;),
+            // Handle commands
+            cmd := input afterSeq(&quot;:&quot;)
+            if(commands hasKey(cmd),
+                commands at(cmd) call,
+                (&quot;Unknown command: &quot; .. cmd) println
+            ),
+            // Evaluate Io code
+            history append(input)
+            e := try(
+                result := doString(input)
+                (&quot;==&gt; &quot; .. result) println
+            ) catch(Exception, e,
+                (&quot;Error: &quot; .. e message) println
+            )
+        )
+    )
+)
+
+// Register commands
+REPL registerCommand(&quot;help&quot;, block(
+    &quot;Available commands:&quot; println
+    commands keys foreach(cmd,
+        (&quot;  :&quot; .. cmd) println
+    )
+))
+
+REPL registerCommand(&quot;history&quot;, block(
+    history foreach(i, line,
+        (i .. &quot;: &quot; .. line) println
+    )
+))
+
+REPL registerCommand(&quot;clear&quot;, block(
+    System system(&quot;clear&quot;)
+))
+
+REPL registerCommand(&quot;quit&quot;, block(
+    System exit
+))
+
+// Run enhanced REPL
+REPL run
+</code></pre>
+<h3 id="debugging-tools">
+  Debugging Tools
+  
+  <a class="anchor" href="#debugging-tools">#</a>
+  
+</h3>
+<pre><code class="language-io">// Simple debugger
+Debugger := Object clone
+Debugger breakpoints := list()
+Debugger stepping := false
+
+Object debug := method(
+    Debugger enter(self, call)
+)
+
+Debugger enter := method(context, callObj,
+    &quot;=== Debugger ===&quot; println
+    (&quot;Context: &quot; .. context type) println
+    (&quot;Location: &quot; .. callObj message) println
+    
+    loop(
+        &quot;&gt; &quot; print
+        cmd := File standardInput readLine split(&quot; &quot;)
+        
+        if(cmd at(0) == &quot;inspect&quot;,
+            target := cmd at(1)
+            if(target,
+                obj := context doString(target)
+                obj slotNames foreach(slot,
+                    (&quot;  &quot; .. slot .. &quot;: &quot; .. obj getSlot(slot) type) println
+                )
+            )
+        )
+        
+        if(cmd at(0) == &quot;eval&quot;,
+            code := cmd slice(1) join(&quot; &quot;)
+            result := context doString(code)
+            result println
+        )
+        
+        if(cmd at(0) == &quot;continue&quot;,
+            break
+        )
+        
+        if(cmd at(0) == &quot;help&quot;,
+            &quot;Commands: inspect &lt;obj&gt;, eval &lt;code&gt;, continue, help&quot; println
+        )
+    )
+)
+</code></pre>
+<h2 id="community-resources">
+  Community Resources
+  
+  <a class="anchor" href="#community-resources">#</a>
+  
+</h2>
+<h3 id="finding-libraries">
+  Finding Libraries
+  
+  <a class="anchor" href="#finding-libraries">#</a>
+  
+</h3>
+<p>Common sources for Io libraries:</p>
+<ol>
+<li><strong>GitHub</strong>: Search for &ldquo;io-language&rdquo; or &ldquo;iolanguage&rdquo; topics</li>
+<li><strong>Official Repository</strong>: <a href="https://github.com/IoLanguage/io">https://github.com/IoLanguage/io</a></li>
+<li><strong>Community Addons</strong>: Various developers maintain addon collections</li>
+</ol>
+<h3 id="contributing">
+  Contributing
+  
+  <a class="anchor" href="#contributing">#</a>
+  
+</h3>
+<p>Creating an addon for the community:</p>
+<pre><code class="language-io">// addon.io - Addon metadata
+Addon := Object clone
+Addon name := &quot;MyAddon&quot;
+Addon version := &quot;1.0.0&quot;
+Addon author := &quot;Your Name&quot;
+Addon description := &quot;Description of what your addon does&quot;
+Addon license := &quot;MIT&quot;
+Addon dependencies := list(&quot;OtherAddon&quot;)
+
+Addon install := method(
+    // Installation logic
+    &quot;Installing &quot; .. name .. &quot; v&quot; .. version println
+    
+    // Copy files
+    // Compile C extensions if needed
+    // Register with Io
+)
+
+Addon uninstall := method(
+    // Cleanup logic
+)
+
+// Make addon discoverable
+Addon register
+</code></pre>
+<h2 id="performance-libraries">
+  Performance Libraries
+  
+  <a class="anchor" href="#performance-libraries">#</a>
+  
+</h2>
+<h3 id="profiling">
+  Profiling
+  
+  <a class="anchor" href="#profiling">#</a>
+  
+</h3>
+<pre><code class="language-io">// Simple profiler
+Profiler := Object clone
+Profiler data := Map clone
+
+Object profile := method(name,
+    start := Date now
+    result := call evalArgAt(0)
+    elapsed := Date now - start
+    
+    if(Profiler data hasKey(name) not,
+        Profiler data atPut(name, list(0, 0))
+    )
+    
+    stats := Profiler data at(name)
+    stats atPut(0, stats at(0) + 1)  // Count
+    stats atPut(1, stats at(1) + elapsed)  // Total time
+    
+    result
+)
+
+Profiler report := method(
+    &quot;=== Profile Report ===&quot; println
+    data foreach(name, stats,
+        count := stats at(0)
+        total := stats at(1)
+        avg := total / count
+        
+        (name .. &quot;: &quot; .. count .. &quot; calls, &quot; ..
+         total .. &quot;s total, &quot; .. avg .. &quot;s average&quot;) println
+    )
+)
+
+// Usage
+profile(&quot;database&quot;,
+    // Expensive operation
+    wait(0.1)
+)
+
+Profiler report
+</code></pre>
+<h2 id="future-of-io-libraries">
+  Future of Io Libraries
+  
+  <a class="anchor" href="#future-of-io-libraries">#</a>
+  
+</h2>
+<p>The Io ecosystem continues to evolve with:</p>
+<ol>
+<li><strong>WebAssembly Support</strong>: Potential for running Io in browsers</li>
+<li><strong>Modern Addons</strong>: Integration with contemporary libraries</li>
+<li><strong>Cloud Services</strong>: AWS, Azure, GCP client libraries</li>
+<li><strong>Machine Learning</strong>: Bindings to TensorFlow, PyTorch</li>
+<li><strong>Improved Tooling</strong>: Better IDE support, linters, formatters</li>
+</ol>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>While Io&rsquo;s ecosystem is smaller than mainstream languages, it provides essential functionality and excellent extensibility through its addon system. The simplicity of creating libraries, combined with seamless C integration, means that missing functionality can often be added quickly. The community, though small, is knowledgeable and helpful, making it easy to find or create the tools you need.</p>
+<p>The key to working effectively with Io&rsquo;s ecosystem is understanding that it favors simplicity and extensibility over having every possible library pre-built. This philosophy encourages developers to understand their tools deeply and create exactly what they need.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/16-case-studies/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Case Studies" />
+        <span>Case Studies</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/18-conclusion/" class="flex align-center book-icon">
+        <span>Conclusion</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Conclusion" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

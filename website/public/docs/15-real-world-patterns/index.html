@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 15: Real-World Patterns
+  
+  #
+  
+
+After exploring Io&rsquo;s features in isolation, this chapter brings everything together by examining patterns and architectures for building real applications. We&rsquo;ll see how Io&rsquo;s unique features enable elegant solutions to common programming challenges.
+
+  Model-View-Controller (MVC)
+  
+  #
+  
+
+Implementing MVC in Io leverages prototypes and message passing:
+// Model
+Model := Object clone
+Model init := method(
+    self observers := list()
+    self data := Map clone
+    self
+)
+
+Model set := method(key, value,
+    oldValue := data at(key)
+    if(oldValue != value,
+        data atPut(key, value)
+        notifyObservers(key, oldValue, value)
+    )
+    self
+)
+
+Model get := method(key,
+    data at(key)
+)
+
+Model observe := method(observer,
+    observers append(observer)
+    self
+)
+
+Model notifyObservers := method(key, oldValue, newValue,
+    observers foreach(observer,
+        if(observer hasSlot(&quot;modelChanged&quot;),
+            observer modelChanged(self, key, oldValue, newValue)
+        )
+    )
+)
+
+// View
+View := Object clone
+View init := method(model,
+    self model := model
+    model observe(self)
+    self elements := Map clone
+    self
+)
+
+View modelChanged := method(model, key, oldValue, newValue,
+    render
+)
+
+View render := method(
+    // Override in subclasses
+)
+
+// Controller
+Controller := Object clone
+Controller init := method(model, view,
+    self model := model
+    self view := view
+    self
+)
+
+Controller handleInput := method(input,
+    // Process input and update model
+)
+
+// Example: Todo MVC
+TodoModel := Model clone
+TodoModel init := method(
+    resend
+    self set(&quot;todos&quot;, list())
+    self
+)
+
+TodoModel addTodo := method(text,
+    todos := get(&quot;todos&quot;) copy
+    todos append(Map with(&quot;text&quot;, text, &quot;done&quot;, false))
+    set(&quot;todos&quot;, todos)
+)
+
+TodoModel toggleTodo := method(index,
+    todos := get(&quot;todos&quot;) copy
+    todo := todos at(index)
+    todo atPut(&quot;done&quot;, todo at(&quot;done&quot;) not)
+    set(&quot;todos&quot;, todos)
+)
+
+TodoView := View clone
+TodoView render := method(
+    &quot;=== Todo List ===&quot; println
+    model get(&quot;todos&quot;) foreach(i, todo,
+        status := if(todo at(&quot;done&quot;), &quot;[✓]&quot;, &quot;[ ]&quot;)
+        (i .. &quot;. &quot; .. status .. &quot; &quot; .. todo at(&quot;text&quot;)) println
+    )
+    &quot;================&quot; println
+)
+
+TodoController := Controller clone
+TodoController processCommand := method(cmd,
+    parts := cmd split(&quot; &quot;)
+    action := parts at(0)
+    
+    if(action == &quot;add&quot;,
+        text := parts slice(1) join(&quot; &quot;)
+        model addTodo(text)
+    )
+    
+    if(action == &quot;toggle&quot;,
+        index := parts at(1) asNumber
+        model toggleTodo(index)
+    )
+    
+    if(action == &quot;quit&quot;,
+        System exit
+    )
+)
+
+// Usage
+app := Object clone
+app model := TodoModel clone init
+app view := TodoView clone init(app model)
+app controller := TodoController clone init(app model, app view)
+
+app view render
+// Simulate commands
+app controller processCommand(&quot;add Buy groceries&quot;)
+app controller processCommand(&quot;add Write documentation&quot;)
+app controller processCommand(&quot;toggle 0&quot;)
+
+
+  Repository Pattern
+  
+  #
+  
+
+Abstracting data access:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/15-real-world-patterns/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Real-World Patterns">
+  <meta property="og:description" content="Chapter 15: Real-World Patterns # After exploring Io’s features in isolation, this chapter brings everything together by examining patterns and architectures for building real applications. We’ll see how Io’s unique features enable elegant solutions to common programming challenges.
+Model-View-Controller (MVC) # Implementing MVC in Io leverages prototypes and message passing:
+// Model Model := Object clone Model init := method( self observers := list() self data := Map clone self ) Model set := method(key, value, oldValue := data at(key) if(oldValue != value, data atPut(key, value) notifyObservers(key, oldValue, value) ) self ) Model get := method(key, data at(key) ) Model observe := method(observer, observers append(observer) self ) Model notifyObservers := method(key, oldValue, newValue, observers foreach(observer, if(observer hasSlot(&#34;modelChanged&#34;), observer modelChanged(self, key, oldValue, newValue) ) ) ) // View View := Object clone View init := method(model, self model := model model observe(self) self elements := Map clone self ) View modelChanged := method(model, key, oldValue, newValue, render ) View render := method( // Override in subclasses ) // Controller Controller := Object clone Controller init := method(model, view, self model := model self view := view self ) Controller handleInput := method(input, // Process input and update model ) // Example: Todo MVC TodoModel := Model clone TodoModel init := method( resend self set(&#34;todos&#34;, list()) self ) TodoModel addTodo := method(text, todos := get(&#34;todos&#34;) copy todos append(Map with(&#34;text&#34;, text, &#34;done&#34;, false)) set(&#34;todos&#34;, todos) ) TodoModel toggleTodo := method(index, todos := get(&#34;todos&#34;) copy todo := todos at(index) todo atPut(&#34;done&#34;, todo at(&#34;done&#34;) not) set(&#34;todos&#34;, todos) ) TodoView := View clone TodoView render := method( &#34;=== Todo List ===&#34; println model get(&#34;todos&#34;) foreach(i, todo, status := if(todo at(&#34;done&#34;), &#34;[✓]&#34;, &#34;[ ]&#34;) (i .. &#34;. &#34; .. status .. &#34; &#34; .. todo at(&#34;text&#34;)) println ) &#34;================&#34; println ) TodoController := Controller clone TodoController processCommand := method(cmd, parts := cmd split(&#34; &#34;) action := parts at(0) if(action == &#34;add&#34;, text := parts slice(1) join(&#34; &#34;) model addTodo(text) ) if(action == &#34;toggle&#34;, index := parts at(1) asNumber model toggleTodo(index) ) if(action == &#34;quit&#34;, System exit ) ) // Usage app := Object clone app model := TodoModel clone init app view := TodoView clone init(app model) app controller := TodoController clone init(app model, app view) app view render // Simulate commands app controller processCommand(&#34;add Buy groceries&#34;) app controller processCommand(&#34;add Write documentation&#34;) app controller processCommand(&#34;toggle 0&#34;) Repository Pattern # Abstracting data access:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Real-World Patterns | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/15-real-world-patterns/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="active">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Real-World Patterns</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Real-World Patterns</h1>
+    
+    <div class="chapter-number">Chapter 15</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>After exploring Io&rsquo;s features in isolation, this chapter brings everything together by examining patterns and architectures for building real applications. We&rsquo;ll see how Io&rsquo;s unique features enable elegant solutions to common programming challenges.</p>
+<h2 id="model-view-controller-mvc">
+  Model-View-Controller (MVC)
+  
+  <a class="anchor" href="#model-view-controller-mvc">#</a>
+  
+</h2>
+<p>Implementing MVC in Io leverages prototypes and message passing:</p>
+<pre><code class="language-io">// Model
+Model := Object clone
+Model init := method(
+    self observers := list()
+    self data := Map clone
+    self
+)
+
+Model set := method(key, value,
+    oldValue := data at(key)
+    if(oldValue != value,
+        data atPut(key, value)
+        notifyObservers(key, oldValue, value)
+    )
+    self
+)
+
+Model get := method(key,
+    data at(key)
+)
+
+Model observe := method(observer,
+    observers append(observer)
+    self
+)
+
+Model notifyObservers := method(key, oldValue, newValue,
+    observers foreach(observer,
+        if(observer hasSlot(&quot;modelChanged&quot;),
+            observer modelChanged(self, key, oldValue, newValue)
+        )
+    )
+)
+
+// View
+View := Object clone
+View init := method(model,
+    self model := model
+    model observe(self)
+    self elements := Map clone
+    self
+)
+
+View modelChanged := method(model, key, oldValue, newValue,
+    render
+)
+
+View render := method(
+    // Override in subclasses
+)
+
+// Controller
+Controller := Object clone
+Controller init := method(model, view,
+    self model := model
+    self view := view
+    self
+)
+
+Controller handleInput := method(input,
+    // Process input and update model
+)
+
+// Example: Todo MVC
+TodoModel := Model clone
+TodoModel init := method(
+    resend
+    self set(&quot;todos&quot;, list())
+    self
+)
+
+TodoModel addTodo := method(text,
+    todos := get(&quot;todos&quot;) copy
+    todos append(Map with(&quot;text&quot;, text, &quot;done&quot;, false))
+    set(&quot;todos&quot;, todos)
+)
+
+TodoModel toggleTodo := method(index,
+    todos := get(&quot;todos&quot;) copy
+    todo := todos at(index)
+    todo atPut(&quot;done&quot;, todo at(&quot;done&quot;) not)
+    set(&quot;todos&quot;, todos)
+)
+
+TodoView := View clone
+TodoView render := method(
+    &quot;=== Todo List ===&quot; println
+    model get(&quot;todos&quot;) foreach(i, todo,
+        status := if(todo at(&quot;done&quot;), &quot;[✓]&quot;, &quot;[ ]&quot;)
+        (i .. &quot;. &quot; .. status .. &quot; &quot; .. todo at(&quot;text&quot;)) println
+    )
+    &quot;================&quot; println
+)
+
+TodoController := Controller clone
+TodoController processCommand := method(cmd,
+    parts := cmd split(&quot; &quot;)
+    action := parts at(0)
+    
+    if(action == &quot;add&quot;,
+        text := parts slice(1) join(&quot; &quot;)
+        model addTodo(text)
+    )
+    
+    if(action == &quot;toggle&quot;,
+        index := parts at(1) asNumber
+        model toggleTodo(index)
+    )
+    
+    if(action == &quot;quit&quot;,
+        System exit
+    )
+)
+
+// Usage
+app := Object clone
+app model := TodoModel clone init
+app view := TodoView clone init(app model)
+app controller := TodoController clone init(app model, app view)
+
+app view render
+// Simulate commands
+app controller processCommand(&quot;add Buy groceries&quot;)
+app controller processCommand(&quot;add Write documentation&quot;)
+app controller processCommand(&quot;toggle 0&quot;)
+</code></pre>
+<h2 id="repository-pattern">
+  Repository Pattern
+  
+  <a class="anchor" href="#repository-pattern">#</a>
+  
+</h2>
+<p>Abstracting data access:</p>
+<pre><code class="language-io">// Base Repository
+Repository := Object clone
+Repository init := method(
+    self storage := list()
+    self nextId := 1
+    self
+)
+
+Repository save := method(entity,
+    if(entity hasSlot(&quot;id&quot;) not or entity id isNil,
+        entity id := nextId
+        nextId = nextId + 1
+        storage append(entity)
+    ,
+        // Update existing
+        index := storage detectIndex(e, e id == entity id)
+        if(index, storage atPut(index, entity))
+    )
+    entity
+)
+
+Repository findById := method(id,
+    storage detect(e, e id == id)
+)
+
+Repository findAll := method(
+    storage copy
+)
+
+Repository delete := method(entity,
+    storage remove(entity)
+)
+
+Repository where := method(predicate,
+    storage select(predicate)
+)
+
+// Specialized repository with persistence
+FileRepository := Repository clone
+FileRepository filename := &quot;data.json&quot;
+
+FileRepository init := method(
+    resend
+    load
+    self
+)
+
+FileRepository load := method(
+    if(File with(filename) exists,
+        data := File with(filename) contents parseJson
+        storage = data map(item, entityFromMap(item))
+        nextId = storage map(e, e id) max + 1
+    )
+)
+
+FileRepository save := method(entity,
+    resend(entity)
+    persist
+    entity
+)
+
+FileRepository persist := method(
+    data := storage map(e, e asMap)
+    File with(filename) openForWriting write(data asJson) close
+)
+
+// Entity
+User := Object clone
+User init := method(name, email,
+    self id := nil
+    self name := name
+    self email := email
+    self createdAt := Date now
+    self
+)
+
+User asMap := method(
+    Map with(
+        &quot;id&quot;, id,
+        &quot;name&quot;, name,
+        &quot;email&quot;, email,
+        &quot;createdAt&quot;, createdAt asString
+    )
+)
+
+// Usage
+userRepo := FileRepository clone init
+
+user1 := User clone init(&quot;Alice&quot;, &quot;alice@example.com&quot;)
+user2 := User clone init(&quot;Bob&quot;, &quot;bob@example.com&quot;)
+
+userRepo save(user1)
+userRepo save(user2)
+
+found := userRepo findById(1)
+active := userRepo where(u, u createdAt &gt; Date now - Duration days(30))
+</code></pre>
+<h2 id="observer-pattern">
+  Observer Pattern
+  
+  <a class="anchor" href="#observer-pattern">#</a>
+  
+</h2>
+<p>Native implementation using Io&rsquo;s message passing:</p>
+<pre><code class="language-io">Observable := Object clone
+Observable init := method(
+    self observers := Map clone
+    self
+)
+
+Observable on := method(event, observer, methodName,
+    if(observers hasKey(event) not,
+        observers atPut(event, list())
+    )
+    observers at(event) append(list(observer, methodName))
+    self
+)
+
+Observable off := method(event, observer,
+    if(observers hasKey(event),
+        observers at(event) := observers at(event) reject(pair,
+            pair at(0) == observer
+        )
+    )
+    self
+)
+
+Observable emit := method(event,
+    args := call message arguments slice(1)
+    
+    if(observers hasKey(event),
+        observers at(event) foreach(pair,
+            observer := pair at(0)
+            methodName := pair at(1)
+            
+            msg := Message clone setName(methodName)
+            args foreach(arg, msg appendArg(arg))
+            
+            observer doMessage(msg)
+        )
+    )
+    self
+)
+
+// Example: Stock price monitor
+Stock := Observable clone
+Stock init := method(symbol, price,
+    resend
+    self symbol := symbol
+    self price := price
+    self
+)
+
+Stock setPrice := method(newPrice,
+    oldPrice := price
+    price = newPrice
+    
+    change := ((newPrice - oldPrice) / oldPrice * 100) round
+    emit(&quot;priceChanged&quot;, symbol, oldPrice, newPrice, change)
+    
+    if(change abs &gt; 5,
+        emit(&quot;largeMoveDetected&quot;, symbol, change)
+    )
+)
+
+StockAlert := Object clone
+StockAlert onPriceChange := method(symbol, oldPrice, newPrice, change,
+    (&quot;Price alert: &quot; .. symbol .. &quot; moved from $&quot; .. oldPrice .. 
+     &quot; to $&quot; .. newPrice .. &quot; (&quot; .. change .. &quot;%)&quot;) println
+)
+
+StockAlert onLargeMove := method(symbol, change,
+    (&quot;⚠️  Large move detected: &quot; .. symbol .. &quot; changed &quot; .. change .. &quot;%&quot;) println
+)
+
+// Usage
+apple := Stock clone init(&quot;AAPL&quot;, 150.00)
+alert := StockAlert clone
+
+apple on(&quot;priceChanged&quot;, alert, &quot;onPriceChange&quot;)
+apple on(&quot;largeMoveDetected&quot;, alert, &quot;onLargeMove&quot;)
+
+apple setPrice(155.00)  // Normal change
+apple setPrice(165.00)  // Large move triggers both alerts
+</code></pre>
+<h2 id="dependency-injection">
+  Dependency Injection
+  
+  <a class="anchor" href="#dependency-injection">#</a>
+  
+</h2>
+<p>Using Io&rsquo;s dynamic nature for DI:</p>
+<pre><code class="language-io">// DI Container
+Container := Object clone
+Container init := method(
+    self services := Map clone
+    self singletons := Map clone
+    self
+)
+
+Container register := method(name, factory,
+    services atPut(name, factory)
+    self
+)
+
+Container singleton := method(name, factory,
+    services atPut(name, factory)
+    singletons atPut(name, nil)
+    self
+)
+
+Container get := method(name,
+    if(services hasKey(name) not,
+        Exception raise(&quot;Service '&quot; .. name .. &quot;' not registered&quot;)
+    )
+    
+    // Check if singleton
+    if(singletons hasKey(name),
+        if(singletons at(name) isNil,
+            singletons atPut(name, services at(name) call(self))
+        )
+        return singletons at(name)
+    )
+    
+    // Regular service
+    services at(name) call(self)
+)
+
+// Services
+Logger := Object clone
+Logger init := method(output,
+    self output := output
+    self
+)
+Logger log := method(message,
+    output write(&quot;[&quot; .. Date now .. &quot;] &quot; .. message .. &quot;\n&quot;)
+)
+
+Database := Object clone
+Database init := method(connectionString, logger,
+    self connectionString := connectionString
+    self logger := logger
+    logger log(&quot;Database initialized: &quot; .. connectionString)
+    self
+)
+
+UserService := Object clone
+UserService init := method(database, logger,
+    self database := database
+    self logger := logger
+    self
+)
+UserService createUser := method(name,
+    logger log(&quot;Creating user: &quot; .. name)
+    // database operations...
+    Map with(&quot;id&quot;, 1, &quot;name&quot;, name)
+)
+
+// Configure container
+container := Container clone init
+
+container singleton(&quot;logger&quot;, block(c,
+    Logger clone init(File standardOutput)
+))
+
+container singleton(&quot;database&quot;, block(c,
+    Database clone init(&quot;postgres://localhost/myapp&quot;, c get(&quot;logger&quot;))
+))
+
+container register(&quot;userService&quot;, block(c,
+    UserService clone init(c get(&quot;database&quot;), c get(&quot;logger&quot;))
+))
+
+// Usage
+service := container get(&quot;userService&quot;)
+service createUser(&quot;Alice&quot;)
+
+// Different instance each time
+service1 := container get(&quot;userService&quot;)
+service2 := container get(&quot;userService&quot;)
+(service1 == service2) println  // false
+
+// Same logger instance
+logger1 := container get(&quot;logger&quot;)
+logger2 := container get(&quot;logger&quot;)
+(logger1 == logger2) println  // true
+</code></pre>
+<h2 id="strategy-pattern">
+  Strategy Pattern
+  
+  <a class="anchor" href="#strategy-pattern">#</a>
+  
+</h2>
+<p>Leveraging blocks and dynamic dispatch:</p>
+<pre><code class="language-io">// Sorting strategies
+SortStrategy := Object clone
+
+BubbleSort := SortStrategy clone
+BubbleSort execute := method(list,
+    result := list copy
+    n := result size
+    
+    for(i, 0, n - 2,
+        for(j, 0, n - i - 2,
+            if(result at(j) &gt; result at(j + 1),
+                temp := result at(j)
+                result atPut(j, result at(j + 1))
+                result atPut(j + 1, temp)
+            )
+        )
+    )
+    result
+)
+
+QuickSort := SortStrategy clone
+QuickSort execute := method(list,
+    if(list size &lt;= 1, return list)
+    
+    pivot := list at(list size / 2)
+    less := list select(x, x &lt; pivot)
+    equal := list select(x, x == pivot)
+    greater := list select(x, x &gt; pivot)
+    
+    execute(less) appendSeq(equal) appendSeq(execute(greater))
+)
+
+// Context
+DataProcessor := Object clone
+DataProcessor init := method(
+    self strategy := QuickSort
+    self
+)
+
+DataProcessor setStrategy := method(s,
+    strategy = s
+    self
+)
+
+DataProcessor process := method(data,
+    &quot;Processing data...&quot; println
+    strategy execute(data)
+)
+
+// Usage with different strategies
+processor := DataProcessor clone init
+
+data := list(3, 1, 4, 1, 5, 9, 2, 6)
+
+processor setStrategy(BubbleSort) process(data) println
+processor setStrategy(QuickSort) process(data) println
+
+// Dynamic strategy selection
+selectStrategy := method(dataSize,
+    if(dataSize &lt; 10, BubbleSort, QuickSort)
+)
+
+processor setStrategy(selectStrategy(data size))
+</code></pre>
+<h2 id="chain-of-responsibility">
+  Chain of Responsibility
+  
+  <a class="anchor" href="#chain-of-responsibility">#</a>
+  
+</h2>
+<p>Building processing pipelines:</p>
+<pre><code class="language-io">Handler := Object clone
+Handler init := method(
+    self next := nil
+    self
+)
+
+Handler setNext := method(handler,
+    next = handler
+    handler
+)
+
+Handler handle := method(request,
+    if(canHandle(request),
+        process(request),
+        if(next, next handle(request), nil)
+    )
+)
+
+// Concrete handlers
+AuthenticationHandler := Handler clone
+AuthenticationHandler canHandle := method(request,
+    request at(&quot;requiresAuth&quot;)
+)
+AuthenticationHandler process := method(request,
+    if(request at(&quot;token&quot;) == &quot;valid-token&quot;,
+        &quot;Authentication successful&quot; println
+        request atPut(&quot;authenticated&quot;, true)
+        if(next, next handle(request), request)
+    ,
+        Exception raise(&quot;Authentication failed&quot;)
+    )
+)
+
+LoggingHandler := Handler clone
+LoggingHandler canHandle := method(request, true)
+LoggingHandler process := method(request,
+    (&quot;Logging request: &quot; .. request at(&quot;path&quot;)) println
+    if(next, next handle(request), request)
+)
+
+RateLimitHandler := Handler clone
+RateLimitHandler init := method(
+    resend
+    self requests := Map clone
+    self limit := 10
+    self window := 60  // seconds
+    self
+)
+RateLimitHandler canHandle := method(request,
+    request hasKey(&quot;clientId&quot;)
+)
+RateLimitHandler process := method(request,
+    clientId := request at(&quot;clientId&quot;)
+    now := Date now
+    
+    if(requests hasKey(clientId) not,
+        requests atPut(clientId, list())
+    )
+    
+    // Clean old requests
+    clientRequests := requests at(clientId) select(time,
+        now - time &lt; window
+    )
+    
+    if(clientRequests size &gt;= limit,
+        Exception raise(&quot;Rate limit exceeded&quot;),
+        clientRequests append(now)
+        requests atPut(clientId, clientRequests)
+        if(next, next handle(request), request)
+    )
+)
+
+// Build chain
+chain := LoggingHandler clone \
+    setNext(RateLimitHandler clone \
+        setNext(AuthenticationHandler clone))
+
+// Process requests
+request := Map with(
+    &quot;path&quot;, &quot;/api/users&quot;,
+    &quot;clientId&quot;, &quot;client-123&quot;,
+    &quot;requiresAuth&quot;, true,
+    &quot;token&quot;, &quot;valid-token&quot;
+)
+
+result := chain handle(request)
+</code></pre>
+<h2 id="plugin-architecture">
+  Plugin Architecture
+  
+  <a class="anchor" href="#plugin-architecture">#</a>
+  
+</h2>
+<p>Dynamic loading and extension:</p>
+<pre><code class="language-io">PluginManager := Object clone
+PluginManager init := method(
+    self plugins := Map clone
+    self hooks := Map clone
+    self
+)
+
+PluginManager registerHook := method(name,
+    if(hooks hasKey(name) not,
+        hooks atPut(name, list())
+    )
+    self
+)
+
+PluginManager loadPlugin := method(path,
+    plugin := doFile(path)
+    
+    if(plugin hasSlot(&quot;name&quot;) not,
+        Exception raise(&quot;Plugin must have a name&quot;)
+    )
+    
+    plugins atPut(plugin name, plugin)
+    
+    if(plugin hasSlot(&quot;init&quot;),
+        plugin init(self)
+    )
+    
+    (&quot;Plugin loaded: &quot; .. plugin name) println
+    self
+)
+
+PluginManager hook := method(name,
+    args := call message arguments slice(1)
+    results := list()
+    
+    if(hooks hasKey(name),
+        hooks at(name) foreach(handler,
+            result := handler doMessage(Message clone setName(&quot;call&quot;) setArguments(args))
+            results append(result)
+        )
+    )
+    
+    results
+)
+
+PluginManager addHook := method(hookName, handler,
+    if(hooks hasKey(hookName) not,
+        registerHook(hookName)
+    )
+    hooks at(hookName) append(handler)
+    self
+)
+
+// Example plugin
+MarkdownPlugin := Object clone
+MarkdownPlugin name := &quot;markdown&quot;
+MarkdownPlugin init := method(manager,
+    manager addHook(&quot;processText&quot;, block(text,
+        // Simple markdown processing
+        text replaceAllRegex(&quot;\\*\\*(.*?)\\*\\*&quot;, &quot;&lt;strong&gt;$1&lt;/strong&gt;&quot;) \
+             replaceAllRegex(&quot;\\*(.*?)\\*&quot;, &quot;&lt;em&gt;$1&lt;/em&gt;&quot;)
+    ))
+    
+    manager addHook(&quot;getFormats&quot;, block(
+        list(&quot;markdown&quot;, &quot;md&quot;)
+    ))
+)
+
+// Usage
+manager := PluginManager clone init
+manager registerHook(&quot;processText&quot;)
+manager registerHook(&quot;getFormats&quot;)
+
+// Load plugins
+manager loadPlugin(&quot;markdown_plugin.io&quot;)
+
+// Use hooks
+text := &quot;This is **bold** and this is *italic*&quot;
+processed := manager hook(&quot;processText&quot;, text)
+processed foreach(result, result println)
+
+formats := manager hook(&quot;getFormats&quot;)
+&quot;Supported formats: &quot; print
+formats flatten unique println
+</code></pre>
+<h2 id="event-sourcing">
+  Event Sourcing
+  
+  <a class="anchor" href="#event-sourcing">#</a>
+  
+</h2>
+<p>Implementing event-driven architecture:</p>
+<pre><code class="language-io">// Event
+Event := Object clone
+Event init := method(type, data,
+    self type := type
+    self data := data
+    self timestamp := Date now
+    self id := Random uuid
+    self
+)
+
+// Event Store
+EventStore := Object clone
+EventStore init := method(
+    self events := list()
+    self snapshots := Map clone
+    self
+)
+
+EventStore append := method(event,
+    events append(event)
+    self
+)
+
+EventStore getEvents := method(afterId,
+    if(afterId isNil,
+        return events
+    )
+    
+    startIndex := events detectIndex(e, e id == afterId)
+    if(startIndex,
+        events slice(startIndex + 1),
+        list()
+    )
+)
+
+// Aggregate
+Aggregate := Object clone
+Aggregate init := method(id,
+    self id := id
+    self version := 0
+    self uncommittedEvents := list()
+    self
+)
+
+Aggregate applyEvent := method(event,
+    // Override in subclasses
+)
+
+Aggregate raiseEvent := method(event,
+    applyEvent(event)
+    uncommittedEvents append(event)
+    version = version + 1
+)
+
+Aggregate markEventsAsCommitted := method(
+    uncommittedEvents = list()
+)
+
+Aggregate loadFromHistory := method(events,
+    events foreach(event,
+        applyEvent(event)
+        version = version + 1
+    )
+)
+
+// Example: Bank Account aggregate
+BankAccount := Aggregate clone
+BankAccount init := method(id,
+    resend(id)
+    self balance := 0
+    self
+)
+
+BankAccount deposit := method(amount,
+    if(amount &lt;= 0,
+        Exception raise(&quot;Amount must be positive&quot;)
+    )
+    
+    raiseEvent(Event clone init(&quot;MoneyDeposited&quot;, 
+        Map with(&quot;accountId&quot;, id, &quot;amount&quot;, amount)))
+)
+
+BankAccount withdraw := method(amount,
+    if(amount &lt;= 0,
+        Exception raise(&quot;Amount must be positive&quot;)
+    )
+    if(amount &gt; balance,
+        Exception raise(&quot;Insufficient funds&quot;)
+    )
+    
+    raiseEvent(Event clone init(&quot;MoneyWithdrawn&quot;,
+        Map with(&quot;accountId&quot;, id, &quot;amount&quot;, amount)))
+)
+
+BankAccount applyEvent := method(event,
+    if(event type == &quot;MoneyDeposited&quot;,
+        balance = balance + event data at(&quot;amount&quot;)
+    )
+    
+    if(event type == &quot;MoneyWithdrawn&quot;,
+        balance = balance - event data at(&quot;amount&quot;)
+    )
+)
+
+// Repository using event sourcing
+AccountRepository := Object clone
+AccountRepository init := method(eventStore,
+    self eventStore := eventStore
+    self
+)
+
+AccountRepository save := method(account,
+    account uncommittedEvents foreach(event,
+        eventStore append(event)
+    )
+    account markEventsAsCommitted
+)
+
+AccountRepository getById := method(id,
+    events := eventStore getEvents select(e,
+        e data at(&quot;accountId&quot;) == id
+    )
+    
+    account := BankAccount clone init(id)
+    account loadFromHistory(events)
+    account
+)
+
+// Usage
+store := EventStore clone init
+repo := AccountRepository clone init(store)
+
+account := BankAccount clone init(&quot;acc-123&quot;)
+account deposit(100)
+account withdraw(30)
+account deposit(50)
+
+repo save(account)
+account balance println  // 120
+
+// Rebuild from events
+rebuilt := repo getById(&quot;acc-123&quot;)
+rebuilt balance println  // 120
+</code></pre>
+<h2 id="caching-strategy">
+  Caching Strategy
+  
+  <a class="anchor" href="#caching-strategy">#</a>
+  
+</h2>
+<p>Multi-level caching with different policies:</p>
+<pre><code class="language-io">Cache := Object clone
+Cache init := method(maxSize, ttl,
+    self maxSize := maxSize
+    self ttl := ttl  // Time to live in seconds
+    self entries := Map clone
+    self accessOrder := list()
+    self
+)
+
+Cache get := method(key,
+    if(entries hasKey(key),
+        entry := entries at(key)
+        
+        // Check TTL
+        if(Date now - entry at(&quot;time&quot;) &gt; ttl,
+            entries removeAt(key)
+            accessOrder remove(key)
+            return nil
+        )
+        
+        // Update access order (LRU)
+        accessOrder remove(key)
+        accessOrder append(key)
+        
+        entry at(&quot;value&quot;)
+    ,
+        nil
+    )
+)
+
+Cache put := method(key, value,
+    // Evict if necessary
+    while(entries size &gt;= maxSize,
+        evictKey := accessOrder removeFirst
+        entries removeAt(evictKey)
+        (&quot;Cache evicted: &quot; .. evictKey) println
+    )
+    
+    entries atPut(key, Map with(
+        &quot;value&quot;, value,
+        &quot;time&quot;, Date now
+    ))
+    accessOrder append(key)
+    
+    value
+)
+
+Cache getOrCompute := method(key, computeBlock,
+    value := get(key)
+    if(value isNil,
+        value = computeBlock call
+        put(key, value)
+    )
+    value
+)
+
+// Multi-level cache
+MultiLevelCache := Object clone
+MultiLevelCache init := method(
+    self l1 := Cache clone init(10, 60)     // Small, fast, 1 minute TTL
+    self l2 := Cache clone init(100, 600)   // Larger, 10 minute TTL
+    self
+)
+
+MultiLevelCache get := method(key,
+    // Check L1
+    value := l1 get(key)
+    if(value, return value)
+    
+    // Check L2
+    value = l2 get(key)
+    if(value,
+        l1 put(key, value)  // Promote to L1
+        return value
+    )
+    
+    nil
+)
+
+MultiLevelCache put := method(key, value,
+    l1 put(key, value)
+    l2 put(key, value)
+    value
+)
+
+// Usage with expensive computation
+fibonacci := Object clone
+fibonacci cache := MultiLevelCache clone init
+
+fibonacci compute := method(n,
+    if(n &lt;= 1, return n)
+    
+    cache get(n) ifNil(
+        (&quot;Computing fib(&quot; .. n .. &quot;)&quot;) println
+        result := compute(n - 1) + compute(n - 2)
+        cache put(n, result)
+        result
+    )
+)
+
+fibonacci compute(10) println  // Computes
+fibonacci compute(10) println  // From cache
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>These patterns demonstrate how Io&rsquo;s features—prototype-based inheritance, message passing, blocks, and metaprogramming—combine to create elegant solutions to real-world problems. The language&rsquo;s flexibility allows patterns to be implemented more directly than in many mainstream languages, often with less boilerplate and more expressive code.</p>
+<p>The key insight is that Io&rsquo;s uniform object model means patterns aren&rsquo;t special constructs but natural expressions of the language&rsquo;s core concepts. This makes it easy to adapt patterns to specific needs or create entirely new architectural approaches.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/14-c-integration/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="C Integration" />
+        <span>C Integration</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/16-case-studies/" class="flex align-center book-icon">
+        <span>Case Studies</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Case Studies" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

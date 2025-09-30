@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 6: Cloning and Inheritance
+  
+  #
+  
+
+In class-based languages, inheritance is a relationship between classes. In Io&rsquo;s prototype-based world, inheritance emerges from the simpler mechanism of cloning. When you clone an object, the new object maintains a link to its prototype, creating an inheritance chain. This chapter explores how cloning works, how inheritance emerges from it, and how to use these mechanisms effectively.
+
+  The Mechanics of Cloning
+  
+  #
+  
+
+When you clone an object in Io, you don&rsquo;t copy all its data. Instead, you create a new, empty object with a reference to the original:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/06-cloning-and-inheritance/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Cloning and Inheritance">
+  <meta property="og:description" content="Chapter 6: Cloning and Inheritance # In class-based languages, inheritance is a relationship between classes. In Io’s prototype-based world, inheritance emerges from the simpler mechanism of cloning. When you clone an object, the new object maintains a link to its prototype, creating an inheritance chain. This chapter explores how cloning works, how inheritance emerges from it, and how to use these mechanisms effectively.
+The Mechanics of Cloning # When you clone an object in Io, you don’t copy all its data. Instead, you create a new, empty object with a reference to the original:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Cloning and Inheritance | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/06-cloning-and-inheritance/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="active">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Cloning and Inheritance</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Cloning and Inheritance</h1>
+    
+    <div class="chapter-number">Chapter 6</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>In class-based languages, inheritance is a relationship between classes. In Io&rsquo;s prototype-based world, inheritance emerges from the simpler mechanism of cloning. When you clone an object, the new object maintains a link to its prototype, creating an inheritance chain. This chapter explores how cloning works, how inheritance emerges from it, and how to use these mechanisms effectively.</p>
+<h2 id="the-mechanics-of-cloning">
+  The Mechanics of Cloning
+  
+  <a class="anchor" href="#the-mechanics-of-cloning">#</a>
+  
+</h2>
+<p>When you clone an object in Io, you don&rsquo;t copy all its data. Instead, you create a new, empty object with a reference to the original:</p>
+<pre><code class="language-io">// Create a prototype
+Animal := Object clone
+Animal species := &quot;Unknown&quot;
+Animal age := 0
+Animal describe := method(
+    (&quot;A &quot; .. age .. &quot; year old &quot; .. species) println
+)
+
+// Clone it
+cat := Animal clone
+
+// cat is empty but linked to Animal
+cat slotNames println        // list() - no local slots!
+cat species println          // &quot;Unknown&quot; - from Animal
+cat age println             // 0 - from Animal
+
+// The link is through 'proto'
+cat proto == Animal println  // true
+</code></pre>
+<p>This is fundamentally different from copying:</p>
+<pre><code class="language-io">// If cloning was copying (it's not!), it would work like:
+catCopy := Object clone
+catCopy species := Animal species  // Copy each slot
+catCopy age := Animal age
+catCopy describe := Animal describe
+
+// But cloning actually creates a link:
+catClone := Animal clone  // Empty object linked to Animal
+</code></pre>
+<h2 id="differential-inheritance-in-action">
+  Differential Inheritance in Action
+  
+  <a class="anchor" href="#differential-inheritance-in-action">#</a>
+  
+</h2>
+<p>Objects only store their differences from their prototypes:</p>
+<pre><code class="language-io">Vehicle := Object clone
+Vehicle speed := 60
+Vehicle color := &quot;white&quot;
+Vehicle drive := method(
+    (&quot;Driving at &quot; .. speed .. &quot; mph&quot;) println
+)
+
+car := Vehicle clone
+car color = &quot;red&quot;  // Override color
+car model := &quot;Sedan&quot;  // Add new slot
+
+// Inspect what's stored where
+car slotNames println          // list(color, model) - only differences!
+Vehicle slotNames println      // list(speed, color, drive)
+
+// But car can access everything
+car speed println              // 60 - from Vehicle
+car color println              // &quot;red&quot; - from car (overrides Vehicle)
+car model println              // &quot;Sedan&quot; - from car
+car drive                      // &quot;Driving at 60 mph&quot;
+</code></pre>
+<p>Memory efficiency comparison:</p>
+<pre><code class="language-io">// Creating 1000 cars
+cars := list()
+1000 times(i,
+    car := Vehicle clone
+    car id := i
+    cars append(car)
+)
+
+// Each car only stores its 'id' slot
+// All share Vehicle's methods and default values
+// In a copying system, each would duplicate everything
+</code></pre>
+<h2 id="the-prototype-chain">
+  The Prototype Chain
+  
+  <a class="anchor" href="#the-prototype-chain">#</a>
+  
+</h2>
+<p>Objects can have chains of prototypes:</p>
+<pre><code class="language-io">Organism := Object clone
+Organism alive := true
+Organism metabolize := method(&quot;Converting energy...&quot; println)
+
+Animal := Organism clone
+Animal mobile := true
+Animal move := method(&quot;Moving...&quot; println)
+
+Mammal := Animal clone
+Mammal warmBlooded := true
+Mammal nurse := method(&quot;Nursing young...&quot; println)
+
+Dog := Mammal clone
+Dog loyal := true
+Dog bark := method(&quot;Woof!&quot; println)
+
+fido := Dog clone
+fido name := &quot;Fido&quot;
+
+// fido can access methods from the entire chain
+fido metabolize  // From Organism
+fido move        // From Animal
+fido nurse       // From Mammal
+fido bark        // From Dog
+
+// Trace the chain
+obj := fido
+while(obj != Object,
+    obj type println
+    obj = obj proto
+)
+// Dog
+// Mammal
+// Animal
+// Organism
+// Object
+</code></pre>
+<h2 id="method-resolution-order">
+  Method Resolution Order
+  
+  <a class="anchor" href="#method-resolution-order">#</a>
+  
+</h2>
+<p>When you send a message, Io searches up the prototype chain:</p>
+<pre><code class="language-io">A := Object clone
+A foo := method(&quot;A's foo&quot; println)
+A bar := method(&quot;A's bar&quot; println)
+
+B := A clone
+B foo := method(&quot;B's foo&quot; println)  // Override
+
+C := B clone
+C bar := method(&quot;C's bar&quot; println)  // Override different method
+
+obj := C clone
+
+obj foo  // &quot;B's foo&quot; - found in B (C doesn't have it)
+obj bar  // &quot;C's bar&quot; - found in C
+obj baz  // Exception - not found anywhere
+</code></pre>
+<p>You can visualize the search:</p>
+<pre><code class="language-io">Object findSlot := method(slotName,
+    obj := self
+    while(obj,
+        if(obj hasLocalSlot(slotName),
+            (&quot;Found '&quot; .. slotName .. &quot;' in &quot; .. obj type) println
+            return obj getSlot(slotName)
+        )
+        obj = obj proto
+    )
+    &quot;Not found&quot; println
+)
+
+obj findSlot(&quot;foo&quot;)  // Found 'foo' in B
+obj findSlot(&quot;bar&quot;)  // Found 'bar' in C
+</code></pre>
+<h2 id="multiple-inheritance">
+  Multiple Inheritance
+  
+  <a class="anchor" href="#multiple-inheritance">#</a>
+  
+</h2>
+<p>Io supports multiple inheritance through the <code>protos</code> list:</p>
+<pre><code class="language-io">// Define capabilities
+Flyable := Object clone
+Flyable altitude := 0
+Flyable fly := method(height,
+    altitude = height
+    (&quot;Flying at &quot; .. altitude .. &quot; feet&quot;) println
+)
+
+Swimmable := Object clone
+Swimmable depth := 0
+Swimmable swim := method(d,
+    depth = d
+    (&quot;Swimming at &quot; .. depth .. &quot; feet deep&quot;) println
+)
+
+// Single inheritance
+Bird := Flyable clone
+Bird chirp := method(&quot;Chirp!&quot; println)
+
+// Multiple inheritance
+Duck := Object clone
+Duck appendProto(Flyable)
+Duck appendProto(Swimmable)
+Duck quack := method(&quot;Quack!&quot; println)
+
+mallard := Duck clone
+mallard fly(100)    // Flying at 100 feet
+mallard swim(5)     // Swimming at 5 feet deep
+mallard quack       // Quack!
+
+// Check the prototype list
+Duck protos println  // list(Object_0x..., Flyable_0x..., Swimmable_0x...)
+</code></pre>
+<h2 id="diamond-problem-resolution">
+  Diamond Problem Resolution
+  
+  <a class="anchor" href="#diamond-problem-resolution">#</a>
+  
+</h2>
+<p>The diamond problem occurs when multiple inheritance paths lead to the same ancestor:</p>
+<pre><code class="language-io">// Diamond structure
+Grandparent := Object clone
+Grandparent value := &quot;from grandparent&quot;
+Grandparent method1 := method(&quot;Grandparent method1&quot; println)
+
+Parent1 := Grandparent clone
+Parent1 method1 := method(&quot;Parent1 method1&quot; println)
+Parent1 method2 := method(&quot;Parent1 method2&quot; println)
+
+Parent2 := Grandparent clone
+Parent2 method1 := method(&quot;Parent2 method1&quot; println)
+Parent2 method3 := method(&quot;Parent2 method3&quot; println)
+
+Child := Object clone
+Child appendProto(Parent1)
+Child appendProto(Parent2)
+
+// Resolution order matters
+Child method1  // &quot;Parent1 method1&quot; - Parent1 comes first
+
+// Reorder to change priority
+Child protos := list(Parent2, Parent1)
+Child method1  // &quot;Parent2 method1&quot; - Parent2 now comes first
+</code></pre>
+<h2 id="shallow-vs-deep-cloning">
+  Shallow vs Deep Cloning
+  
+  <a class="anchor" href="#shallow-vs-deep-cloning">#</a>
+  
+</h2>
+<p>By default, cloning is shallow—slot values are shared:</p>
+<pre><code class="language-io">Original := Object clone
+Original data := list(1, 2, 3)
+Original info := Map clone atPut(&quot;key&quot;, &quot;value&quot;)
+
+Shallow := Original clone
+
+// Modifying mutable objects affects both
+Shallow data append(4)
+Original data println  // list(1, 2, 3, 4) - changed!
+
+// Need deep cloning for independence
+Object deepClone := method(
+    new := self clone
+    self slotNames foreach(name,
+        value := self getSlot(name)
+        if(value hasSlot(&quot;clone&quot;),
+            new setSlot(name, value clone)
+        )
+    )
+    new
+)
+
+Deep := Original deepClone
+Deep data append(5)
+Original data println  // list(1, 2, 3, 4) - unchanged
+Deep data println      // list(1, 2, 3, 4, 5)
+</code></pre>
+<h2 id="init-methods-and-constructors">
+  init Methods and Constructors
+  
+  <a class="anchor" href="#init-methods-and-constructors">#</a>
+  
+</h2>
+<p>While Io doesn&rsquo;t have constructors, you can create initialization patterns:</p>
+<pre><code class="language-io">Person := Object clone
+Person init := method(
+    self name := &quot;Unknown&quot;
+    self age := 0
+    self contacts := list()  // Important: new list for each instance
+    self  // Return self for chaining
+)
+
+// Override clone to call init
+Person clone := method(
+    resend init
+)
+
+// Now each person gets their own contacts list
+alice := Person clone
+alice name = &quot;Alice&quot;
+alice contacts append(&quot;Bob&quot;)
+
+bob := Person clone
+bob name = &quot;Bob&quot;
+bob contacts append(&quot;Charlie&quot;)
+
+alice contacts println  // list(&quot;Bob&quot;) - independent!
+bob contacts println    // list(&quot;Charlie&quot;)
+</code></pre>
+<h2 id="factory-methods">
+  Factory Methods
+  
+  <a class="anchor" href="#factory-methods">#</a>
+  
+</h2>
+<p>Create specialized cloning methods:</p>
+<pre><code class="language-io">Animal := Object clone
+Animal species := &quot;Unknown&quot;
+Animal sound := &quot;...&quot;
+
+Animal withSpecies := method(s,
+    new := self clone
+    new species = s
+    new
+)
+
+Animal dog := method(
+    self clone species = &quot;Dog&quot; sound = &quot;Woof&quot;
+)
+
+Animal cat := method(
+    self clone species = &quot;Cat&quot; sound = &quot;Meow&quot;
+)
+
+// Usage
+myDog := Animal dog
+myCat := Animal cat
+genericAnimal := Animal withSpecies(&quot;Elephant&quot;)
+</code></pre>
+<h2 id="prototype-switching">
+  Prototype Switching
+  
+  <a class="anchor" href="#prototype-switching">#</a>
+  
+</h2>
+<p>Unlike class-based languages, you can change an object&rsquo;s prototype at runtime:</p>
+<pre><code class="language-io">// Start with one prototype
+Bird := Object clone
+Bird fly := method(&quot;Flying...&quot; println)
+
+Fish := Object clone
+Fish swim := method(&quot;Swimming...&quot; println)
+
+creature := Bird clone
+creature fly  // &quot;Flying...&quot;
+
+// Change its prototype!
+creature protos = list(Fish)
+creature swim  // &quot;Swimming...&quot;
+creature fly   // Exception - no longer a Bird!
+
+// Or add capabilities
+creature appendProto(Bird)
+creature fly   // &quot;Flying...&quot; - now it can do both
+creature swim  // &quot;Swimming...&quot;
+</code></pre>
+<h2 id="mixins-and-traits">
+  Mixins and Traits
+  
+  <a class="anchor" href="#mixins-and-traits">#</a>
+  
+</h2>
+<p>Use prototypes as mixins for composable behavior:</p>
+<pre><code class="language-io">// Define mixins
+Comparable := Object clone
+Comparable &lt; := method(other, self compare(other) &lt; 0)
+Comparable &gt; := method(other, self compare(other) &gt; 0)
+Comparable == := method(other, self compare(other) == 0)
+Comparable &lt;= := method(other, self compare(other) &lt;= 0)
+Comparable &gt;= := method(other, self compare(other) &gt;= 0)
+
+Enumerable := Object clone
+Enumerable select := method(block,
+    result := list()
+    self foreach(item,
+        if(block call(item), result append(item))
+    )
+    result
+)
+Enumerable map := method(block,
+    result := list()
+    self foreach(item,
+        result append(block call(item))
+    )
+    result
+)
+
+// Use mixins
+SortedList := List clone
+SortedList appendProto(Comparable)
+SortedList appendProto(Enumerable)
+SortedList compare := method(other,
+    self size compare(other size)
+)
+
+list1 := SortedList clone append(1, 2, 3)
+list2 := SortedList clone append(4, 5)
+(list1 &gt; list2) println  // true (3 &gt; 2)
+</code></pre>
+<h2 id="clone-hooks">
+  Clone Hooks
+  
+  <a class="anchor" href="#clone-hooks">#</a>
+  
+</h2>
+<p>Customize cloning behavior:</p>
+<pre><code class="language-io">Counted := Object clone
+Counted instances := 0
+
+Counted clone := method(
+    Counted instances = Counted instances + 1
+    new := resend
+    new id := Counted instances
+    new
+)
+
+// Each clone gets a unique ID
+obj1 := Counted clone
+obj2 := Counted clone
+obj3 := Counted clone
+
+obj1 id println  // 1
+obj2 id println  // 2
+obj3 id println  // 3
+Counted instances println  // 3
+</code></pre>
+<h2 id="inheritance-patterns">
+  Inheritance Patterns
+  
+  <a class="anchor" href="#inheritance-patterns">#</a>
+  
+</h2>
+<h3 id="classical-inheritance-pattern">
+  Classical Inheritance Pattern
+  
+  <a class="anchor" href="#classical-inheritance-pattern">#</a>
+  
+</h3>
+<p>Emulate class-based inheritance:</p>
+<pre><code class="language-io">// Base &quot;class&quot;
+Class := Object clone
+Class new := method(
+    instance := self clone
+    instance init
+    instance
+)
+
+// Define a &quot;class&quot;
+Rectangle := Class clone
+Rectangle init := method(
+    self width := 0
+    self height := 0
+)
+Rectangle area := method(width * height)
+
+// Inheritance
+Square := Rectangle clone
+Square init := method(
+    resend  // Call parent init
+    self side := 0
+)
+Square setSide := method(s,
+    side = s
+    width = s
+    height = s
+)
+
+// Usage
+rect := Rectangle new
+rect width = 10
+rect height = 20
+rect area println  // 200
+
+square := Square new
+square setSide(5)
+square area println  // 25
+</code></pre>
+<h3 id="delegation-pattern">
+  Delegation Pattern
+  
+  <a class="anchor" href="#delegation-pattern">#</a>
+  
+</h3>
+<pre><code class="language-io">Delegator := Object clone
+Delegator delegate := nil
+Delegator forward := method(
+    if(delegate,
+        delegate doMessage(call message, call sender)
+    ,
+        Exception raise(&quot;No delegate set&quot;)
+    )
+)
+
+Logger := Object clone
+Logger log := method(msg, (&quot;[LOG] &quot; .. msg) println)
+
+obj := Delegator clone
+obj delegate = Logger
+obj log(&quot;Hello&quot;)  // [LOG] Hello
+</code></pre>
+<h2 id="testing-inheritance">
+  Testing Inheritance
+  
+  <a class="anchor" href="#testing-inheritance">#</a>
+  
+</h2>
+<p>Check inheritance relationships:</p>
+<pre><code class="language-io">Object isKindOf := method(proto,
+    obj := self
+    while(obj,
+        if(obj == proto, return true)
+        if(obj protos,
+            obj protos foreach(p,
+                if(p isKindOf(proto), return true)
+            )
+        )
+        obj = obj proto
+    )
+    false
+)
+
+Animal := Object clone
+Dog := Animal clone
+fido := Dog clone
+
+fido isKindOf(Dog) println     // true
+fido isKindOf(Animal) println  // true
+fido isKindOf(Object) println  // true
+fido isKindOf(Number) println  // false
+</code></pre>
+<h2 id="performance-considerations">
+  Performance Considerations
+  
+  <a class="anchor" href="#performance-considerations">#</a>
+  
+</h2>
+<p>Prototype chains affect performance:</p>
+<pre><code class="language-io">// Deep chain - slower lookup
+A := Object clone
+B := A clone
+C := B clone
+D := C clone
+E := D clone
+obj := E clone
+obj method := method(&quot;Found!&quot;)
+
+// Shallow chain - faster lookup
+Flat := Object clone
+Flat method := method(&quot;Found!&quot;)
+obj2 := Flat clone
+
+// Benchmark
+time(100000 times(obj method))   // Slower
+time(100000 times(obj2 method))  // Faster
+</code></pre>
+<h2 id="common-pitfalls">
+  Common Pitfalls
+  
+  <a class="anchor" href="#common-pitfalls">#</a>
+  
+</h2>
+<h3 id="shared-mutable-state">
+  Shared Mutable State
+  
+  <a class="anchor" href="#shared-mutable-state">#</a>
+  
+</h3>
+<pre><code class="language-io">// WRONG - shares list between instances
+BadTemplate := Object clone
+BadTemplate items := list()
+
+obj1 := BadTemplate clone
+obj2 := BadTemplate clone
+obj1 items append(1)
+obj2 items println  // list(1) - Oops! Shared!
+
+// RIGHT - create new list for each instance
+GoodTemplate := Object clone
+GoodTemplate init := method(
+    self items := list()
+    self
+)
+GoodTemplate clone := method(resend init)
+</code></pre>
+<h3 id="circular-prototypes">
+  Circular Prototypes
+  
+  <a class="anchor" href="#circular-prototypes">#</a>
+  
+</h3>
+<pre><code class="language-io">// Don't do this!
+A := Object clone
+B := Object clone
+A appendProto(B)
+B appendProto(A)  // Circular!
+
+// A foo  // Infinite loop!
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Instance Counter</strong>: Create a prototype that tracks how many objects have been cloned from it, directly or indirectly.</p>
+</li>
+<li>
+<p><strong>Prototype Inspector</strong>: Write a method that visualizes an object&rsquo;s complete prototype hierarchy as a tree.</p>
+</li>
+<li>
+<p><strong>Deep Clone</strong>: Implement a robust deep cloning method that handles circular references.</p>
+</li>
+<li>
+<p><strong>Multiple Inheritance Resolver</strong>: Create a system that detects and reports conflicts in multiple inheritance.</p>
+</li>
+<li>
+<p><strong>Class Emulator</strong>: Build a complete class-based OOP system on top of Io&rsquo;s prototypes, including abstract classes and interfaces.</p>
+</li>
+</ol>
+<h2 id="real-world-example-game-entity-system">
+  Real-World Example: Game Entity System
+  
+  <a class="anchor" href="#real-world-example-game-entity-system">#</a>
+  
+</h2>
+<pre><code class="language-io">// Base entity
+Entity := Object clone
+Entity init := method(
+    self x := 0
+    self y := 0
+    self health := 100
+    self
+)
+Entity clone := method(resend init)
+Entity takeDamage := method(amount,
+    health = health - amount
+    if(health &lt;= 0, self die)
+)
+Entity die := method(&quot;Entity died&quot; println)
+
+// Moveable capability
+Moveable := Object clone
+Moveable speed := 1
+Moveable moveTo := method(newX, newY,
+    x = newX
+    y = newY
+)
+
+// Attacker capability
+Attacker := Object clone
+Attacker damage := 10
+Attacker attack := method(target,
+    target takeDamage(damage)
+)
+
+// Compose entities
+Player := Entity clone
+Player appendProto(Moveable)
+Player appendProto(Attacker)
+Player speed = 5
+Player damage = 20
+
+Enemy := Entity clone
+Enemy appendProto(Moveable)
+Enemy appendProto(Attacker)
+Enemy speed = 3
+Enemy damage = 15
+
+// Static entity
+Turret := Entity clone
+Turret appendProto(Attacker)
+Turret damage = 25
+
+// Usage
+player := Player clone
+enemy := Enemy clone
+turret := Turret clone
+
+player moveTo(10, 10)
+player attack(enemy)
+turret attack(player)
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Cloning and inheritance in Io demonstrate how complex behavior can emerge from simple mechanisms. Instead of classes, instances, and inheritance hierarchies defined at compile time, you have objects cloning objects, maintaining prototype links, and delegating message handling up the chain.</p>
+<p>This flexibility enables patterns impossible in class-based languages: changing inheritance at runtime, mixing in capabilities dynamically, and treating &ldquo;classes&rdquo; as first-class objects that can be modified like any other. The trade-off is that you must be more careful about shared state and initialization, but the power and expressiveness gained often make it worthwhile.</p>
+<p>Understanding cloning and inheritance deeply is essential for effective Io programming. These mechanisms aren&rsquo;t just how you create objects—they&rsquo;re how you structure entire programs.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/05-messages-and-slots/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Messages and Slots" />
+        <span>Messages and Slots</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/07-control-flow/" class="flex align-center book-icon">
+        <span>Control Flow</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Control Flow" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

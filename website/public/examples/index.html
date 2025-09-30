@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Code Examples
+  
+  #
+  
+
+All code examples from the book are available for download and experimentation. Each example is a standalone .io file that you can run directly with the Io interpreter.
+
+  Running Examples
+  
+  #
+  
+
+To run any example, use the Io interpreter:
+io hello.io
+
+
+  Examples by Chapter
+  
+  #
+  
+
+
+  Part I: Foundations
+  
+  #
+  
+
+
+Chapter 2: Getting Started
+
+hello.io - Your first Io program
+todo-list.io - A simple todo list application
+
+
+
+
+  Part II: Core Concepts
+  
+  #
+  
+
+
+Chapter 4: Prototypes, Not Classes
+
+prototypes.io - Working with prototypes
+
+
+
+
+  Part III: Language Features
+  
+  #
+  
+
+
+Chapter 9: Blocks and Closures
+
+closures.io - Understanding closures in Io
+
+
+
+
+  Part IV: Advanced Topics
+  
+  #
+  
+
+
+
+Chapter 11: Metaprogramming">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/examples/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Code Examples">
+  <meta property="og:description" content="Code Examples # All code examples from the book are available for download and experimentation. Each example is a standalone .io file that you can run directly with the Io interpreter.
+Running Examples # To run any example, use the Io interpreter:
+io hello.io Examples by Chapter # Part I: Foundations # Chapter 2: Getting Started hello.io - Your first Io program todo-list.io - A simple todo list application Part II: Core Concepts # Chapter 4: Prototypes, Not Classes prototypes.io - Working with prototypes Part III: Language Features # Chapter 9: Blocks and Closures closures.io - Understanding closures in Io Part IV: Advanced Topics # Chapter 11: Metaprogramming">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+<title>Code Examples | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/examples/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-page book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Code Examples</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Code Examples</h1>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>All code examples from the book are available for download and experimentation. Each example is a standalone <code>.io</code> file that you can run directly with the Io interpreter.</p>
+<h2 id="running-examples">
+  Running Examples
+  
+  <a class="anchor" href="#running-examples">#</a>
+  
+</h2>
+<p>To run any example, use the Io interpreter:</p>
+<pre><code class="language-bash">io hello.io
+</code></pre>
+<h2 id="examples-by-chapter">
+  Examples by Chapter
+  
+  <a class="anchor" href="#examples-by-chapter">#</a>
+  
+</h2>
+<h3 id="part-i-foundations">
+  Part I: Foundations
+  
+  <a class="anchor" href="#part-i-foundations">#</a>
+  
+</h3>
+<ul>
+<li><strong>Chapter 2: Getting Started</strong>
+<ul>
+<li><a href="/examples/chapter-02/hello.io"><code>hello.io</code></a> - Your first Io program</li>
+<li><a href="/examples/chapter-02/todo-list.io"><code>todo-list.io</code></a> - A simple todo list application</li>
+</ul>
+</li>
+</ul>
+<h3 id="part-ii-core-concepts">
+  Part II: Core Concepts
+  
+  <a class="anchor" href="#part-ii-core-concepts">#</a>
+  
+</h3>
+<ul>
+<li><strong>Chapter 4: Prototypes, Not Classes</strong>
+<ul>
+<li><a href="/examples/chapter-04/prototypes.io"><code>prototypes.io</code></a> - Working with prototypes</li>
+</ul>
+</li>
+</ul>
+<h3 id="part-iii-language-features">
+  Part III: Language Features
+  
+  <a class="anchor" href="#part-iii-language-features">#</a>
+  
+</h3>
+<ul>
+<li><strong>Chapter 9: Blocks and Closures</strong>
+<ul>
+<li><a href="/examples/chapter-09/closures.io"><code>closures.io</code></a> - Understanding closures in Io</li>
+</ul>
+</li>
+</ul>
+<h3 id="part-iv-advanced-topics">
+  Part IV: Advanced Topics
+  
+  <a class="anchor" href="#part-iv-advanced-topics">#</a>
+  
+</h3>
+<ul>
+<li>
+<p><strong>Chapter 11: Metaprogramming</strong></p>
+<ul>
+<li><a href="/examples/chapter-11/metaprogramming.io"><code>metaprogramming.io</code></a> - Runtime code manipulation</li>
+</ul>
+</li>
+<li>
+<p><strong>Chapter 12: Concurrency</strong></p>
+<ul>
+<li><a href="/examples/chapter-12/concurrency.io"><code>concurrency.io</code></a> - Actors and coroutines</li>
+</ul>
+</li>
+<li>
+<p><strong>Chapter 13: Domain-Specific Languages</strong></p>
+<ul>
+<li><a href="/examples/chapter-13/html-dsl.io"><code>html-dsl.io</code></a> - Building an HTML DSL</li>
+</ul>
+</li>
+</ul>
+<h2 id="download-all-examples">
+  Download All Examples
+  
+  <a class="anchor" href="#download-all-examples">#</a>
+  
+</h2>
+<p>You can <a href="/examples/">browse all examples</a> or clone the repository to get all examples at once:</p>
+<pre><code class="language-bash">git clone https://github.com/yourusername/io-book-examples.git
+</code></pre>
+<h2 id="contributing">
+  Contributing
+  
+  <a class="anchor" href="#contributing">#</a>
+  
+</h2>
+<p>Found an issue with an example? Want to contribute your own? Please submit a pull request or open an issue on GitHub.</p>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

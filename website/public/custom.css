@@ -1,0 +1,329 @@
+/* Import Geist Mono font */
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/style.css');
+
+/* Text selection styling */
+::selection {
+  background-color: #999999;
+  color: #000000;
+}
+
+::-moz-selection {
+  background-color: #999999;
+  color: #000000;
+}
+
+/* Top Header Bar */
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e7;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;  /* Align with sidebar content */
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #000 !important;
+  text-decoration: none;
+}
+
+.header-title:hover {
+  color: #333 !important;
+}
+
+.header-search {
+  position: absolute;
+  right: 1rem;
+  top: calc(50% - 18px);
+  height: 36px;
+}
+
+.header-search .book-search {
+  margin: 0;
+  display: block;
+  height: 100%;
+}
+
+.header-search .book-search input {
+  margin: 0;
+  height: 36px;
+  text-align: left;
+  width: 200px;
+  display: block;
+}
+
+/* Adjust main content for header */
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 0;
+}
+
+/* Ensure main container starts below header */
+.container.flex {
+  padding-top: 60px !important;
+  margin-top: 0 !important;
+  position: relative;
+}
+
+main.container {
+  position: relative;
+  top: 0;
+  min-height: 100vh;
+}
+
+/* Override default sidebar positioning */
+.book-menu {
+  position: fixed !important;
+  left: 0;
+  top: 60px !important;
+  bottom: 0;
+  width: 250px !important;
+  height: calc(100vh - 60px) !important;
+  overflow-y: auto;
+  z-index: 50;
+  background: white;
+  padding-top: 1rem !important;
+  padding-left: 0 !important;
+  box-sizing: border-box;
+}
+
+aside.book-menu {
+  width: 250px !important;
+  flex: none !important;
+}
+
+/* Sidebar content */
+.book-menu-content {
+  width: 100%;
+  padding: 1rem 20px 1rem 30px;
+  margin: 0;
+  margin-top: 4em;
+  box-sizing: border-box;
+}
+
+.book-menu nav {
+  text-align: left;
+  width: auto;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.book-menu nav ul {
+  padding-left: 0 !important;
+  margin: 0 !important;
+  list-style: none;
+  text-align: left;
+}
+
+.book-menu nav li {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+.book-menu nav a {
+  display: block;
+  padding: 0.25rem 0;
+  text-align: left;
+}
+
+/* Adjust main content to account for narrower sidebar */
+.book-page {
+  margin-left: 250px !important;
+  padding: 2rem 2rem;
+  margin-top: 0;
+}
+
+@media screen and (max-width: 56rem) {
+  .book-page {
+    margin-left: 0 !important;
+  }
+}
+
+/* Add padding to top of right TOC if present */
+.book-toc {
+  top: 60px;
+  height: calc(100vh - 60px);
+}
+
+.book-toc-content {
+  padding-top: 1.5rem;
+}
+
+/* Hide search in sidebar */
+.book-menu .book-search {
+  display: none;
+}
+
+/* Main font override */
+body, .book-menu, .markdown {
+  font-family: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
+}
+
+/* Page padding */
+.book-page, .container, main {
+  padding-left: max(1em, env(safe-area-inset-left)) !important;
+  padding-right: max(1em, env(safe-area-inset-right)) !important;
+}
+
+.markdown, .book-article {
+  padding: 0 1em;
+}
+
+@media (max-width: 56rem) {
+  .book-page, .container, main {
+    padding: 0 1em !important;
+  }
+}
+
+/* Code block styling - black text on light grey */
+pre, code {
+  background-color: #eeeff1 !important;
+  color: #000000 !important;
+  font-family: 'Geist Mono', 'SF Mono', Monaco, 'Courier New', monospace;
+  font-weight: 500 !important;
+}
+
+pre {
+  padding: 1rem !important;
+  border-radius: 6px !important;
+  overflow-x: auto !important;
+  line-height: 1.45 !important;
+  font-size: 0.75em !important;
+  font-weight: 500 !important;
+}
+
+code {
+  padding: 0.2em 0.4em !important;
+  border-radius: 3px !important;
+  font-size: 0.75em !important;
+  font-weight: 500 !important;
+}
+
+pre code {
+  padding: 0 !important;
+  background-color: transparent !important;
+  font-size: inherit !important;
+  font-weight: 500 !important;
+}
+
+/* Remove any syntax highlighting colors but keep medium weight */
+pre * {
+  color: #000000 !important;
+  background-color: transparent !important;
+  font-weight: 500 !important;
+  font-style: normal !important;
+  text-decoration: none !important;
+}
+
+/* Blockquote styling */
+blockquote {
+  font-family: 'Times New Roman', Times, serif !important;
+  font-style: italic !important;
+  font-size: 1.1rem !important;
+  border-left: none !important;
+  border: none !important;
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+blockquote p {
+  font-family: inherit;
+  font-style: inherit;
+}
+
+.book-hint {
+  border-left: none !important;
+  border: none !important;
+}
+
+/* Chapter header styling */
+.chapter-header {
+  margin-bottom: 4rem;
+}
+
+.chapter-title {
+  font-size: 2.5rem !important;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0 !important;
+  line-height: 1.2;
+}
+
+.chapter-number {
+  font-size: 0.9rem;
+  color: #6e6e73;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Sidebar navigation enhancements */
+.book-menu nav {
+  font-size: 0.95rem;
+}
+
+/* Style nested TOC items in sidebar */
+.book-menu .book-section-flat {
+  margin-left: 0;
+}
+
+.book-menu .book-page.with-toc {
+  margin-left: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Active chapter highlighting */
+.book-menu .active {
+  font-weight: 600;
+  color: #000000;
+}
+
+.book-menu a.active {
+  color: #000000;
+}
+
+.book-menu nav a:hover {
+  color: #000000;
+  opacity: 0.7;
+}
+
+/* Collapsible sections */
+.book-menu .book-section-container {
+  margin-left: 1rem;
+}
+
+/* Center the content better */
+.book-page {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Hide back arrow navigation but keep forward arrow */
+.book-pagination .book-pagination-item:first-child {
+  display: none !important;
+}
+

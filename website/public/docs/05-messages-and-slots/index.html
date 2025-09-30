@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 5: Messages and Slots
+  
+  #
+  
+
+At the heart of Io lies a simple but powerful idea: all computation happens through message passing. Objects communicate by sending messages to each other, and objects respond to messages by looking up slots. This chapter explores this fundamental mechanism in depth.
+
+  The Anatomy of a Message
+  
+  #
+  
+
+When you write this in Io:
+person setName(&quot;Alice&quot;)
+
+What actually happens? Let&rsquo;s break it down:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/05-messages-and-slots/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Messages and Slots">
+  <meta property="og:description" content="Chapter 5: Messages and Slots # At the heart of Io lies a simple but powerful idea: all computation happens through message passing. Objects communicate by sending messages to each other, and objects respond to messages by looking up slots. This chapter explores this fundamental mechanism in depth.
+The Anatomy of a Message # When you write this in Io:
+person setName(&#34;Alice&#34;) What actually happens? Let’s break it down:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Messages and Slots | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/05-messages-and-slots/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="active">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Messages and Slots</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Messages and Slots</h1>
+    
+    <div class="chapter-number">Chapter 5</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>At the heart of Io lies a simple but powerful idea: all computation happens through message passing. Objects communicate by sending messages to each other, and objects respond to messages by looking up slots. This chapter explores this fundamental mechanism in depth.</p>
+<h2 id="the-anatomy-of-a-message">
+  The Anatomy of a Message
+  
+  <a class="anchor" href="#the-anatomy-of-a-message">#</a>
+  
+</h2>
+<p>When you write this in Io:</p>
+<pre><code class="language-io">person setName(&quot;Alice&quot;)
+</code></pre>
+<p>What actually happens? Let&rsquo;s break it down:</p>
+<ol>
+<li><code>person</code> is the <strong>receiver</strong> - the object receiving the message</li>
+<li><code>setName</code> is the <strong>message name</strong> (or selector)</li>
+<li><code>&quot;Alice&quot;</code> is the <strong>argument</strong> to the message</li>
+<li>The entire expression is a <strong>message send</strong></li>
+</ol>
+<p>But here&rsquo;s where it gets interesting. Messages are objects too:</p>
+<pre><code class="language-io">// Create a message object
+msg := message(person setName(&quot;Alice&quot;))
+
+// Inspect it
+msg name println          // setName
+msg arguments println     // list(Message_0x...)
+msg arguments first code println  // &quot;Alice&quot;
+
+// Execute it
+msg doInContext(Lobby)    // Actually calls person setName(&quot;Alice&quot;)
+</code></pre>
+<h2 id="slots-the-objects-memory">
+  Slots: The Object&rsquo;s Memory
+  
+  <a class="anchor" href="#slots-the-objects-memory">#</a>
+  
+</h2>
+<p>Slots are named storage locations in objects. They can hold any value:</p>
+<pre><code class="language-io">obj := Object clone
+
+// Create slots with different values
+obj number := 42                    // Number
+obj text := &quot;hello&quot;                 // String
+obj method := method(x, x * 2)      // Method
+obj child := Object clone            // Another object
+obj flag := true                     // Boolean
+
+// List all slots
+obj slotNames println
+// list(number, text, method, child, flag)
+
+// Check for slots
+obj hasSlot(&quot;number&quot;) println       // true
+obj hasSlot(&quot;missing&quot;) println      // false
+
+// Get slot values
+obj getSlot(&quot;number&quot;) println       // 42
+obj getSlot(&quot;method&quot;) println       // method(x, ...)
+</code></pre>
+<h2 id="the-message-resolution-algorithm">
+  The Message Resolution Algorithm
+  
+  <a class="anchor" href="#the-message-resolution-algorithm">#</a>
+  
+</h2>
+<p>When an object receives a message, Io follows a specific algorithm to find the corresponding slot:</p>
+<pre><code class="language-io">Animal := Object clone
+Animal speak := method(&quot;generic sound&quot; println)
+
+Dog := Animal clone
+Dog speak := method(&quot;woof&quot; println)
+Dog wagTail := method(&quot;wagging...&quot; println)
+
+rover := Dog clone
+rover name := &quot;Rover&quot;
+
+// When rover receives 'speak':
+rover speak
+// 1. Look for 'speak' in rover - not found
+// 2. Look for 'speak' in rover's proto (Dog) - found!
+// 3. Execute Dog's speak method with rover as self
+
+// When rover receives 'name':
+rover name
+// 1. Look for 'name' in rover - found!
+// 2. Return the value
+
+// Visual representation:
+/*
+    Object
+      ↑
+    Animal (speak: &quot;generic sound&quot;)
+      ↑
+     Dog (speak: &quot;woof&quot;, wagTail)
+      ↑
+    rover (name: &quot;Rover&quot;)
+*/
+</code></pre>
+<h2 id="creating-and-modifying-slots">
+  Creating and Modifying Slots
+  
+  <a class="anchor" href="#creating-and-modifying-slots">#</a>
+  
+</h2>
+<p>Io distinguishes between creating new slots and updating existing ones:</p>
+<pre><code class="language-io">obj := Object clone
+
+// Create a new slot with :=
+obj x := 10
+obj hasSlot(&quot;x&quot;) println         // true
+
+// Update existing slot with =
+obj x = 20
+obj x println                    // 20
+
+// Trying to update non-existent slot fails
+obj y = 30                       // Exception: Slot y not found
+
+// But you can use setSlot to create or update
+obj setSlot(&quot;y&quot;, 30)            // Creates if doesn't exist
+obj y println                    // 30
+
+// Remove slots
+obj removeSlot(&quot;y&quot;)
+obj hasSlot(&quot;y&quot;) println        // false
+</code></pre>
+<p>This distinction helps catch typos:</p>
+<pre><code class="language-io">counter := 0
+countr = 1    // Error! Probably meant 'counter'
+</code></pre>
+<h2 id="methods-are-just-slots">
+  Methods Are Just Slots
+  
+  <a class="anchor" href="#methods-are-just-slots">#</a>
+  
+</h2>
+<p>In Io, methods aren&rsquo;t special—they&rsquo;re just slots that hold executable blocks:</p>
+<pre><code class="language-io">Calculator := Object clone
+
+// Method is just a slot containing a method object
+Calculator add := method(a, b, a + b)
+
+// You can manipulate methods like any other value
+addMethod := Calculator getSlot(&quot;add&quot;)
+addMethod type println           // Block
+
+// You can copy methods between objects
+ScientificCalc := Object clone
+ScientificCalc addition := Calculator getSlot(&quot;add&quot;)
+ScientificCalc addition(5, 3) println  // 8
+
+// You can even store methods in variables
+operation := method(x, x * 2)
+Calculator double := operation
+Calculator double(21) println    // 42
+</code></pre>
+<h2 id="the-self-and-sender-context">
+  The &lsquo;self&rsquo; and &lsquo;sender&rsquo; Context
+  
+  <a class="anchor" href="#the-self-and-sender-context">#</a>
+  
+</h2>
+<p>Every method has access to special variables:</p>
+<pre><code class="language-io">Printer := Object clone
+Printer name := &quot;HP&quot;
+Printer print := method(doc,
+    (&quot;Printer: &quot; .. self name) println    // self = receiver
+    (&quot;Sender: &quot; .. sender type) println   // sender = who sent the message
+    (&quot;Document: &quot; .. doc) println
+)
+
+Computer := Object clone
+Computer sendJob := method(
+    Printer print(&quot;report.pdf&quot;)
+)
+
+Computer sendJob
+// Printer: HP
+// Sender: Computer
+// Document: report.pdf
+</code></pre>
+<h2 id="message-forwarding">
+  Message Forwarding
+  
+  <a class="anchor" href="#message-forwarding">#</a>
+  
+</h2>
+<p>When an object doesn&rsquo;t have a slot for a received message, it calls <code>forward</code>:</p>
+<pre><code class="language-io">Proxy := Object clone
+Proxy target := nil
+Proxy forward := method(
+    (&quot;Forwarding &quot; .. call message name .. &quot; to target&quot;) println
+    call evalArgAt(0) // This would forward to target
+)
+
+p := Proxy clone
+p doSomething(&quot;arg&quot;)
+// Forwarding doSomething to target
+</code></pre>
+<p>This enables powerful patterns like delegation and method missing:</p>
+<pre><code class="language-io">// Ruby-style method_missing
+DynamicObject := Object clone
+DynamicObject forward := method(
+    methodName := call message name
+    if(methodName beginsWithSeq(&quot;get&quot;),
+        # Handle getters
+        property := methodName afterSeq(&quot;get&quot;) lowercase
+        self getSlot(property),
+        # Handle setters
+        if(methodName beginsWithSeq(&quot;set&quot;),
+            property := methodName afterSeq(&quot;set&quot;) lowercase
+            value := call evalArgAt(0)
+            self setSlot(property, value)
+        )
+    )
+)
+
+obj := DynamicObject clone
+obj setName(&quot;Alice&quot;)     // Creates 'name' slot
+obj getName println       // &quot;Alice&quot;
+</code></pre>
+<h2 id="lazy-evaluation-with-messages">
+  Lazy Evaluation with Messages
+  
+  <a class="anchor" href="#lazy-evaluation-with-messages">#</a>
+  
+</h2>
+<p>Messages don&rsquo;t evaluate immediately—they&rsquo;re data structures you can manipulate:</p>
+<pre><code class="language-io">// Messages as data
+expr := message(2 + 3 * 4)
+expr println             // 2 +(3 *(4))
+
+// Evaluate when ready
+result := expr doInContext(Lobby)
+result println           // 14
+
+// Modify messages before evaluation
+expr := message(x + y)
+context := Object clone
+context x := 10
+context y := 20
+expr doInContext(context) println  // 30
+</code></pre>
+<p>This enables macro-like capabilities:</p>
+<pre><code class="language-io">// Create a timing macro
+Object time := method(
+    code := call argAt(0)  // Get the message, not its value
+    start := Date now
+    result := code doInContext(call sender)
+    elapsed := Date now - start
+    (&quot;Elapsed: &quot; .. elapsed) println
+    result
+)
+
+// Use it
+time(
+    sum := 0
+    for(i, 1, 1000000, sum = sum + i)
+    sum
+)
+// Elapsed: 0.234
+// Returns: 500000500000
+</code></pre>
+<h2 id="call-introspection">
+  Call Introspection
+  
+  <a class="anchor" href="#call-introspection">#</a>
+  
+</h2>
+<p>The <code>call</code> object provides detailed information about the current method invocation:</p>
+<pre><code class="language-io">Object debug := method(
+    &quot;=== Call Debug ===&quot; println
+    (&quot;Sender: &quot; .. call sender type) println
+    (&quot;Target: &quot; .. call target type) println
+    (&quot;Message: &quot; .. call message name) println
+    (&quot;Args: &quot; .. call message arguments) println
+    (&quot;Activated: &quot; .. call activated type) println
+    &quot;================&quot; println
+)
+
+TestObject := Object clone
+TestObject test := method(
+    debug
+)
+
+TestObject test
+// === Call Debug ===
+// Sender: Lobby
+// Target: TestObject
+// Message: debug
+// Args: list()
+// Activated: Block
+// ================
+</code></pre>
+<h2 id="operator-messages">
+  Operator Messages
+  
+  <a class="anchor" href="#operator-messages">#</a>
+  
+</h2>
+<p>Operators are messages with special precedence rules:</p>
+<pre><code class="language-io">// These are equivalent
+2 + 3 * 4
+2 +(3 *(4))
+
+// You can see the precedence
+OperatorTable println
+
+// You can add custom operators
+OperatorTable addOperator(&quot;@@&quot;, 5)
+Number @@ := method(n,
+    self pow(n) + n pow(self)
+)
+
+2 @@ 3 println  // 17 (2^3 + 3^2 = 8 + 9)
+
+// Operators are just messages
+5 send(&quot;+&quot;, 3) println  // 8
+&quot;hello&quot; send(&quot;at&quot;, 1) println  // e
+</code></pre>
+<h2 id="assignment-messages">
+  Assignment Messages
+  
+  <a class="anchor" href="#assignment-messages">#</a>
+  
+</h2>
+<p>Even assignment is message passing:</p>
+<pre><code class="language-io">// These are equivalent
+x := 10
+setSlot(&quot;x&quot;, 10)
+
+// And these
+x = 20
+updateSlot(&quot;x&quot;, 20)
+
+// You can override assignment behavior
+Object setSlot := method(name, value,
+    (&quot;Setting &quot; .. name .. &quot; to &quot; .. value) println
+    resend  // Call original setSlot
+)
+
+y := 42
+// Setting y to 42
+</code></pre>
+<h2 id="method-activation-vs-value-access">
+  Method Activation vs. Value Access
+  
+  <a class="anchor" href="#method-activation-vs-value-access">#</a>
+  
+</h2>
+<p>Io distinguishes between activatable and non-activatable values:</p>
+<pre><code class="language-io">obj := Object clone
+
+// Methods are activatable - they run when accessed
+obj greet := method(&quot;Hello!&quot; println)
+obj greet  // Prints &quot;Hello!&quot;
+
+// Other values are just returned
+obj name := &quot;Alice&quot;
+obj name  // Returns &quot;Alice&quot;
+
+// You can get a method without activating it
+m := obj getSlot(&quot;greet&quot;)
+m println  // method(...)
+
+// And activate it later
+m call  // Prints &quot;Hello!&quot;
+
+// Check if something is activatable
+obj getSlot(&quot;greet&quot;) isActivatable println  // true
+obj getSlot(&quot;name&quot;) isActivatable println   // false
+</code></pre>
+<h2 id="building-a-message-based-dsl">
+  Building a Message-Based DSL
+  
+  <a class="anchor" href="#building-a-message-based-dsl">#</a>
+  
+</h2>
+<p>Let&rsquo;s build a simple HTML DSL using messages:</p>
+<pre><code class="language-io">HTML := Object clone
+HTML forward := method(
+    tagName := call message name
+    args := call message arguments
+    
+    // Build opening tag
+    result := &quot;&lt;&quot; .. tagName
+    
+    // Handle attributes (first arg if it's a Map)
+    if(args size &gt; 0 and args at(0) name == &quot;curlyBrackets&quot;,
+        attrs := call evalArgAt(0)
+        attrs foreach(key, value,
+            result = result .. &quot; &quot; .. key .. &quot;=\&quot;&quot; .. value .. &quot;\&quot;&quot;
+        )
+        args removeFirst
+    )
+    
+    result = result .. &quot;&gt;&quot;
+    
+    // Handle content
+    args foreach(arg,
+        content := call sender doMessage(arg)
+        if(content, result = result .. content)
+    )
+    
+    // Closing tag
+    result = result .. &quot;&lt;/&quot; .. tagName .. &quot;&gt;&quot;
+    result
+)
+
+// Usage
+html := HTML clone
+
+page := html div({ &quot;class&quot;: &quot;container&quot; },
+    html h1(&quot;Welcome&quot;),
+    html p(&quot;This is a paragraph&quot;),
+    html ul(
+        html li(&quot;Item 1&quot;),
+        html li(&quot;Item 2&quot;)
+    )
+)
+
+page println
+// &lt;div class=&quot;container&quot;&gt;&lt;h1&gt;Welcome&lt;/h1&gt;&lt;p&gt;This is a paragraph&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Item 1&lt;/li&gt;&lt;li&gt;Item 2&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+</code></pre>
+<h2 id="performance-considerations">
+  Performance Considerations
+  
+  <a class="anchor" href="#performance-considerations">#</a>
+  
+</h2>
+<p>Message passing has overhead compared to direct function calls:</p>
+<pre><code class="language-io">// Traditional method call
+obj := Object clone
+obj directMethod := method(x, x * 2)
+
+// Message construction and sending
+msg := Message clone setName(&quot;directMethod&quot;) setArguments(list(Message clone setName(&quot;5&quot;)))
+
+// Benchmark
+time(
+    100000 times(obj directMethod(5))
+)
+
+time(
+    100000 times(obj doMessage(msg))
+)
+
+// Direct calls are faster, but message objects enable metaprogramming
+</code></pre>
+<h2 id="common-patterns">
+  Common Patterns
+  
+  <a class="anchor" href="#common-patterns">#</a>
+  
+</h2>
+<h3 id="property-access-pattern">
+  Property Access Pattern
+  
+  <a class="anchor" href="#property-access-pattern">#</a>
+  
+</h3>
+<pre><code class="language-io">Person := Object clone
+Person init := method(
+    self name := nil
+    self age := nil
+    self
+)
+
+// Generate getters/setters with messages
+Person addAccessors := method(slotName,
+    // Getter
+    self setSlot(slotName, 
+        method(self getSlot(&quot;_&quot; .. slotName))
+    )
+    
+    // Setter  
+    self setSlot(&quot;set&quot; .. slotName asCapitalized,
+        method(value, self setSlot(&quot;_&quot; .. slotName, value))
+    )
+)
+
+Person addAccessors(&quot;name&quot;)
+Person addAccessors(&quot;age&quot;)
+
+p := Person clone
+p setName(&quot;Alice&quot;)
+p name println  // &quot;Alice&quot;
+</code></pre>
+<h3 id="chain-of-responsibility">
+  Chain of Responsibility
+  
+  <a class="anchor" href="#chain-of-responsibility">#</a>
+  
+</h3>
+<pre><code class="language-io">Handler := Object clone
+Handler next := nil
+Handler handle := method(request,
+    if(self canHandle(request),
+        self process(request),
+        if(next, next handle(request))
+    )
+)
+
+AuthHandler := Handler clone
+AuthHandler canHandle := method(request,
+    request hasSlot(&quot;needsAuth&quot;)
+)
+AuthHandler process := method(request,
+    &quot;Authenticating...&quot; println
+)
+
+LogHandler := Handler clone  
+LogHandler canHandle := method(request, true)
+LogHandler process := method(request,
+    (&quot;Logging: &quot; .. request type) println
+)
+
+// Build chain
+auth := AuthHandler clone
+log := LogHandler clone
+auth next := log
+
+// Process requests
+request := Object clone
+request type := &quot;GET&quot;
+request needsAuth := true
+
+auth handle(request)
+// Authenticating...
+// Logging: GET
+</code></pre>
+<h2 id="debugging-messages">
+  Debugging Messages
+  
+  <a class="anchor" href="#debugging-messages">#</a>
+  
+</h2>
+<p>Understanding message flow is crucial for debugging:</p>
+<pre><code class="language-io">Object trace := method(
+    self setSlot(&quot;forward&quot;,
+        method(
+            (&quot;Missing: &quot; .. call message name) println
+            (&quot;Arguments: &quot; .. call message arguments) println
+            (&quot;Sender: &quot; .. sender type) println
+        )
+    )
+    self
+)
+
+buggy := Object clone trace
+buggy doSomethingWrong(1, 2, 3)
+// Missing: doSomethingWrong
+// Arguments: list(1, 2, 3)
+// Sender: Lobby
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Message Logger</strong>: Create a wrapper that logs all messages sent to an object, including arguments and return values.</p>
+</li>
+<li>
+<p><strong>Lazy Properties</strong>: Implement properties that are only computed when first accessed, then cached.</p>
+</li>
+<li>
+<p><strong>Message Queue</strong>: Build an object that queues messages and executes them later in order.</p>
+</li>
+<li>
+<p><strong>Method Decorators</strong>: Create a system for wrapping methods with before/after behavior using messages.</p>
+</li>
+<li>
+<p><strong>Message Router</strong>: Build a router that directs messages to different handlers based on patterns.</p>
+</li>
+</ol>
+<h2 id="advanced-message-techniques">
+  Advanced Message Techniques
+  
+  <a class="anchor" href="#advanced-message-techniques">#</a>
+  
+</h2>
+<h3 id="message-rewriting">
+  Message Rewriting
+  
+  <a class="anchor" href="#message-rewriting">#</a>
+  
+</h3>
+<pre><code class="language-io">Rewriter := Object clone
+Rewriter forward := method(
+    msg := call message
+    
+    // Rewrite add to multiply
+    if(msg name == &quot;add&quot;,
+        msg setName(&quot;multiply&quot;)
+    )
+    
+    // Continue with modified message
+    resend
+)
+
+calc := Rewriter clone
+calc multiply := method(a, b, a * b)
+calc add(3, 4) println  // 12 (rewritten to multiply!)
+</code></pre>
+<h3 id="conditional-message-sending">
+  Conditional Message Sending
+  
+  <a class="anchor" href="#conditional-message-sending">#</a>
+  
+</h3>
+<pre><code class="language-io">Object sendIf := method(condition, messageName,
+    if(condition,
+        self doMessage(Message clone setName(messageName))
+    )
+)
+
+Object sendUnless := method(condition, messageName,
+    if(condition not,
+        self doMessage(Message clone setName(messageName))
+    )
+)
+
+obj := Object clone
+obj greet := method(&quot;Hello!&quot; println)
+
+obj sendIf(true, &quot;greet&quot;)      // Hello!
+obj sendUnless(false, &quot;greet&quot;)  // Hello!
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Messages and slots form the foundation of Io&rsquo;s object model. Every computation—from simple arithmetic to complex method calls—is accomplished through message passing. Objects store their state and behavior in slots, and respond to messages by looking up the corresponding slots.</p>
+<p>This uniform model provides incredible flexibility. You can intercept messages, forward them, rewrite them, or queue them. You can introspect the entire message-passing process. You can build DSLs that feel native to the language. And you can debug by tracing the flow of messages through your system.</p>
+<p>Understanding messages and slots deeply is essential to mastering Io. They&rsquo;re not just an implementation detail—they&rsquo;re the conceptual core that makes Io&rsquo;s radical simplicity possible.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/04-prototypes-not-classes/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Prototypes, Not Classes" />
+        <span>Prototypes, Not Classes</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/06-cloning-and-inheritance/" class="flex align-center book-icon">
+        <span>Cloning and Inheritance</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Cloning and Inheritance" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

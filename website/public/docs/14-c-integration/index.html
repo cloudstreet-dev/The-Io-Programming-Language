@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 14: C Integration
+  
+  #
+  
+
+Io is implemented in C and provides excellent C integration capabilities. You can extend Io with C libraries, create high-performance addons, and embed Io in C applications. This chapter explores the bidirectional relationship between Io and C.
+
+  Understanding Io&rsquo;s C Architecture
+  
+  #
+  
+
+Io&rsquo;s core is a small C library (around 10,000 lines) that implements:
+
+The object model (IoObject)
+The message passing system
+Basic types (Number, String, List, etc.)
+The VM and garbage collector
+
+Everything else is built on top of this foundation, either in C addons or pure Io.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/14-c-integration/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="C Integration">
+  <meta property="og:description" content="Chapter 14: C Integration # Io is implemented in C and provides excellent C integration capabilities. You can extend Io with C libraries, create high-performance addons, and embed Io in C applications. This chapter explores the bidirectional relationship between Io and C.
+Understanding Io’s C Architecture # Io’s core is a small C library (around 10,000 lines) that implements:
+The object model (IoObject) The message passing system Basic types (Number, String, List, etc.) The VM and garbage collector Everything else is built on top of this foundation, either in C addons or pure Io.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>C Integration | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/14-c-integration/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="active">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>C Integration</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">C Integration</h1>
+    
+    <div class="chapter-number">Chapter 14</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Io is implemented in C and provides excellent C integration capabilities. You can extend Io with C libraries, create high-performance addons, and embed Io in C applications. This chapter explores the bidirectional relationship between Io and C.</p>
+<h2 id="understanding-ios-c-architecture">
+  Understanding Io&rsquo;s C Architecture
+  
+  <a class="anchor" href="#understanding-ios-c-architecture">#</a>
+  
+</h2>
+<p>Io&rsquo;s core is a small C library (around 10,000 lines) that implements:</p>
+<ul>
+<li>The object model (IoObject)</li>
+<li>The message passing system</li>
+<li>Basic types (Number, String, List, etc.)</li>
+<li>The VM and garbage collector</li>
+</ul>
+<p>Everything else is built on top of this foundation, either in C addons or pure Io.</p>
+<h2 id="creating-a-simple-c-addon">
+  Creating a Simple C Addon
+  
+  <a class="anchor" href="#creating-a-simple-c-addon">#</a>
+  
+</h2>
+<p>Let&rsquo;s create a basic C addon that adds a method to calculate factorials:</p>
+<pre><code class="language-c">// factorial.c
+#include &quot;IoState.h&quot;
+#include &quot;IoObject.h&quot;
+#include &quot;IoNumber.h&quot;
+
+IoObject *IoObject_factorial(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    // Get the number from the receiver
+    double n = IoNumber_asDouble(self);
+    
+    if (n &lt; 0) {
+        IoState_error_(IOSTATE, m, &quot;factorial of negative number&quot;);
+        return IONIL(self);
+    }
+    
+    double result = 1;
+    for (int i = 2; i &lt;= n; i++) {
+        result *= i;
+    }
+    
+    return IoNumber_newWithDouble_(IOSTATE, result);
+}
+
+// Initialize the addon
+void IoFactorial_init(IoState *state)
+{
+    IoObject *self = IoState_lobby(state);
+    
+    // Add method to Number prototype
+    IoObject *number = IoState_protoWithName_(state, &quot;Number&quot;);
+    IoObject_addMethod_(number, 
+        IOSYMBOL(&quot;factorial&quot;), 
+        IoObject_factorial);
+}
+</code></pre>
+<p>To compile and use:</p>
+<pre><code class="language-bash"># Compile as shared library
+gcc -shared -fPIC -o factorial.so factorial.c -lIo
+
+# In Io
+DynLib load(&quot;./factorial.so&quot;)
+5 factorial println  // 120
+</code></pre>
+<h2 id="working-with-io-objects-in-c">
+  Working with Io Objects in C
+  
+  <a class="anchor" href="#working-with-io-objects-in-c">#</a>
+  
+</h2>
+<pre><code class="language-c">// Creating Io objects from C
+IoObject *IoAddon_createObject(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IoState *state = IOSTATE;
+    
+    // Create different types
+    IoObject *num = IoNumber_newWithDouble_(state, 42.0);
+    IoObject *str = IoSeq_newWithCString_(state, &quot;Hello from C&quot;);
+    IoObject *list = IoList_new(state);
+    
+    // Add items to list
+    IoList_append_(list, num);
+    IoList_append_(list, str);
+    
+    // Create a new object with slots
+    IoObject *obj = IoObject_new(state);
+    IoObject_setSlot_to_(obj, IOSYMBOL(&quot;x&quot;), num);
+    IoObject_setSlot_to_(obj, IOSYMBOL(&quot;message&quot;), str);
+    IoObject_setSlot_to_(obj, IOSYMBOL(&quot;items&quot;), list);
+    
+    return obj;
+}
+
+// Accessing Io objects from C
+IoObject *IoAddon_processObject(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    // Get the first argument
+    IoObject *arg = IoMessage_locals_valueArgAt_(m, locals, 0);
+    
+    // Check type
+    if (ISSEQ(arg)) {
+        char *cstr = IoSeq_asCString(arg);
+        printf(&quot;String argument: %s\n&quot;, cstr);
+    }
+    else if (ISNUMBER(arg)) {
+        double num = IoNumber_asDouble(arg);
+        printf(&quot;Number argument: %f\n&quot;, num);
+    }
+    else if (ISLIST(arg)) {
+        size_t size = IoList_size(arg);
+        printf(&quot;List with %zu items\n&quot;, size);
+    }
+    
+    return self;
+}
+</code></pre>
+<h2 id="creating-custom-types">
+  Creating Custom Types
+  
+  <a class="anchor" href="#creating-custom-types">#</a>
+  
+</h2>
+<pre><code class="language-c">// customtype.c - Define a Point type
+#include &quot;IoState.h&quot;
+#include &quot;IoObject.h&quot;
+#include &quot;IoNumber.h&quot;
+
+// Define the type structure
+typedef struct {
+    IoObject obj;  // Must be first
+    double x;
+    double y;
+} IoPoint;
+
+// Type tag
+IoTag *IoPoint_tag(void)
+{
+    static IoTag *tag = NULL;
+    if (!tag) {
+        tag = IoTag_newWithName_(&quot;Point&quot;);
+    }
+    return tag;
+}
+
+// Constructor
+IoPoint *IoPoint_new(IoState *state, double x, double y)
+{
+    IoPoint *self = IoObject_new(state);
+    IoObject_tag_(self, IoPoint_tag());
+    
+    self-&gt;x = x;
+    self-&gt;y = y;
+    
+    return self;
+}
+
+// Methods
+IoObject *IoPoint_x(IoPoint *self, IoObject *locals, IoMessage *m)
+{
+    return IoNumber_newWithDouble_(IOSTATE, self-&gt;x);
+}
+
+IoObject *IoPoint_y(IoPoint *self, IoObject *locals, IoMessage *m)
+{
+    return IoNumber_newWithDouble_(IOSTATE, self-&gt;y);
+}
+
+IoObject *IoPoint_distance(IoPoint *self, IoObject *locals, IoMessage *m)
+{
+    IoPoint *other = IoMessage_locals_valueArgAt_(m, locals, 0);
+    
+    if (IoObject_tag(other) != IoPoint_tag()) {
+        IoState_error_(IOSTATE, m, &quot;argument must be a Point&quot;);
+        return IONIL(self);
+    }
+    
+    double dx = self-&gt;x - other-&gt;x;
+    double dy = self-&gt;y - other-&gt;y;
+    double distance = sqrt(dx*dx + dy*dy);
+    
+    return IoNumber_newWithDouble_(IOSTATE, distance);
+}
+
+// Initialize the type
+void IoPoint_init(IoState *state)
+{
+    IoObject *self = IoState_lobby(state);
+    
+    // Create prototype
+    IoPoint *proto = IoPoint_new(state, 0, 0);
+    IoState_registerProtoWithName_(state, proto, &quot;Point&quot;);
+    
+    // Add methods
+    IoObject_addMethod_(proto, IOSYMBOL(&quot;x&quot;), IoPoint_x);
+    IoObject_addMethod_(proto, IOSYMBOL(&quot;y&quot;), IoPoint_y);
+    IoObject_addMethod_(proto, IOSYMBOL(&quot;distance&quot;), IoPoint_distance);
+}
+</code></pre>
+<h2 id="calling-io-from-c">
+  Calling Io from C
+  
+  <a class="anchor" href="#calling-io-from-c">#</a>
+  
+</h2>
+<pre><code class="language-c">// Evaluate Io code from C
+IoObject *result = IoState_doString_(state, &quot;1 + 2 * 3&quot;);
+double value = IoNumber_asDouble(result);
+printf(&quot;Result: %f\n&quot;, value);  // 7.0
+
+// Call Io methods from C
+IoObject *obj = IoState_doString_(state, &quot;Object clone&quot;);
+IoObject *method = IoObject_getSlot_(obj, IOSYMBOL(&quot;type&quot;));
+IoObject *result = IoObject_activate(method, obj, locals, m, NULL);
+char *type = IoSeq_asCString(result);
+printf(&quot;Type: %s\n&quot;, type);  // Object
+
+// Send messages
+IoMessage *msg = IoMessage_newWithName_(state, IOSYMBOL(&quot;println&quot;));
+IoMessage_setCachedResult_(msg, NULL);
+IoObject *result = IoObject_perform(obj, locals, msg);
+</code></pre>
+<h2 id="memory-management">
+  Memory Management
+  
+  <a class="anchor" href="#memory-management">#</a>
+  
+</h2>
+<p>Io uses a garbage collector, but when interfacing with C, you need to be careful:</p>
+<pre><code class="language-c">// Protecting objects from GC
+IoObject *IoAddon_keepAlive(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IoState *state = IOSTATE;
+    
+    // Create object that needs to survive GC
+    IoObject *important = IoObject_new(state);
+    
+    // Add reference from a persistent object
+    IoObject_setSlot_to_(IoState_lobby(state), 
+        IOSYMBOL(&quot;_keepAlive&quot;), important);
+    
+    // Or use IoState_retain/release
+    IoState_retain_(state, important);
+    
+    // Do work...
+    
+    // Release when done
+    IoState_release_(state, important);
+    
+    return important;
+}
+
+// Managing C memory
+typedef struct {
+    IoObject obj;
+    void *cdata;
+} IoCWrapper;
+
+void IoCWrapper_free(IoCWrapper *self)
+{
+    if (self-&gt;cdata) {
+        free(self-&gt;cdata);
+        self-&gt;cdata = NULL;
+    }
+}
+
+// Set up finalizer
+IoTag *tag = IoTag_newWithName_(&quot;CWrapper&quot;);
+IoTag_freeFunc_(tag, (IoTagFreeFunc *)IoCWrapper_free);
+</code></pre>
+<h2 id="wrapping-c-libraries">
+  Wrapping C Libraries
+  
+  <a class="anchor" href="#wrapping-c-libraries">#</a>
+  
+</h2>
+<p>Example: Wrapping a simple math library:</p>
+<pre><code class="language-c">// mathlib_wrapper.c
+#include &lt;math.h&gt;
+#include &quot;IoState.h&quot;
+#include &quot;IoObject.h&quot;
+#include &quot;IoNumber.h&quot;
+#include &quot;IoList.h&quot;
+
+// Wrap sin function
+IoObject *IoMath_sin(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    double x = IoMessage_locals_doubleArgAt_(m, locals, 0);
+    return IoNumber_newWithDouble_(IOSTATE, sin(x));
+}
+
+// Wrap complex function
+IoObject *IoMath_stats(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IoList *list = IoMessage_locals_listArgAt_(m, locals, 0);
+    size_t count = IoList_size(list);
+    
+    if (count == 0) {
+        return IoList_new(IOSTATE);
+    }
+    
+    double sum = 0, min = INFINITY, max = -INFINITY;
+    
+    for (size_t i = 0; i &lt; count; i++) {
+        IoObject *item = IoList_at_(list, i);
+        double value = IoNumber_asDouble(item);
+        
+        sum += value;
+        if (value &lt; min) min = value;
+        if (value &gt; max) max = value;
+    }
+    
+    double mean = sum / count;
+    
+    // Return statistics as list
+    IoList *result = IoList_new(IOSTATE);
+    IoList_append_(result, IoNumber_newWithDouble_(IOSTATE, mean));
+    IoList_append_(result, IoNumber_newWithDouble_(IOSTATE, min));
+    IoList_append_(result, IoNumber_newWithDouble_(IOSTATE, max));
+    
+    return result;
+}
+
+void IoMathLib_init(IoState *state)
+{
+    IoObject *math = IoObject_new(state);
+    IoState_registerProtoWithName_(state, math, &quot;Math&quot;);
+    
+    IoObject_addMethod_(math, IOSYMBOL(&quot;sin&quot;), IoMath_sin);
+    IoObject_addMethod_(math, IOSYMBOL(&quot;stats&quot;), IoMath_stats);
+}
+</code></pre>
+<p>Usage in Io:</p>
+<pre><code class="language-io">DynLib load(&quot;./mathlib.so&quot;)
+
+Math sin(3.14159 / 2) println  // 1.0
+
+stats := Math stats(list(1, 2, 3, 4, 5))
+&quot;Mean: &quot; .. stats at(0) println  // Mean: 3
+&quot;Min: &quot; .. stats at(1) println   // Min: 1
+&quot;Max: &quot; .. stats at(2) println   // Max: 5
+</code></pre>
+<h2 id="embedding-io-in-c-applications">
+  Embedding Io in C Applications
+  
+  <a class="anchor" href="#embedding-io-in-c-applications">#</a>
+  
+</h2>
+<pre><code class="language-c">// embed_io.c - Embedding Io in a C application
+#include &lt;stdio.h&gt;
+#include &quot;IoState.h&quot;
+#include &quot;IoObject.h&quot;
+#include &quot;IoSeq.h&quot;
+
+// Custom function exposed to Io
+IoObject *App_log(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    char *msg = IoMessage_locals_cStringArgAt_(m, locals, 0);
+    printf(&quot;[APP LOG] %s\n&quot;, msg);
+    return self;
+}
+
+int main(int argc, char *argv[])
+{
+    // Initialize Io
+    IoState *state = IoState_new();
+    IoState_init(state);
+    
+    // Add custom functions
+    IoObject *lobby = IoState_lobby(state);
+    IoObject *app = IoObject_new(state);
+    IoState_registerProtoWithName_(state, app, &quot;App&quot;);
+    IoObject_addMethod_(app, IOSYMBOL(&quot;log&quot;), App_log);
+    
+    // Load and run Io script
+    IoState_doFile_(state, &quot;script.io&quot;);
+    
+    // Interact with Io objects
+    IoObject *result = IoState_doString_(state, 
+        &quot;x := 10; y := 20; x + y&quot;);
+    printf(&quot;Result from Io: %f\n&quot;, IoNumber_asDouble(result));
+    
+    // Clean up
+    IoState_free(state);
+    
+    return 0;
+}
+</code></pre>
+<p>The Io script (script.io):</p>
+<pre><code class="language-io">App log(&quot;Hello from Io!&quot;)
+
+// Define functions for C to call
+calculate := method(a, b,
+    App log(&quot;Calculating in Io&quot;)
+    a * b + 100
+)
+</code></pre>
+<h2 id="performance-optimization">
+  Performance Optimization
+  
+  <a class="anchor" href="#performance-optimization">#</a>
+  
+</h2>
+<pre><code class="language-c">// Optimized array operations
+IoObject *IoArray_sum(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    // Get underlying C array for performance
+    UArray *array = IoSeq_rawUArray(self);
+    size_t size = UArray_size(array);
+    uint8_t *data = UArray_bytes(array);
+    int itemSize = UArray_itemSize(array);
+    
+    double sum = 0;
+    
+    // Fast path for different types
+    if (itemSize == sizeof(double)) {
+        double *doubles = (double *)data;
+        for (size_t i = 0; i &lt; size; i++) {
+            sum += doubles[i];
+        }
+    }
+    else if (itemSize == sizeof(float)) {
+        float *floats = (float *)data;
+        for (size_t i = 0; i &lt; size; i++) {
+            sum += floats[i];
+        }
+    }
+    
+    return IoNumber_newWithDouble_(IOSTATE, sum);
+}
+
+// Batch operations
+IoObject *IoMatrix_multiply(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IoObject *other = IoMessage_locals_valueArgAt_(m, locals, 0);
+    
+    // Get dimensions
+    int rows1 = IoMessage_locals_intArgAt_(m, locals, 1);
+    int cols1 = IoMessage_locals_intArgAt_(m, locals, 2);
+    int cols2 = IoMessage_locals_intArgAt_(m, locals, 3);
+    
+    // Get raw data pointers
+    double *data1 = (double *)IoSeq_rawBytes(self);
+    double *data2 = (double *)IoSeq_rawBytes(other);
+    
+    // Allocate result
+    IoSeq *result = IoSeq_newWithData_length_(IOSTATE, 
+        NULL, rows1 * cols2 * sizeof(double));
+    double *resultData = (double *)IoSeq_rawBytes(result);
+    
+    // Optimized matrix multiplication
+    for (int i = 0; i &lt; rows1; i++) {
+        for (int j = 0; j &lt; cols2; j++) {
+            double sum = 0;
+            for (int k = 0; k &lt; cols1; k++) {
+                sum += data1[i * cols1 + k] * data2[k * cols2 + j];
+            }
+            resultData[i * cols2 + j] = sum;
+        }
+    }
+    
+    return result;
+}
+</code></pre>
+<h2 id="debugging-c-addons">
+  Debugging C Addons
+  
+  <a class="anchor" href="#debugging-c-addons">#</a>
+  
+</h2>
+<pre><code class="language-c">// Debug helpers
+#define IO_DEBUG 1
+
+#ifdef IO_DEBUG
+    #define DEBUG_PRINT(fmt, ...) \
+        fprintf(stderr, &quot;DEBUG: &quot; fmt &quot;\n&quot;, ##__VA_ARGS__)
+#else
+    #define DEBUG_PRINT(fmt, ...)
+#endif
+
+IoObject *IoDebug_function(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    DEBUG_PRINT(&quot;Function called with %d arguments&quot;, 
+        IoMessage_argCount(m));
+    
+    // Print argument types
+    for (int i = 0; i &lt; IoMessage_argCount(m); i++) {
+        IoObject *arg = IoMessage_locals_valueArgAt_(m, locals, i);
+        DEBUG_PRINT(&quot;  Arg %d: %s&quot;, i, IoObject_name(arg));
+    }
+    
+    // Check for memory issues
+    IoState *state = IOSTATE;
+    IoState_check(state);
+    
+    return self;
+}
+</code></pre>
+<h2 id="common-integration-patterns">
+  Common Integration Patterns
+  
+  <a class="anchor" href="#common-integration-patterns">#</a>
+  
+</h2>
+<h3 id="callback-pattern">
+  Callback Pattern
+  
+  <a class="anchor" href="#callback-pattern">#</a>
+  
+</h3>
+<pre><code class="language-c">// Store Io blocks as callbacks
+typedef struct {
+    IoObject obj;
+    IoObject *callback;
+} IoCallbackWrapper;
+
+IoObject *IoWrapper_setCallback(IoCallbackWrapper *self, 
+    IoObject *locals, IoMessage *m)
+{
+    IoObject *block = IoMessage_locals_valueArgAt_(m, locals, 0);
+    
+    // Retain the block
+    IoState_retain_(IOSTATE, block);
+    if (self-&gt;callback) {
+        IoState_release_(IOSTATE, self-&gt;callback);
+    }
+    self-&gt;callback = block;
+    
+    return self;
+}
+
+// Call the Io callback from C
+void triggerCallback(IoCallbackWrapper *wrapper, double value)
+{
+    if (wrapper-&gt;callback) {
+        IoObject *arg = IoNumber_newWithDouble_(IOSTATE, value);
+        IoObject_perform(wrapper-&gt;callback, wrapper, 
+            IoMessage_newWithName_label_(IOSTATE, 
+                IOSYMBOL(&quot;call&quot;), arg));
+    }
+}
+</code></pre>
+<h3 id="event-system">
+  Event System
+  
+  <a class="anchor" href="#event-system">#</a>
+  
+</h3>
+<pre><code class="language-c">// Event emitter in C
+typedef struct {
+    IoObject obj;
+    IoMap *handlers;  // Event name -&gt; List of handlers
+} IoEventEmitter;
+
+IoObject *IoEventEmitter_on(IoEventEmitter *self, 
+    IoObject *locals, IoMessage *m)
+{
+    IoSeq *event = IoMessage_locals_seqArgAt_(m, locals, 0);
+    IoObject *handler = IoMessage_locals_valueArgAt_(m, locals, 1);
+    
+    IoList *handlers = IoMap_at_(self-&gt;handlers, event);
+    if (!handlers) {
+        handlers = IoList_new(IOSTATE);
+        IoMap_atPut_(self-&gt;handlers, event, handlers);
+    }
+    
+    IoList_append_(handlers, handler);
+    return self;
+}
+
+IoObject *IoEventEmitter_emit(IoEventEmitter *self, 
+    IoObject *locals, IoMessage *m)
+{
+    IoSeq *event = IoMessage_locals_seqArgAt_(m, locals, 0);
+    IoList *handlers = IoMap_at_(self-&gt;handlers, event);
+    
+    if (handlers) {
+        size_t count = IoList_size(handlers);
+        for (size_t i = 0; i &lt; count; i++) {
+            IoObject *handler = IoList_at_(handlers, i);
+            
+            // Pass remaining arguments to handler
+            IoMessage *msg = IoMessage_newWithName_(IOSTATE, 
+                IOSYMBOL(&quot;call&quot;));
+            for (int j = 1; j &lt; IoMessage_argCount(m); j++) {
+                IoMessage_addArg_(msg, IoMessage_argAt_(m, j));
+            }
+            
+            IoObject_perform(handler, locals, msg);
+        }
+    }
+    
+    return self;
+}
+</code></pre>
+<h2 id="build-system-integration">
+  Build System Integration
+  
+  <a class="anchor" href="#build-system-integration">#</a>
+  
+</h2>
+<p>Makefile for Io addon:</p>
+<pre><code class="language-makefile"># Makefile for Io addon
+CC = gcc
+CFLAGS = -shared -fPIC -Wall -O2
+INCLUDES = -I$(IO_HOME)/include
+LIBS = -L$(IO_HOME)/lib -lIo
+
+ADDON = myaddon.so
+SOURCES = myaddon.c utils.c
+OBJECTS = $(SOURCES:.c=.o)
+
+all: $(ADDON)
+
+$(ADDON): $(OBJECTS)
+    $(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+%.o: %.c
+    $(CC) $(CFLAGS) $(INCLUDES) -c $&lt; -o $@
+
+clean:
+    rm -f $(OBJECTS) $(ADDON)
+
+install: $(ADDON)
+    cp $(ADDON) $(IO_HOME)/addons/
+
+test: $(ADDON)
+    io test_addon.io
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>SQLite Wrapper</strong>: Create a complete SQLite wrapper for Io.</p>
+</li>
+<li>
+<p><strong>Graphics Library</strong>: Wrap SDL or Cairo for graphics programming.</p>
+</li>
+<li>
+<p><strong>Network Addon</strong>: Implement high-performance networking primitives.</p>
+</li>
+<li>
+<p><strong>Crypto Library</strong>: Wrap OpenSSL for cryptographic operations.</p>
+</li>
+<li>
+<p><strong>Scientific Computing</strong>: Create bindings for BLAS/LAPACK.</p>
+</li>
+</ol>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>C integration is one of Io&rsquo;s strongest features. The ability to seamlessly extend Io with C libraries, create high-performance addons, and embed Io in C applications makes it practical for real-world applications. The clean C API and simple object model make integration straightforward, while the garbage collector handles most memory management concerns.</p>
+<p>Whether you&rsquo;re optimizing hot paths, wrapping existing libraries, or embedding a scripting language in your application, Io&rsquo;s C integration provides the tools you need while maintaining the simplicity and elegance of the language.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/13-domain-specific-languages/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Domain-Specific Languages" />
+        <span>Domain-Specific Languages</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/15-real-world-patterns/" class="flex align-center book-icon">
+        <span>Real-World Patterns</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Real-World Patterns" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

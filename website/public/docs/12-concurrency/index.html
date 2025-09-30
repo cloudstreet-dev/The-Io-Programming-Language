@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Chapter 12: Concurrency
+  
+  #
+  
+
+Io provides powerful concurrency primitives: coroutines for cooperative multitasking, actors for message-passing concurrency, and futures for asynchronous computation. This chapter explores these mechanisms and how they enable concurrent and parallel programming in Io.
+
+  Coroutines: Cooperative Multitasking
+  
+  #
+  
+
+Coroutines are the foundation of Io&rsquo;s concurrency model. They&rsquo;re lightweight threads that yield control cooperatively:
+// Create a coroutine
+coro := coroutine(
+    5 repeat(i,
+        (&quot;Coroutine: &quot; .. i) println
+        yield  // Give control back
+    )
+)
+
+// Run it
+5 repeat(
+    &quot;Main&quot; println
+    coro resume  // Resume the coroutine
+)
+// Output interleaves Main and Coroutine messages
+
+Compare with threads in other languages:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://example.org/docs/12-concurrency/">
+  <meta property="og:site_name" content="The Io Programming Language">
+  <meta property="og:title" content="Concurrency">
+  <meta property="og:description" content="Chapter 12: Concurrency # Io provides powerful concurrency primitives: coroutines for cooperative multitasking, actors for message-passing concurrency, and futures for asynchronous computation. This chapter explores these mechanisms and how they enable concurrent and parallel programming in Io.
+Coroutines: Cooperative Multitasking # Coroutines are the foundation of Io’s concurrency model. They’re lightweight threads that yield control cooperatively:
+// Create a coroutine coro := coroutine( 5 repeat(i, (&#34;Coroutine: &#34; .. i) println yield // Give control back ) ) // Run it 5 repeat( &#34;Main&#34; println coro resume // Resume the coroutine ) // Output interleaves Main and Coroutine messages Compare with threads in other languages:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Concurrency | The Io Programming Language</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://example.org/docs/12-concurrency/">
+<link rel="stylesheet" href="/book.min.4cb515616f615b2a0bff9bc1586e8704536e3d9ada38b7ed57973b3f954b35de.css" integrity="sha256-TLUVYW9hWyoL/5vBWG6HBFNuPZraOLftV5c7P5VLNd4=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.20734475dc55187083547d768bab4ab01cefdbd4f93d7659611364d02969e74c.js" integrity="sha256-IHNEddxVGHCDVH12i6tKsBzv29T5PXZZYRNk0Clp50w=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  <link rel="stylesheet" href="/custom.css">
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  
+  
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <a href="/" class="header-title">The Io Programming Language</a>
+      </div>
+      <div class="header-search">
+        
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+      </div>
+    </div>
+  </header>
+  
+  <main class="container flex with-header">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/00-preface/" class="">Why Io?</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/01-introduction/" class="">Introduction</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/02-getting-started/" class="">Getting Started</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/03-everything-is-an-object/" class="">Everything is an Object</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/04-prototypes-not-classes/" class="">Prototypes, Not Classes</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/05-messages-and-slots/" class="">Messages and Slots</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/06-cloning-and-inheritance/" class="">Cloning and Inheritance</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/07-control-flow/" class="">Control Flow</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/08-collections/" class="">Collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/09-blocks-and-closures/" class="">Blocks and Closures</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/10-exceptions/" class="">Exceptions</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/11-metaprogramming/" class="">Metaprogramming</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/12-concurrency/" class="active">Concurrency</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/13-domain-specific-languages/" class="">Domain-Specific Languages</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/14-c-integration/" class="">C Integration</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/15-real-world-patterns/" class="">Real-World Patterns</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/16-case-studies/" class="">Case Studies</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/17-ecosystem-and-libraries/" class="">Ecosystem and Libraries</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/18-conclusion/" class="">Conclusion</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    
+    <a href="https://github.com/IoLanguage/io"  target="_blank" rel="noopener">
+        GitHub
+      </a>
+  </li>
+  
+  <li>
+    
+    <a href="https://iolanguage.org"  target="_blank" rel="noopener">
+        Io Language
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Concurrency</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-article">
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <div class="chapter-header">
+    <h1 class="chapter-title">Concurrency</h1>
+    
+    <div class="chapter-number">Chapter 12</div>
+    
+  </div>
+  
+  
+  
+  
+  
+<p>Io provides powerful concurrency primitives: coroutines for cooperative multitasking, actors for message-passing concurrency, and futures for asynchronous computation. This chapter explores these mechanisms and how they enable concurrent and parallel programming in Io.</p>
+<h2 id="coroutines-cooperative-multitasking">
+  Coroutines: Cooperative Multitasking
+  
+  <a class="anchor" href="#coroutines-cooperative-multitasking">#</a>
+  
+</h2>
+<p>Coroutines are the foundation of Io&rsquo;s concurrency model. They&rsquo;re lightweight threads that yield control cooperatively:</p>
+<pre><code class="language-io">// Create a coroutine
+coro := coroutine(
+    5 repeat(i,
+        (&quot;Coroutine: &quot; .. i) println
+        yield  // Give control back
+    )
+)
+
+// Run it
+5 repeat(
+    &quot;Main&quot; println
+    coro resume  // Resume the coroutine
+)
+// Output interleaves Main and Coroutine messages
+</code></pre>
+<p>Compare with threads in other languages:</p>
+<pre><code class="language-python"># Python with threads (preemptive)
+import threading
+def worker():
+    for i in range(5):
+        print(f&quot;Thread: {i}&quot;)
+        # No explicit yield needed
+
+# Python with async (cooperative)
+async def worker():
+    for i in range(5):
+        print(f&quot;Coroutine: {i}&quot;)
+        await asyncio.sleep(0)  # Explicit yield
+</code></pre>
+<h2 id="creating-and-managing-coroutines">
+  Creating and Managing Coroutines
+  
+  <a class="anchor" href="#creating-and-managing-coroutines">#</a>
+  
+</h2>
+<pre><code class="language-io">// Basic coroutine creation
+coro := Coroutine clone
+coro setRunMessage(message(
+    &quot;Running in coroutine&quot; println
+    self  // Return value
+))
+coro resume println  // &quot;Running in coroutine&quot;, then returns self
+
+// Using @ for async execution
+future := obj @method(arg)  // Runs method in new coroutine
+result := future resolve     // Wait for result
+
+// Coroutine with arguments
+producer := coroutine(
+    10 repeat(i,
+        yield(i * i)  // Yield a value
+    )
+)
+
+5 repeat(
+    producer resume println  // 0, 1, 4, 9, 16
+)
+</code></pre>
+<h2 id="actors-message-passing-concurrency">
+  Actors: Message-Passing Concurrency
+  
+  <a class="anchor" href="#actors-message-passing-concurrency">#</a>
+  
+</h2>
+<p>Actors are objects that process messages asynchronously in their own coroutine:</p>
+<pre><code class="language-io">// Create an actor
+Counter := Object clone
+Counter count := 0
+Counter increment := method(
+    count = count + 1
+    count
+)
+
+// Make it an actor
+counter := Counter clone
+counterActor := counter @  // @ makes it an actor
+
+// Send messages asynchronously
+future1 := counterActor increment
+future2 := counterActor increment
+future3 := counterActor increment
+
+// Get results
+future1 resolve println  // 1
+future2 resolve println  // 2
+future3 resolve println  // 3
+</code></pre>
+<p>This is similar to Erlang&rsquo;s actor model:</p>
+<pre><code class="language-erlang">% Erlang
+counter(Count) -&gt;
+    receive
+        {increment, From} -&gt;
+            From ! Count + 1,
+            counter(Count + 1)
+    end.
+</code></pre>
+<h2 id="futures-and-promises">
+  Futures and Promises
+  
+  <a class="anchor" href="#futures-and-promises">#</a>
+  
+</h2>
+<p>Futures represent values that will be available later:</p>
+<pre><code class="language-io">// Create a future manually
+future := Future clone
+
+// In another coroutine, fulfill it
+@(
+    wait(1)  // Simulate work
+    future setResult(42)
+)
+
+// Wait for result
+&quot;Waiting...&quot; println
+result := future resolve
+(&quot;Got result: &quot; .. result) println  // Got result: 42
+
+// Futures from async calls
+slowOperation := method(n,
+    wait(n)
+    n * 2
+)
+
+f := self @slowOperation(2)
+&quot;Doing other work...&quot; println
+result := f resolve
+result println  // 4
+</code></pre>
+<h2 id="channels-for-communication">
+  Channels for Communication
+  
+  <a class="anchor" href="#channels-for-communication">#</a>
+  
+</h2>
+<p>Implement Go-style channels:</p>
+<pre><code class="language-io">Channel := Object clone
+Channel init := method(
+    self queue := list()
+    self waiters := list()
+    self
+)
+
+Channel send := method(value,
+    if(waiters size &gt; 0,
+        waiter := waiters removeFirst
+        waiter resume(value),
+        queue append(value)
+    )
+)
+
+Channel receive := method(
+    if(queue size &gt; 0,
+        queue removeFirst,
+        waiters append(Coroutine currentCoroutine)
+        Coroutine currentCoroutine pause
+    )
+)
+
+// Usage
+ch := Channel clone init
+
+// Producer
+@(
+    5 repeat(i,
+        ch send(i * i)
+        wait(0.1)
+    )
+)
+
+// Consumer
+@(
+    5 repeat(
+        value := ch receive
+        (&quot;Received: &quot; .. value) println
+    )
+)
+
+wait(1)  // Let them run
+</code></pre>
+<h2 id="synchronization-primitives">
+  Synchronization Primitives
+  
+  <a class="anchor" href="#synchronization-primitives">#</a>
+  
+</h2>
+<h3 id="mutex-mutual-exclusion">
+  Mutex (Mutual Exclusion)
+  
+  <a class="anchor" href="#mutex-mutual-exclusion">#</a>
+  
+</h3>
+<pre><code class="language-io">Mutex := Object clone
+Mutex locked := false
+Mutex waitQueue := list()
+
+Mutex lock := method(
+    while(locked,
+        waitQueue append(Coroutine currentCoroutine)
+        Coroutine currentCoroutine pause
+    )
+    locked = true
+)
+
+Mutex unlock := method(
+    locked = false
+    if(waitQueue size &gt; 0,
+        waiter := waitQueue removeFirst
+        waiter resume
+    )
+)
+
+Mutex synchronize := method(block,
+    lock
+    e := try(result := block call)
+    unlock
+    if(e, e raise, result)
+)
+
+// Usage
+sharedCounter := 0
+mutex := Mutex clone
+
+10 repeat(
+    @(
+        mutex synchronize(
+            temp := sharedCounter
+            yield  // Simulate race condition
+            sharedCounter = temp + 1
+        )
+    )
+)
+
+wait(0.5)
+sharedCounter println  // 10 (without mutex would be unpredictable)
+</code></pre>
+<h3 id="semaphore">
+  Semaphore
+  
+  <a class="anchor" href="#semaphore">#</a>
+  
+</h3>
+<pre><code class="language-io">Semaphore := Object clone
+Semaphore init := method(permits,
+    self permits := permits
+    self waitQueue := list()
+    self
+)
+
+Semaphore acquire := method(
+    while(permits &lt;= 0,
+        waitQueue append(Coroutine currentCoroutine)
+        Coroutine currentCoroutine pause
+    )
+    permits = permits - 1
+)
+
+Semaphore release := method(
+    permits = permits + 1
+    if(waitQueue size &gt; 0,
+        waiter := waitQueue removeFirst
+        waiter resume
+    )
+)
+
+// Usage: Limit concurrent connections
+connectionPool := Semaphore clone init(3)
+
+10 repeat(i,
+    @(
+        connectionPool acquire
+        (&quot;Connection &quot; .. i .. &quot; started&quot;) println
+        wait(Random value)
+        (&quot;Connection &quot; .. i .. &quot; finished&quot;) println
+        connectionPool release
+    )
+)
+
+wait(3)
+</code></pre>
+<h2 id="concurrent-collections">
+  Concurrent Collections
+  
+  <a class="anchor" href="#concurrent-collections">#</a>
+  
+</h2>
+<pre><code class="language-io">// Thread-safe list
+ConcurrentList := List clone
+ConcurrentList mutex := Mutex clone
+
+ConcurrentList append := method(item,
+    mutex synchronize(resend(item))
+)
+
+ConcurrentList at := method(index,
+    mutex synchronize(resend(index))
+)
+
+ConcurrentList size := method(
+    mutex synchronize(resend)
+)
+
+// Usage
+list := ConcurrentList clone
+
+10 repeat(i,
+    @(list append(i))
+)
+
+wait(0.1)
+list size println  // 10
+</code></pre>
+<h2 id="worker-pool-pattern">
+  Worker Pool Pattern
+  
+  <a class="anchor" href="#worker-pool-pattern">#</a>
+  
+</h2>
+<pre><code class="language-io">WorkerPool := Object clone
+WorkerPool init := method(workerCount,
+    self workers := list()
+    self taskQueue := Channel clone init
+    self results := Channel clone init
+    
+    workerCount repeat(
+        worker := @(
+            loop(
+                task := taskQueue receive
+                if(task isNil, break)  // Poison pill
+                
+                result := task call
+                results send(result)
+            )
+        )
+        workers append(worker)
+    )
+    
+    self
+)
+
+WorkerPool submit := method(task,
+    taskQueue send(task)
+)
+
+WorkerPool shutdown := method(
+    workers size repeat(taskQueue send(nil))
+)
+
+WorkerPool getResult := method(
+    results receive
+)
+
+// Usage
+pool := WorkerPool clone init(4)
+
+// Submit tasks
+10 repeat(i,
+    pool submit(block(
+        wait(Random value * 0.1)
+        i * i
+    ))
+)
+
+// Collect results
+results := list()
+10 repeat(
+    results append(pool getResult)
+)
+
+pool shutdown
+results println
+</code></pre>
+<h2 id="asyncawait-pattern">
+  Async/Await Pattern
+  
+  <a class="anchor" href="#asyncawait-pattern">#</a>
+  
+</h2>
+<pre><code class="language-io">// Implement async/await style
+Object async := method(
+    future := Future clone
+    
+    @(
+        e := try(result := call activated doMessage(call message, call sender))
+        if(e,
+            future setException(e),
+            future setResult(result)
+        )
+    )
+    
+    future
+)
+
+Object await := method(future,
+    future resolve
+)
+
+// Usage
+fetchData := async method(url,
+    wait(1)  // Simulate network delay
+    &quot;Data from &quot; .. url
+)
+
+processData := async method(
+    data1 := await(fetchData(&quot;api/users&quot;))
+    data2 := await(fetchData(&quot;api/posts&quot;))
+    data1 .. &quot; + &quot; .. data2
+)
+
+result := await(processData)
+result println  // Data from api/users + Data from api/posts
+</code></pre>
+<h2 id="parallel-map">
+  Parallel Map
+  
+  <a class="anchor" href="#parallel-map">#</a>
+  
+</h2>
+<pre><code class="language-io">List parallelMap := method(block,
+    futures := self map(item,
+        self @(block call(item))
+    )
+    
+    futures map(resolve)
+)
+
+// Usage
+numbers := list(1, 2, 3, 4, 5)
+
+// Sequential map
+time(
+    sequential := numbers map(n,
+        wait(0.1)
+        n * n
+    )
+)
+
+// Parallel map
+time(
+    parallel := numbers parallelMap(n,
+        wait(0.1)
+        n * n
+    )
+)
+
+sequential println  // list(1, 4, 9, 16, 25)
+parallel println    // list(1, 4, 9, 16, 25) but faster
+</code></pre>
+<h2 id="deadlock-detection">
+  Deadlock Detection
+  
+  <a class="anchor" href="#deadlock-detection">#</a>
+  
+</h2>
+<pre><code class="language-io">DeadlockDetector := Object clone
+DeadlockDetector init := method(
+    self resources := Map clone
+    self waitGraph := Map clone
+    self
+)
+
+DeadlockDetector requestResource := method(coroutine, resource,
+    // Add to wait graph
+    if(resources hasKey(resource),
+        owner := resources at(resource)
+        if(owner != coroutine,
+            waitGraph atPut(coroutine, resource)
+            
+            // Check for cycle
+            if(hasCycle(coroutine),
+                Exception raise(&quot;Deadlock detected!&quot;)
+            )
+        )
+    )
+)
+
+DeadlockDetector hasCycle := method(start,
+    // Simplified cycle detection
+    visited := list()
+    current := start
+    
+    while(waitGraph hasKey(current),
+        if(visited contains(current), return true)
+        visited append(current)
+        
+        resource := waitGraph at(current)
+        if(resources hasKey(resource),
+            current = resources at(resource)
+        ,
+            break
+        )
+    )
+    
+    false
+)
+</code></pre>
+<h2 id="event-loop">
+  Event Loop
+  
+  <a class="anchor" href="#event-loop">#</a>
+  
+</h2>
+<pre><code class="language-io">EventLoop := Object clone
+EventLoop init := method(
+    self events := list()
+    self running := true
+    self
+)
+
+EventLoop schedule := method(delay, block,
+    events append(list(Date now + delay, block))
+    events sortInPlaceBy(block(e, e at(0)))
+)
+
+EventLoop run := method(
+    while(running and events size &gt; 0,
+        now := Date now
+        
+        while(events size &gt; 0 and events first at(0) &lt;= now,
+            event := events removeFirst
+            event at(1) @call
+        )
+        
+        if(events size &gt; 0,
+            wait((events first at(0) - now) max(0))
+        )
+    )
+)
+
+EventLoop stop := method(running = false)
+
+// Usage
+loop := EventLoop clone init
+
+loop schedule(0.1, block(&quot;First&quot; println))
+loop schedule(0.2, block(&quot;Second&quot; println))
+loop schedule(0.15, block(&quot;Between&quot; println))
+
+loop run
+</code></pre>
+<h2 id="common-patterns">
+  Common Patterns
+  
+  <a class="anchor" href="#common-patterns">#</a>
+  
+</h2>
+<h3 id="producer-consumer">
+  Producer-Consumer
+  
+  <a class="anchor" href="#producer-consumer">#</a>
+  
+</h3>
+<pre><code class="language-io">Buffer := Object clone
+Buffer init := method(capacity,
+    self items := list()
+    self capacity := capacity
+    self notFull := Semaphore clone init(capacity)
+    self notEmpty := Semaphore clone init(0)
+    self mutex := Mutex clone
+    self
+)
+
+Buffer put := method(item,
+    notFull acquire
+    mutex synchronize(items append(item))
+    notEmpty release
+)
+
+Buffer get := method(
+    notEmpty acquire
+    item := mutex synchronize(items removeFirst)
+    notFull release
+    item
+)
+
+// Usage
+buffer := Buffer clone init(5)
+
+// Producer
+@(
+    10 repeat(i,
+        (&quot;Producing &quot; .. i) println
+        buffer put(i)
+        wait(Random value * 0.1)
+    )
+)
+
+// Consumer
+@(
+    10 repeat(
+        item := buffer get
+        (&quot;Consumed &quot; .. item) println
+        wait(Random value * 0.2)
+    )
+)
+
+wait(3)
+</code></pre>
+<h3 id="fork-join">
+  Fork-Join
+  
+  <a class="anchor" href="#fork-join">#</a>
+  
+</h3>
+<pre><code class="language-io">Object forkJoin := method(tasks,
+    futures := tasks map(task,
+        @(task call)
+    )
+    
+    futures map(resolve)
+)
+
+// Parallel quicksort
+quicksort := method(list,
+    if(list size &lt;= 1, return list)
+    
+    pivot := list at(list size / 2)
+    
+    results := forkJoin(list(
+        block(list select(x, x &lt; pivot) quicksort),
+        block(list select(x, x == pivot)),
+        block(list select(x, x &gt; pivot) quicksort)
+    ))
+    
+    results at(0) appendSeq(results at(1)) appendSeq(results at(2))
+)
+
+sorted := quicksort(list(3, 1, 4, 1, 5, 9, 2, 6))
+sorted println  // list(1, 1, 2, 3, 4, 5, 6, 9)
+</code></pre>
+<h2 id="performance-considerations">
+  Performance Considerations
+  
+  <a class="anchor" href="#performance-considerations">#</a>
+  
+</h2>
+<pre><code class="language-io">// Coroutines are lightweight
+time(
+    coroutines := list()
+    1000 repeat(i,
+        coroutines append(@(i * i))
+    )
+    coroutines map(resolve)
+)
+
+// But context switching has overhead
+benchmarkConcurrency := method(taskCount, taskWork,
+    // Sequential
+    seqTime := time(
+        taskCount repeat(i, taskWork call(i))
+    )
+    
+    // Concurrent
+    concTime := time(
+        futures := list()
+        taskCount repeat(i,
+            futures append(@(taskWork call(i)))
+        )
+        futures map(resolve)
+    )
+    
+    (&quot;Sequential: &quot; .. seqTime) println
+    (&quot;Concurrent: &quot; .. concTime) println
+    (&quot;Speedup: &quot; .. (seqTime / concTime)) println
+)
+
+// Light work - concurrency overhead dominates
+benchmarkConcurrency(100, block(i, i * i))
+
+// Heavy work - concurrency helps
+benchmarkConcurrency(10, block(i,
+    sum := 0
+    10000 repeat(j, sum = sum + j)
+    sum
+))
+</code></pre>
+<h2 id="exercises">
+  Exercises
+  
+  <a class="anchor" href="#exercises">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><strong>Rate Limiter</strong>: Implement a rate limiter that allows N operations per second.</p>
+</li>
+<li>
+<p><strong>Parallel Reduce</strong>: Create a parallel version of reduce that divides work among workers.</p>
+</li>
+<li>
+<p><strong>Actor Supervisor</strong>: Build a supervisor that restarts failed actors.</p>
+</li>
+<li>
+<p><strong>CSP Channels</strong>: Implement Communicating Sequential Processes with select statement.</p>
+</li>
+<li>
+<p><strong>STM</strong>: Implement Software Transactional Memory for conflict-free concurrent updates.</p>
+</li>
+</ol>
+<h2 id="real-world-example-web-scraper">
+  Real-World Example: Web Scraper
+  
+  <a class="anchor" href="#real-world-example-web-scraper">#</a>
+  
+</h2>
+<pre><code class="language-io">WebScraper := Object clone
+WebScraper init := method(maxConcurrent,
+    self semaphore := Semaphore clone init(maxConcurrent)
+    self visited := ConcurrentSet clone init
+    self results := ConcurrentList clone
+    self
+)
+
+WebScraper scrape := method(urls,
+    futures := list()
+    
+    urls foreach(url,
+        if(visited contains(url) not,
+            visited add(url)
+            
+            future := @(
+                semaphore acquire
+                e := try(
+                    (&quot;Scraping &quot; .. url) println
+                    // Simulate HTTP request
+                    wait(Random value)
+                    
+                    content := &quot;Content from &quot; .. url
+                    results append(Map with(&quot;url&quot;, url, &quot;content&quot;, content))
+                    
+                    // Find more URLs (simplified)
+                    if(Random value &lt; 0.3,
+                        newUrl := url .. &quot;/&quot; .. Random value round
+                        self scrape(list(newUrl))
+                    )
+                )
+                
+                semaphore release
+                if(e, (&quot;Error scraping &quot; .. url .. &quot;: &quot; .. e message) println)
+            )
+            
+            futures append(future)
+        )
+    )
+    
+    futures map(resolve)
+    self
+)
+
+// Usage
+scraper := WebScraper clone init(3)
+scraper scrape(list(
+    &quot;https://example.com&quot;,
+    &quot;https://example.org&quot;,
+    &quot;https://example.net&quot;
+))
+
+wait(2)
+(&quot;Scraped &quot; .. scraper results size .. &quot; pages&quot;) println
+</code></pre>
+<h2 id="conclusion">
+  Conclusion
+  
+  <a class="anchor" href="#conclusion">#</a>
+  
+</h2>
+<p>Io&rsquo;s concurrency model, built on coroutines, actors, and futures, provides powerful abstractions for concurrent programming. The cooperative nature of coroutines gives you fine control over scheduling, while actors provide isolation and message-passing safety. Futures enable asynchronous programming patterns familiar from other languages.</p>
+<p>The beauty of Io&rsquo;s approach is that these concurrency primitives are implemented using the same object model as everything else. Coroutines are objects, messages can be sent asynchronously with <code>@</code>, and synchronization primitives can be built from basic objects and messages. This consistency makes concurrent programming in Io both powerful and comprehensible.</p>
+<hr>
+
+  
+  <footer class="book-footer">
+    
+  </footer>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/11-metaprogramming/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Metaprogramming" />
+        <span>Metaprogramming</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/13-domain-specific-languages/" class="flex align-center book-icon">
+        <span>Domain-Specific Languages</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Domain-Specific Languages" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
