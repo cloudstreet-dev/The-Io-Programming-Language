@@ -59,6 +59,12 @@ menu:
       url: "https://iolanguage.org"
       weight: 20
 
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
 markup:
   goldmark:
     renderer:
