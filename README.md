@@ -84,7 +84,9 @@ This collaboration between human creativity and AI capability demonstrates the p
 
 ## Acknowledgments
 
-Thanks to Steve Dekorte for creating Io, and to the Io community for keeping this fascinating language alive.
+Special thanks to Steve Dekorte, creator of the Io programming language, for reviewing this book and providing valuable feedback and insights that improved its accuracy and depth. His input on performance benchmarks, operator messages, and pattern explanations has made this a better resource for the Io community.
+
+Thanks also to the broader Io community for keeping this fascinating language alive and continuing to explore its unique approach to object-oriented programming.
 
 ---
 
