@@ -1,5 +1,9 @@
 # The Io Programming Language: A Comprehensive Guide
 
+> **📖 [Read the book online](https://cloudstreet-dev.github.io/The-Io-Programming-Language/)**
+>
+> The complete book is available as a beautiful, searchable website at https://cloudstreet-dev.github.io/The-Io-Programming-Language/
+
 ## About This Book
 
 This book provides an in-depth exploration of the Io programming language, designed for experienced programmers who want to understand prototype-based object-oriented programming. Through detailed comparisons with mainstream languages like JavaScript, Python, Ruby, and Java, readers will gain practical insights into Io's unique paradigm.
